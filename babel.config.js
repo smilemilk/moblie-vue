@@ -3,8 +3,8 @@ module.exports = {
   plugins: [
     [
       'import',
-      { libraryName: 'wm', libraryDirectory: 'es', style: true },
-      'wm'
+      { libraryName: 'vant', libraryDirectory: 'es', style: true },
+      'vant'
     ]
   ]
 };

@@ -120,7 +120,7 @@ export default {
   }
 
   &-title {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   &-price {
