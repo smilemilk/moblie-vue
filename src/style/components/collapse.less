@@ -1,0 +1,45 @@
+.collapse {
+  &-item {
+    background-color: @white;
+    z-index: 999;
+    &-fixed {
+      position: relative;
+      .collapse-extend {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        background-color: @white;
+        will-change: height;
+        transition: height 600ms ease-in-out;
+        overflow: hidden;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          display: inline-block;
+          width: 100%;
+          pointer-events: none;
+          box-sizing: border-box;
+          transform: scaleY(.5);
+          border-top: 1px solid #ebedf0;
+        }
+      }
+    }
+  }
+  &-top {
+    .padding-lr(15px);
+    height: 40px;
+    color: @text-color;
+    font-size: @font-small;
+    overflow: hidden;
+    cursor: pointer;
+    &-active {
+      color: @main-theme-color;
+      will-change: color;
+      transition: color 300ms ease-in-out;
+    }
+  }
+}

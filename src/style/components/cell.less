@@ -1,0 +1,26 @@
+.cell{
+  &-item {
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    .padding-lr(15px);
+    &-normal {
+
+    }
+    &-gray {
+      background-color: @background-color;
+    }
+  }
+  &-name {
+    font-size: @font-larger;
+    color: @text-color;
+  }
+  &-label {
+    font-size: @font-small;
+    color: @text-color;
+    &-light {
+      font-size: @font-small;
+      color: @text-color-light;
+    }
+  }
+}

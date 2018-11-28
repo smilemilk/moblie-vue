@@ -1,0 +1,26 @@
+//  定义结构元素 flex
+
+// flex
+.flex {
+  &-content {
+    display: flex;
+    &-align {
+      align-items: center;
+    }
+    &-justify {
+      justify-content: center;
+    }
+  }
+  &-left {
+    flex: 1;
+    min-width: 0;
+  }
+  &-right {
+    flex-shrink: 0;
+    padding-left: 10px;
+    text-align: right;
+  }
+}
+
+
+
