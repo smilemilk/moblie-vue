@@ -103,7 +103,7 @@
 
             sorry() {
                 Toast('暂无后续逻辑~');
-                this.$router.push('wallet');
+                this.$router.push('incomeList');
             }
         }
     };

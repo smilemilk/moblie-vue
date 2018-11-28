@@ -30,10 +30,17 @@ const routes = [
         }
     },
     {
-        name: 'wallet',
+        name: 'incomeList',
         component: () => import('./view/wallet/incomeList'),
         meta: {
             title: '商品详情'
+        }
+    },
+    {
+        name: 'account',
+        component: () => import('./view/wallet/account'),
+        meta: {
+            title: '我的钱包'
         }
     }
 ];

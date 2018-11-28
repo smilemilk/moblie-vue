@@ -1,44 +1,9 @@
 <template>
     <div>
-        <div class="collapse-item collapse-item-fixed">
-            <div class="flex-content flex-content-align collapse-top" :class="extraStatus ? 'collapse-top-active' : ''">
-                全部<i @click="extraAction">关闭</i>
-            </div>
-            <div class="collapse-extend" v-if="extraStatus">
-                <van-row type="flex">
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkkk
-                        </div>
-                    </van-col>
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkkk
-                        </div>
-                    </van-col>
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkkk
-                        </div>
-                    </van-col>
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkk
-                        </div>
-                    </van-col>
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkk
-                        </div>
-                    </van-col>
-                    <van-col span="6">
-                        <div class="extra-box flex-content flex-content-align flex-content-justify">
-                            kkk
-                        </div>
-                    </van-col>
-                </van-row>
-            </div>
-        </div>
+        <collapse-extra
+                :extraStatusChild="extraStatus"
+                v-on:spot="extraStatusMounted"
+        ></collapse-extra>
         <div class="wallet-list">
             <van-list
                     v-model="loading"
@@ -66,6 +31,7 @@
 
 <script>
     import {List, Row, Col, Icon, Cell, CellGroup} from 'vant';
+    import CollapseExtra from '@/view/components/collapse/collapse_extra';
 
     export default {
         components: {
@@ -74,7 +40,8 @@
             [Col.name]: Col,
             [Icon.name]: Icon,
             [Cell.name]: Cell,
-            [CellGroup.name]: CellGroup
+            [CellGroup.name]: CellGroup,
+            CollapseExtra
         },
         data() {
             return {
@@ -83,7 +50,7 @@
                 list: [
                     'kkk', 'lll'
                 ],
-                extraStatus: true
+                extraStatus: false
             };
         },
         methods: {
@@ -102,15 +69,14 @@
                     }
                 }, 500);
             },
-            extraAction() {
-                console.log(this.extraStatus)
-                this.extraStatus = !this.extraStatus;
+            extraStatusMounted(val) {
+               this.extraStatus = val;
             }
         }
     };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 
     .wallet-list {
         background-color: @white;
