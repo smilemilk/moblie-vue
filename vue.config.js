@@ -9,19 +9,20 @@ const autoprefixer = require('autoprefixer');// rem
 const pxtorem = require('postcss-pxtorem');  // rem
 const themeConfig = require('./theme/index');
 
-    function resolve (dir) {
+function resolve(dir) {
     return path.join(__dirname, dir);
 }
+
 module.exports = merge(webpackDevConfig, {
     outputDir: '../dist',
     baseUrl: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
     lintOnSave: true,
-    chainWebpack: (config)=>{
+    chainWebpack: (config) => {
         config
             .resolve
             .alias
             .set('@', resolve('src'))
-            .set('assets',resolve('src/assets'))
+            .set('assets', resolve('src/assets'))
     },
     css: {
         loaderOptions: {

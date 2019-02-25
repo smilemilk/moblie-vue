@@ -1,6 +1,6 @@
-'use strict'
+'use strict';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
     dev: {
@@ -25,7 +25,7 @@ module.exports = {
         errorOverlay: true,
         notifyOnErrors: true,
         poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-        useEslint: true,
+        useEslint: false,
         showEslintErrorsInOverlay: false,
 
         /**
@@ -80,5 +80,5 @@ module.exports = {
         // Set to `true` or `false` to always turn it on or off
         // bundleAnalyzerReport: process.env.npm_config_report
     }
-}
+};
 
