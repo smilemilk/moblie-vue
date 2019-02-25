@@ -42,6 +42,13 @@ const routes = [
         meta: {
             title: '我的钱包'
         }
+    },
+    {
+        name: 'login',
+        component: () => import('./view/login/index'),
+        meta: {
+            title: '登录'
+        }
     }
 ];
 

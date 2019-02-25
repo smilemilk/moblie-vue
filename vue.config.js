@@ -13,8 +13,8 @@ const themeConfig = require('./theme/index');
     return path.join(__dirname, dir);
 }
 module.exports = merge(webpackDevConfig, {
-    outputDir: './dist',
-    baseUrl: process.env.NODE_ENV === 'production' ? '/wm-mobile/' : '/',
+    outputDir: '../dist',
+    baseUrl: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
     lintOnSave: true,
     chainWebpack: (config)=>{
         config
