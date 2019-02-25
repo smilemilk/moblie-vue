@@ -1,8 +1,8 @@
 'use strict';
 const config = require('../config');
 
-const HOST = process.env.HOST
-const PORT = process.env.PORT && Number(process.env.PORT)
+const HOST = process.env.HOST;
+const PORT = process.env.PORT && Number(process.env.PORT);
 
 module.exports = {
     devServer: {

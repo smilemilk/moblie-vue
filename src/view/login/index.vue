@@ -1,50 +1,25 @@
 <template>
-    <div class="goods">
-        <van-swipe class="goods-swipe" :autoplay="3000">
-            <van-swipe-item v-for="thumb in goods.thumb" :key="thumb">
-                <img :src="thumb">
-            </van-swipe-item>
-        </van-swipe>
+    <div class="login-wrapper container-wrapper">
+        <div class="login-inner">
+            <h3 class="login-title">欢迎登录!</h3>
 
-        <van-cell-group>
-            <van-cell>
-                <div class="goods-title">{{ goods.title }}</div>
-                <div class="goods-price">{{ formatPrice(goods.price) }}</div>
-            </van-cell>
-            <van-cell class="goods-express">
-                <van-col span="10">运费：{{ goods.express }}</van-col>
-                <van-col span="14">剩余：{{ goods.remain }}</van-col>
-            </van-cell>
-        </van-cell-group>
+            <div class="item">
+                <div class="item-label">机构编码</div>
+                <input class="item-input" placeholder="请输入机构编码"/>
+            </div>
 
-        <van-cell-group class="goods-cell-group">
-            <van-cell value="进入店铺" icon="shop" is-link @click="sorry">
-                <template slot="title">
-                    <span class="van-cell-text">有赞的店</span>
-                    <van-tag class="goods-tag" type="danger">官方</van-tag>
-                </template>
-            </van-cell>
-            <van-cell title="线下门店" icon="location" is-link @click="sorry"/>
-        </van-cell-group>
+            <div class="item">
+                <div class="item-label">账户</div>
+                <input class="item-input" placeholder="请输入机构编码"/>
+            </div>
 
-        <van-cell-group class="goods-cell-group">
-            <van-cell title="查看商品详情" is-link @click="sorry"/>
-        </van-cell-group>
+            <div class="item">
+                <div class="item-label">密码</div>
+                <input class="item-input" placeholder="请输入机构编码"/>
+            </div>
 
-        <van-goods-action>
-            <van-goods-action-mini-btn icon="chat" @click="sorry">
-                客服
-            </van-goods-action-mini-btn>
-            <van-goods-action-mini-btn icon="cart" @click="onClickCart">
-                购物车
-            </van-goods-action-mini-btn>
-            <van-goods-action-big-btn @click="sorry">
-                加入购物车
-            </van-goods-action-big-btn>
-            <van-goods-action-big-btn primary @click="sorry">
-                立即购买
-            </van-goods-action-big-btn>
-        </van-goods-action>
+            <button class="btn btn-block btn-primary btn-disabled mt14">登录</button>
+        </div>
     </div>
 </template>
 
@@ -79,28 +54,11 @@
 
         data() {
             return {
-                goods: {
-                    title: '美国伽力果（约680g/3个）',
-                    price: 2680,
-                    express: '免运费',
-                    remain: 19,
-                    thumb: [
-                        'https://img.yzcdn.cn/public_files/2017/10/24/e5a5a02309a41f9f5def56684808d9ae.jpeg',
-                        'https://img.yzcdn.cn/public_files/2017/10/24/1791ba14088f9c2be8c610d0a6cc0f93.jpeg'
-                    ]
-                }
+
             };
         },
 
         methods: {
-            formatPrice() {
-                return '¥' + (this.goods.price / 100).toFixed(2);
-            },
-
-            onClickCart() {
-                this.$router.push('cart');
-            },
-
             sorry() {
                 Toast('暂无后续逻辑~');
                 this.$router.push('incomeList');
@@ -109,41 +67,45 @@
     };
 </script>
 
-<style lang="less">
-    .goods {
-        padding-bottom: 50px;
-
-        &-swipe {
-            img {
-                width: 100%;
-                display: block;
+<style lang="less" scoped>
+    @import "../../style/formation.less";
+    .login {
+        &-inner {
+            padding: 14px 34px;
+        }
+        &-wrapper {
+            position:fixed;
+            top:0;
+            background-image: url("../../images/login_bg@2x.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            z-index:-100;
+            .item {
+                padding: 16px 0 8px;
+                border-bottom: 1px solid @whiteFilter;
+                &-label {
+                    font-size: 12px;
+                    line-height: 1.75;
+                    color: @whiteFilter;;
+                    margin-bottom: 4px;
+                }
+                &-input {
+                    border: none;
+                    background-color: transparent;
+                    color: @white;
+                    lin-height: 1.75;
+                    &::-webkit-input-placeholder {
+                        color: @whiteFilter;
+                    }
+                }
             }
         }
-
         &-title {
-            font-size: 20px;
-        }
-
-        &-price {
-            color: #f44;
-        }
-
-        &-express {
-            color: #999;
-            font-size: 12px;
-            padding: 5px 15px;
-        }
-
-        &-cell-group {
-            margin: 15px 0;
-
-            .van-cell__value {
-                color: #999;
-            }
-        }
-
-        &-tag {
-            margin-left: 5px;
+            color: #fff;
+            font-weight: 400;
+            font-size: @font-largest;
         }
     }
 </style>
