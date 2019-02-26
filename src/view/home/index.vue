@@ -3,7 +3,7 @@
         <div class="home-header">
             <p class="home-header-title">喜脉健康</p>
             <div class="user-info">
-                <img scr="../../images/headSculpture@2x.png" alt=""/>
+                <div class="user-info-sculpture"></div>
                 <div class="user-info-detail">
                     <div class="user-info-detail_l">禄白</div>
                     <div class="user-info-detail_s">门店:</div>
@@ -20,7 +20,8 @@
                         :data-a="item.key"
                         class="recharge-item"
                 >
-                    <img :class="item.key" class="recharge-item-img"/>
+                    <i :class="item.key"
+                         class="recharge-item-img"></i>
                     <p>{{item.label}}</p>
                 </li>
             </ul>
@@ -88,7 +89,8 @@
             .user-info {
                 position: relative;
                 &-detail {
-                    padding-left: 40px;
+                    margin-top: 24px;
+                    padding-left: 86px;
                     &_l {
                         font-size: @font-larger;
                         color: #fff;
@@ -114,6 +116,17 @@
                     color: @text-color-grayBlue;
                     font-size: @font-smallest;
                 }
+                &-sculpture {
+                    position: absolute;
+                    left: 16px;
+                    top: 6px;
+                    width: 46px;
+                    height: 46px;
+                    background-image: url("../../images/headSculpture@2x.png");
+                    background-repeat: no-repeat;
+                    background-position: top center;
+                    background-size: 100% auto;
+                }
             }
         }
         &-entrance {
@@ -123,10 +136,11 @@
                 top: -36px;
                 left: 50%;
                 transform: translate(-50%, 0);
-                width: 328px;
-                height: 90px;
+                width: 352px;
+                height: 96px;
                 background-image: url("../../images/recharge_btn@2x.png");
                 background-repeat: no-repeat;
+                background-position: top center;
                 background-size: 100% auto;
                 z-index: 1000;
                 &:before {

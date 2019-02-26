@@ -65,6 +65,13 @@ const routes = [
         }
     },
     {
+        name: 'businessDetail',
+        component: () => import('./view/business/business-detail'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'set',
         component: () => import('./view/set/index'),
         meta: {
