@@ -49,6 +49,20 @@ const routes = [
         meta: {
             title: '登录'
         }
+    },
+    {
+        name: 'set',
+        component: () => import('./view/set/index'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
+        name: 'networkError',
+        component: () => import('./view/error/networkError'),
+        meta: {
+            title: '登录'
+        }
     }
 ];
 

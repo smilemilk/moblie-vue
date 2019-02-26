@@ -5,9 +5,12 @@ module.exports = {
     white: '#fff',
     whiteFilter: 'rgba(256, 256, 256, .3)',
     red: '#FF6865',
+    redDark: '#FF4F54',
     orange: '#f08d49',
     'text-color': '#333',
     'text-color-light': '#999',
     'border-color': '#e1e2e3',
-    'background-color': 'rgba(232, 232, 232, .5)'
+    'border-color-dark': '#e5e5e5',
+    'background-color': 'rgba(232, 232, 232, .5)',
+    'background-gray-color': '#fbfbfb'
 };

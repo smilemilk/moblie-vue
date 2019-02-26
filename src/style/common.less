@@ -34,18 +34,74 @@
   border-radius: 5px;
   box-sizing: border-box;
   font-size: @font-large;
+  -webkit-appearance: none;
+  outline: none;
   &-block {
     width: 100%;
+  }
+  &-large {
+    height: 50px;
+  }
+  &-radius-none {
+    border-radius: 0;
   }
   &-primary {
     background-color: @main-theme-color;
     border: 1px solid @main-theme-color;
     color: @white;
   }
+  &-default {
+    background-color: @white;
+    border: 1px solid @white;
+    color: @redDark;
+  }
   &-disabled {
     background-color: @whiteFilter;
     border: 1px solid @whiteFilter;
     color: @white;
+  }
+}
+
+.cell {
+  position: relative;
+  padding: 0 17px;
+  color: @text-color;
+  font-size: @font-large;
+  line-height: 1;
+  background-color: @white;
+  &:after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 1px;
+    background-color: @border-color-dark;
+    transform: scale(1, .5);
+  }
+  &-group {
+    padding: 0 0 0 17px;
+    background-color: @white;
+    .cell {
+      padding-left: 0;
+      &:nth-last-child(1) {
+        &:after {
+          transform: scale(1, 0);
+        }
+      }
+    }
+  }
+  &-inner {
+    padding: 16px 0;
+    &-lr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  &-right {
+
   }
 }
 

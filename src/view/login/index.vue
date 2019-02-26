@@ -3,7 +3,14 @@
         <div class="login-inner">
             <h3 class="login-title">欢迎登录!</h3>
 
-            <div class="item" :class="this.loginRule[0] === 1 ? 'bB1' : ''">
+            <div v-if="departName" class="sculpture-item">
+                <img src=""
+                     class="sculpture-item-img"
+                />
+                <div class="sculpture-item-name">{{departName}}</div>
+            </div>
+
+            <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
                 <div class="item-label">机构编码</div>
                 <input v-model="depart"
                        class="item-input"
@@ -11,7 +18,7 @@
                 <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">不能为空</p>
             </div>
 
-            <div class="item" :class="this.loginRule[1] === 1 ? 'bB1' : ''">
+            <div class="item" :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''">
                 <div class="item-label">账户</div>
                 <input
                         v-model="name"
@@ -20,7 +27,7 @@
                 <p class="item-notice" v-show="this.loginRule[1] === 0 && this.loginRuleTextStatus === true">不能为空</p>
             </div>
 
-            <div class="item" :class="this.loginRule[2] === 1 ? 'bB1' : ''">
+            <div class="item" :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''">
                 <div class="item-label">密码</div>
                 <input
                         v-model="password"
@@ -75,8 +82,14 @@
         data() {
             return storeData.call(this);
         },
+        created() {
+            localStorage.setItem('departCurrentName', 'shabi');
+            if (localStorage.getItem('departCurrentName')) {
+                this.departName = localStorage.getItem('departCurrentName');
+            }
+        },
         watch: {
-            'depart': function (val) {
+            'depart': function (old, val) {
                 if (val) {
                     this.loginRule[0] = 1;
                     if (this.name && this.password) {
@@ -88,8 +101,15 @@
                     this.loginRule[0] = 0;
                     this.loginStatus = false;
                 }
+                if (val !== old) {
+                    this.loginInputStatus[0] = 1;
+                    this.loginInputStatus[1] = 0;
+                    this.loginInputStatus[2] = 0;
+                } else {
+                    this.loginInputStatus[0] = 0;
+                }
             },
-            'name': function (val) {
+            'name': function (old, val) {
                 if (val) {
                     this.loginRule[1] = 1;
                     if (this.name && this.password) {
@@ -101,8 +121,15 @@
                     this.loginRule[1] = 0;
                     this.loginStatus = false;
                 }
+                if (val !== old) {
+                    this.loginInputStatus[0] = 0;
+                    this.loginInputStatus[1] = 1;
+                    this.loginInputStatus[2] = 0;
+                } else {
+                    this.loginInputStatus[1] = 0;
+                }
             },
-            'password': function (val) {
+            'password': function (old, val) {
                 if (val) {
                     this.loginRule[2] = 1;
                     if (this.name && this.password) {
@@ -114,6 +141,13 @@
                     this.loginRule[2] = 0;
                     this.loginStatus = false;
                 }
+                if (val !== old) {
+                    this.loginInputStatus[0] = 0;
+                    this.loginInputStatus[1] = 0;
+                    this.loginInputStatus[2] = 1;
+                } else {
+                    this.loginInputStatus[2] = 0;
+                }
             },
         },
         methods: {
@@ -121,10 +155,14 @@
                 if (this.loginRule.join() === '1,1,1') {
                     this.loginStatus = true;
                     this.loginRuleTextStatus = false;
+                    this.loginFetch();
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
                 }
+            },
+            loginFetch() {
+                localStorage.setItem('departCurrentName', 'shabi');
             },
             sorry() {
                 Toast('暂无后续逻辑~');
@@ -185,6 +223,23 @@
             color: #fff;
             font-weight: 400;
             font-size: @font-largest;
+        }
+    }
+
+    .sculpture-item {
+        text-align: center;
+        &-img {
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+            background-color: red;
+            border-radius: 50%;
+            border: none;
+        }
+        &-name {
+            font-size: @font-smaller;
+            color: @white;
+            text-align: center;
         }
     }
 </style>
