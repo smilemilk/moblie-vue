@@ -4,39 +4,56 @@
             <h3 class="login-title">欢迎登录!</h3>
 
             <div v-if="departName" class="sculpture-item">
-                <img src=""
-                     class="sculpture-item-img"
+                <i src=""
+                   class="sculpture-item-img"
                 />
                 <div class="sculpture-item-name">{{departName}}</div>
             </div>
 
             <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
-                <div class="item-label">机构编码</div>
-                <input v-model="depart"
-                       class="item-input"
-                       placeholder="请输入机构编码"/>
-                <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">不能为空</p>
+                <div class="item-wrapper">
+                    <div class="item-label">机构编码</div>
+                    <input v-model="depart"
+                           class="item-input"
+                           placeholder="请输入机构编码"/>
+                    <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">
+                        不能为空</p>
+                </div>
             </div>
 
             <div class="item" :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''">
-                <div class="item-label">账户</div>
-                <input
-                        v-model="account"
-                        class="item-input"
-                        placeholder="请输入账号"/>
-                <p class="item-notice" v-show="this.loginRule[1] === 0 && this.loginRuleTextStatus === true">不能为空</p>
-            </div>
-            <div>
-                <div v-for="item in accountList"></div>
+                <div class="item-wrapper">
+                    <div class="item-label">账户</div>
+                    <input
+                            v-model="account"
+                            class="item-input"
+                            placeholder="请输入账号"/>
+                    <i class="icon-select"
+                       v-if="accountList"
+                       @click="accountSelectHandle(this.accountShow)"
+                       :class="this.accountShow ? 'icon-select_toggle' : ''"
+                    ></i>
+                    <p class="item-notice" v-show="this.loginRule[1] === 0 && this.loginRuleTextStatus === true">
+                        不能为空</p>
+                </div>
+                <div class="accountHistoryList" v-if="this.accountList && this.accountShow">
+                    <div class="accountHistoryItem"
+                         v-for="(item,key) in accountList" :key="key">
+                        {{item}}
+                    </div>
+                </div>
             </div>
 
             <div class="item" :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''">
-                <div class="item-label">密码</div>
-                <input
-                        v-model="password"
-                        class="item-input"
-                        placeholder="请输入密码"/>
-                <p class="item-notice" v-show="this.loginRule[2] === 0 && this.loginRuleTextStatus === true">不能为空</p>
+                <div class="item-wrapper">
+                    <div class="item-label">密码</div>
+                    <input
+                            v-model="password"
+                            class="item-input"
+                            placeholder="请输入密码"/>
+                    <p class="item-notice" v-show="this.loginRule[2] === 0 && this.loginRuleTextStatus === true">
+                        不能为空</p>
+                </div>
             </div>
 
             <button
@@ -45,7 +62,7 @@
                          btn-block
                          btn-primary
                          mt14"
-                    :class="loginStatus ? '': 'btn-disabled'"
+                    :class="loginStatus ? '': 'btn-disabled_white'"
                     @click="loginAction()">登录
             </button>
         </div>
@@ -102,6 +119,9 @@
                 console.log(departListPrimary)
                 this.departList = departListPrimary;
             }
+
+            let accountList = localStorage.getItem('accountList').split(",");
+            this.accountList = accountList;
         },
         watch: {
             'depart': function (old, val) {
@@ -179,6 +199,13 @@
             loginFetch() {
                 localStorage.setItem('departCurrentName', 'shabi');
             },
+            accountSelectHandle(status) {
+                console.log(status)
+                this.accountShow = !status;
+                if (this.accountList) {
+
+                }
+            },
             sorry() {
                 Toast('暂无后续逻辑~');
                 this.$router.push('incomeList');
@@ -249,14 +276,39 @@
             display: inline-block;
             width: 42px;
             height: 42px;
-            background-color: red;
             border-radius: 50%;
             border: none;
+            background-image: url("../../images/headSculpture@2x.png");
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: 100% auto;
         }
         &-name {
             font-size: @font-smaller;
             color: @white;
             text-align: center;
+        }
+    }
+
+    .accountHistoryList {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+
+    .icon-select {
+        position: absolute;
+        right: 8px;
+        bottom: 14px;
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-image: url("../../images/icon_down@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+        &_toggle {
+            transform: rotate3d(90deg, 0, 0);
         }
     }
 </style>

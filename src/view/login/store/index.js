@@ -12,6 +12,7 @@ export default function () {
         loginRuleTextStatus: false,
         departName: '',
         departList: '',
-        accountList: []
+        accountList: [],
+        accountShow: false
     }
 }
