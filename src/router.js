@@ -51,6 +51,20 @@ const routes = [
         }
     },
     {
+        name: 'home',
+        component: () => import('./view/home/index'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
+        name: 'recharge',
+        component: () => import('./view/recharge/index'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'set',
         component: () => import('./view/set/index'),
         meta: {

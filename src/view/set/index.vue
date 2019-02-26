@@ -70,12 +70,6 @@
     @import "../../style/formation.less";
 
     .set {
-        &-wrapper {
-            position: relative;
-            top: 0;
-            left: 0;
-            background-color: @background-gray-color;
-        }
         &-sculpture {
             background-color: @main-theme-color;
             height: 136px;
