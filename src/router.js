@@ -79,6 +79,13 @@ const routes = [
         }
     },
     {
+        name: 'passwordModify',
+        component: () => import('./view/set/password-modify'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'networkError',
         component: () => import('./view/error/networkError'),
         meta: {

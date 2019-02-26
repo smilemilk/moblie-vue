@@ -19,9 +19,18 @@
                     class="
                          btn
                          btn-block
+                         btn-ghost
+                         mb16
+                         "
+                    @click="refundAction()">退款
+            </button>
+            <button
+                    class="
+                         btn
+                         btn-block
                          btn-primary
                          "
-                    @click="loginAction()">确定
+                    @click="ensureAction()">确定
             </button>
         </div>
     </div>
@@ -63,7 +72,14 @@
         created() {
 
         },
-        methods: {}
+        methods: {
+            refundAction() {
+
+            },
+            ensureAction() {
+
+            }
+        }
     };
 </script>
 

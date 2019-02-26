@@ -220,7 +220,9 @@
                     border: none;
                     background-color: transparent;
                     color: @white;
-                    lin-height: 1.75;
+                    line-height: 1.75;
+                    outline: none;
+                    -webkit-appearance: none;
                     &::-webkit-input-placeholder {
                         color: @whiteFilter;
                     }

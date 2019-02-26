@@ -58,16 +58,29 @@
       background-color: @main-theme-light;
       border-color: @main-theme-light;
     }
+    &.btn-disabled {
+      background-color: @background-grayer-color;
+      border: 1px solid @background-grayer-color;
+      color: @text-color-grayBlue;
+    }
   }
   &-default {
     background-color: @white;
     border: 1px solid @white;
     color: @redDark;
+    &.btn-disabled {
+      background-color: @whiteFilter;
+      border: 1px solid @whiteFilter;
+      color: @white;
+    }
   }
-  &-disabled {
-    background-color: @whiteFilter;
-    border: 1px solid @whiteFilter;
-    color: @white;
+  &-ghost {
+    background-color: @white;
+    border: 1px solid @main-theme-color;
+    color: @main-theme-color;
+    &:hover {
+      background-color: @main-theme-lightest;
+    }
   }
 }
 

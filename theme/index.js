@@ -4,6 +4,7 @@ module.exports = {
     'main-theme-color': '#18A2FF',
     'main-theme-dark': '#4C6682',
     'main-theme-light': 'rgba(24, 162, 255, .9)',
+    'main-theme-lightest': 'rgba(24, 162, 255, .1)',
     white: '#fff',
     whiteFilter: 'rgba(256, 256, 256, .3)',
     red: '#FF6865',
