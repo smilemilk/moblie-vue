@@ -6,10 +6,12 @@ export default function () {
         ],
         loginInputStatus: [0, 0, 0],
         depart: '',
-        name: '',
+        account: '',
         password: '',
         loginStatus: false,
         loginRuleTextStatus: false,
-        departName: ''
+        departName: '',
+        departList: '',
+        accountList: []
     }
 }

@@ -21,10 +21,13 @@
             <div class="item" :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''">
                 <div class="item-label">账户</div>
                 <input
-                        v-model="name"
+                        v-model="account"
                         class="item-input"
                         placeholder="请输入账号"/>
                 <p class="item-notice" v-show="this.loginRule[1] === 0 && this.loginRuleTextStatus === true">不能为空</p>
+            </div>
+            <div>
+                <div v-for="item in accountList"></div>
             </div>
 
             <div class="item" :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''">
@@ -84,15 +87,27 @@
         },
         created() {
             localStorage.setItem('departCurrentName', 'shabi');
+            localStorage.setItem('departCurrentList', "daizi, llllll");
+            localStorage.setItem('account', 'shabi');
+            localStorage.setItem('accountList', "daizi, llllll");
             if (localStorage.getItem('departCurrentName')) {
                 this.departName = localStorage.getItem('departCurrentName');
+            }
+            if (localStorage.getItem('departCurrentList')) {
+                let departListPrimary = localStorage.getItem('departCurrentList').split(",");
+
+                if (this.departName) {
+
+                }
+                console.log(departListPrimary)
+                this.departList = departListPrimary;
             }
         },
         watch: {
             'depart': function (old, val) {
                 if (val) {
                     this.loginRule[0] = 1;
-                    if (this.name && this.password) {
+                    if (this.account && this.password) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
@@ -109,10 +124,10 @@
                     this.loginInputStatus[0] = 0;
                 }
             },
-            'name': function (old, val) {
+            'account': function (old, val) {
                 if (val) {
                     this.loginRule[1] = 1;
-                    if (this.name && this.password) {
+                    if (this.account && this.password) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
@@ -132,7 +147,7 @@
             'password': function (old, val) {
                 if (val) {
                     this.loginRule[2] = 1;
-                    if (this.name && this.password) {
+                    if (this.account && this.password) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
