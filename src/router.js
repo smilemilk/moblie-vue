@@ -100,6 +100,13 @@ const routes = [
         }
     },
     {
+        name: 'passwordModifySuccess',
+        component: () => import('./view/set/password-modify-success'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'networkError',
         component: () => import('./view/error/networkError'),
         meta: {
