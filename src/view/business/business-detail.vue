@@ -50,7 +50,7 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn
     } from 'vant';
-    import storeData from './store/index';
+    import storeData from './store/business-detail';
 
     export default {
         components: {

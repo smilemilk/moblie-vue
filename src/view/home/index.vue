@@ -166,8 +166,8 @@
                     font-weight: bolder;
                     color: @white;
                     position: absolute;
-                    left: 168px;
-                    top: 20px;
+                    left: 174px;
+                    top: 24px;
                 }
             }
             .recharge {
