@@ -222,10 +222,17 @@
           background-image: url("../images/icon_large_noneFound@2x.png");
           background-size: 100% auto;
         }
+        &.networkError {
+          background-image: url("../images/icon_large_networkError@2x.png");
+          background-size: 100% auto;
+        }
       }
       &-label {
         margin-top: 15px;
         font-size: @font-largest;
+        &.span_light {
+          color: @text-color-light;
+        }
       }
     }
   }
