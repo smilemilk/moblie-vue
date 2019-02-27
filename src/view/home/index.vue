@@ -69,16 +69,18 @@
         methods: {
             entranceAction(item) {
                 if (item.key) {
-                    const routerName = {
-                        'search': 'business',
-                        'dailyKnots': 'daily',
-                        'set': 'set',
-                        'loginOut': 'loginOut'
-                    };
-                    this.$router.push({
-                        name: routerName[item.key],
-                        query: ''
-                    });
+                    setTimeout(() => {
+                        const routerName = {
+                            'search': 'business',
+                            'dailyKnots': 'daily',
+                            'set': 'set',
+                            'loginOut': 'loginOut'
+                        };
+                        this.$router.push({
+                            name: routerName[item.key],
+                            query: ''
+                        });
+                    }, 800);
                 }
             }
         }

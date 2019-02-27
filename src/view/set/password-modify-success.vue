@@ -2,7 +2,7 @@
     <div class="set_password-wrapper container-wrapper">
 
         <div class="prompt-item">
-            <i class="prompt-img"></i>
+            <i class="prompt-img success"></i>
             <div class="prompt-label">{{promptLabel}}</div>
         </div>
 

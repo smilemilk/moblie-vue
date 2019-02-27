@@ -1,5 +1,6 @@
 <template>
-    <div class="dailyKnots-wrapper container-wrapper">
+    <div    :class="dailyList && dailyList.length > 0 ? '' : 'white'"
+            class="dailyKnots-wrapper container-wrapper">
 
         <div class="date-choose-box">
             <div class="date-choose-pre">上一天</div>
@@ -7,30 +8,49 @@
             <div class="date-choose-next">下一天</div>
         </div>
 
-        <div class="interval-item">
-            收入（元）：￥1221.00
+        <div v-if="dailyList && dailyList.length > 0">
+            <div class="interval-item">
+                实收（元）：￥1221.00
+            </div>
+
+            <div class="set-form cell-group">
+                <div class="cell cell_hover">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>全部收银员</label>
+                        <i class="cell-right-arrow">
+                        </i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="set-form cell-group mt10">
+                <div class="cell cell_small">
+                    <div class="cell-inner cell-inner-lr">
+                        <label class="span_light">门店</label>
+                        <div class="cell-right">富阳喜脉健康</div>
+                    </div>
+                </div>
+                <div class="cell cell_small">
+                    <div class="cell-inner cell-inner-lr">
+                        <label class="span_light">门店</label>
+                        <div class="cell-right">富阳喜脉健康</div>
+                    </div>
+                </div>
+            </div>
+            <div class="set-form cell-group mt10">
+                <div class="cell cell_small">
+                    <div class="cell-inner cell-inner-lr">
+                        <label class="span_light">门店</label>
+                        <div class="cell-right">富阳喜脉健康</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="set-form cell-group">
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
-                </div>
-            </div>
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
-                </div>
-            </div>
-        </div>
-        <div class="set-form cell-group mt10">
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
-                </div>
+        <div v-else>
+            <div class="prompt-item prompt_small">
+                <i class="prompt-img noneFound"></i>
+                <div class="prompt-label">{{promptLabel}}</div>
             </div>
         </div>
     </div>
@@ -79,23 +99,4 @@
 <style lang="less" scoped>
     @import "../../style/formation.less";
 
-    .date-choose-box {
-        padding: 20px 16px;
-        background-color: @main-theme-color;
-        overflow: hidden;
-        [class*='date-choose-'] {
-            display: inline-block;
-            color: @white;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-    }
-
-    .interval-item {
-        padding: 10px 16px;
-        color: @text-color;
-        font-size: @font-normal;
-        line-height: 1.5;
-        box-sizing: border-box;
-    }
 </style>
