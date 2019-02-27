@@ -72,6 +72,13 @@ const routes = [
         }
     },
     {
+        name: 'daily',
+        component: () => import('./view/dailyKnots/index'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'set',
         component: () => import('./view/set/index'),
         meta: {

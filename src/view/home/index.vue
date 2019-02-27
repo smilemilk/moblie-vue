@@ -19,9 +19,10 @@
                         :key="key"
                         :data-a="item.key"
                         class="recharge-item"
+                        @click="entranceAction(item)"
                 >
                     <i :class="item.key"
-                         class="recharge-item-img"></i>
+                       class="recharge-item-img"></i>
                     <p>{{item.label}}</p>
                 </li>
             </ul>
@@ -65,7 +66,22 @@
         created() {
 
         },
-        methods: {}
+        methods: {
+            entranceAction(item) {
+                if (item.key) {
+                    const routerName = {
+                        'search': 'search',
+                        'dailyKnots': 'daily',
+                        'set': 'set',
+                        'loginOut': 'loginOut'
+                    };
+                    this.$router.push({
+                        name: routerName[item.key],
+                        query: ''
+                    });
+                }
+            }
+        }
     };
 </script>
 
@@ -184,8 +200,8 @@
                     padding: 25px;
                     &-img {
                         display: inline-block;
-                        width: 50px;
-                        height: 50px;
+                        width: 60px;
+                        height: 60px;
                         border: none;
                         border-radius: 0;
                         background-repeat: no-repeat;
@@ -208,6 +224,17 @@
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @media screen and (max-width: 352px) {
+        .home-entrance .recharge-btn {
+            width: 300px;
+            height: 96px;
+            &:before {
+                left: 146px;
+                top: 16px;
             }
         }
     }
