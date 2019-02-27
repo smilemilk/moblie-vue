@@ -1,12 +1,17 @@
 <template>
-    <div    :class="dailyList && dailyList.length > 0 ? '' : 'white'"
-            class="dailyKnots-wrapper container-wrapper">
+    <div :class="dailyList && dailyList.length > 0 ? '' : 'white'"
+         class="dailyKnots-wrapper container-wrapper">
 
         <div class="date-choose-box">
-            <div class="date-choose-pre">上一天</div>
-            <div class="date-choose-current">{{dateSearch|$_filters_parseTime}}
+            <div class="date-choose-pre"
+                 @click="dateChooseAction('pre')"
+            ><i class="icon-left"></i>上一天</div>
+            <div class="date-choose-current">
+                {{dateSearch|$_filters_parseDate}}
             </div>
-            <div class="date-choose-next">下一天</div>
+            <div class="date-choose-next"
+                 @click="dateChooseAction('next')"
+            >下一天<i class="icon-right"></i></div>
         </div>
 
         <div v-if="dailyList && dailyList.length > 0">
@@ -93,7 +98,16 @@
         created() {
             this.dateSearch = new Date();
         },
-        methods: {}
+        methods: {
+            dateChooseAction(status) {
+                if (status === 'pre') {
+
+                }
+                if (status === 'next') {
+
+                }
+            }
+        }
     };
 </script>
 

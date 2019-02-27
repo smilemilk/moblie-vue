@@ -318,7 +318,7 @@
             height: 42px;
             border-radius: 50%;
             border: none;
-            background-image: url("../../images/headSculpture@2x.png");
+            background-image: url("../../images/icon_large_headSculpture@2x.png");
             background-repeat: no-repeat;
             background-position: top center;
             background-size: 100% auto;

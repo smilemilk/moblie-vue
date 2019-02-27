@@ -164,16 +164,60 @@
   }
 }
 
+.icon-left {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("../images/icon_down@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  transform: rotate(90deg);
+}
+.icon-right {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("../images/icon_down@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  transform: rotate(270deg);
+}
+
 //---------------------- 业务组件  start
 .date-choose-box {
+  position: relative;
   padding: 20px 16px;
+  height: 60px;
   background-color: @main-theme-color;
   overflow: hidden;
   [class*='date-choose-'] {
+    position: absolute;
+    top: 20px;
     display: inline-block;
     color: @white;
     font-size: 14px;
     line-height: 1.5;
+  }
+  [class*='icon-'] {
+    vertical-align: sub;
+  }
+  .date-choose-pre {
+    left: 12px;
+    >[class*='icon'] {
+      margin-right: 5px;
+    }
+  }
+  .date-choose-current {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .date-choose-next {
+    right: 12px;
+    >[class*='icon'] {
+      margin-left: 5px;
+    }
   }
 }
 
@@ -237,4 +281,5 @@
     }
   }
 }
+
 //---------------------- 业务组件  end

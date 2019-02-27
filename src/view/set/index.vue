@@ -90,7 +90,7 @@
                 display: inline-block;
                 width: 46px;
                 height: 46px;
-                background-image: url("../../images/headSculpture@2x.png");
+                background-image: url("../../images/icon_large_headSculptureLight@2x.png");
                 background-repeat: no-repeat;
                 background-position: top center;
                 background-size: 100% auto;
