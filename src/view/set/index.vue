@@ -1,7 +1,8 @@
 <template>
     <div class="set-wrapper container-wrapper">
         <div class="set-sculpture">
-
+            <i class="set-sculpture-img"></i>
+            <div class="set-sculpture-name">-000</div>
         </div>
         <div class="set-form cell-group">
             <div class="cell">
@@ -30,10 +31,11 @@
         </div>
 
         <div class="set-form cell-group mt16">
-            <div class="cell">
+            <div class="cell cell_hover" @click="modifyPasswordAction()">
                 <div class="cell-inner cell-inner-lr">
                     <label>修改密码</label>
-                    <div class="cell-right">富阳喜脉健康</div>
+                    <i class="cell-right-arrow">
+                    </i>
                 </div>
             </div>
         </div>
@@ -46,7 +48,7 @@
                          btn-radius-none
                          btn-large
                          mt16"
-               >退出登录
+        >退出登录
         </button>
     </div>
 </template>
@@ -62,7 +64,16 @@
 
         },
         watch: {},
-        methods: {}
+        methods: {
+            modifyPasswordAction() {
+                setTimeout(()=> {
+                    this.$router.push({
+                        name: 'passwordModify',
+                        query: ''
+                    });
+                }, 800);
+            }
+        }
     };
 </script>
 
@@ -72,9 +83,26 @@
     .set {
         &-sculpture {
             background-color: @main-theme-color;
-            height: 136px;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: center;
+            &-img {
+                display: inline-block;
+                width: 46px;
+                height: 46px;
+                background-image: url("../../images/headSculpture@2x.png");
+                background-repeat: no-repeat;
+                background-position: top center;
+                background-size: 100% auto;
+            }
+            &-name {
+                margin-top: 10px;
+                font-size: @font-larger;
+                color: @white;
+                text-align: center;
+                line-height: 1.5;
+            }
         }
-
     }
 
 </style>

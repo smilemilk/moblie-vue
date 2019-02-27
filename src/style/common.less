@@ -61,7 +61,7 @@
     &.btn-disabled {
       background-color: @background-grayer-color;
       border: 1px solid @background-grayer-color;
-      color: @text-color-grayBlue;
+      color: @main-theme-color;
     }
     &.btn-disabled_white {
       background-color: @whiteFilter;
@@ -90,37 +90,60 @@
 }
 
 .cell {
-  position: relative;
   padding: 0 17px;
   color: @text-color;
   font-size: @font-large;
   line-height: 1;
   background-color: @white;
-  &:after {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    content: '';
-    display: inline-block;
-    width: 100%;
-    height: 1px;
-    background-color: @border-color-dark;
-    transform: scale(1, .5);
+  &-inner {
+    position: relative;
+    &:after {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      content: '';
+      display: inline-block;
+      width: 100%;
+      height: 1px;
+      background-color: @border-color-dark;
+      transform: scale(1, .5);
+    }
   }
   &-group {
-    padding: 0 0 0 17px;
     background-color: @white;
     .cell {
-      padding-left: 0;
+      padding: 0 17px;
       &:nth-last-child(1) {
         &:after {
           transform: scale(1, 0);
+        }
+      }
+      &-right-arrow {
+        position: absolute;
+        top: 10px;
+        right: -12px;
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background-image: url("../images/icon_right_gray@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+      }
+      &_hover {
+        &:hover {
+          background-color: @background-gray-color;
         }
       }
     }
   }
   &-inner {
     padding: 16px 0;
+    &-hover {
+      &:hover {
+        background-color: @background-blue-dark;
+      }
+    }
     &-lr {
       display: flex;
       align-items: center;

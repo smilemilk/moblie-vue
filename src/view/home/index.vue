@@ -70,7 +70,7 @@
             entranceAction(item) {
                 if (item.key) {
                     const routerName = {
-                        'search': 'search',
+                        'search': 'business',
                         'dailyKnots': 'daily',
                         'set': 'set',
                         'loginOut': 'loginOut'
