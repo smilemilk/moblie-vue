@@ -7,7 +7,13 @@
                 <i src=""
                    class="sculpture-item-img"
                 />
-                <div class="sculpture-item-name">{{departName}}</div>
+                <div class="sculpture-item-name">
+                    {{departName}}
+                    <i
+                            v-if="this.departList && this.departList.length > 1"
+                            class="icon-select-left"
+                    ></i>
+                </div>
             </div>
 
             <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
@@ -30,28 +36,45 @@
                             placeholder="请输入账号"/>
                     <i class="icon-select"
                        v-if="accountList"
-                       @click="accountSelectHandle(this.accountShow)"
+                       @click="accountSelectHandle()"
                        :class="this.accountShow ? 'icon-select_toggle' : ''"
                     ></i>
                     <p class="item-notice" v-show="this.loginRule[1] === 0 && this.loginRuleTextStatus === true">
                         不能为空</p>
                 </div>
-                <div class="accountHistoryList" v-if="this.accountList && this.accountShow">
-                    <div class="accountHistoryItem"
-                         v-for="(item,key) in accountList" :key="key">
-                        {{item}}
-                    </div>
+            </div>
+
+            <div class="accountHistoryList"
+                 v-if="this.accountList && this.accountShow">
+                <div class="accountHistoryItem"
+                     v-for="(item,key) in accountList" :key="key">
+                    {{item}}
+                    <i
+                            class="icon-delete"
+                            @click="deleteAccountAction(item, key)"
+                    ></i>
                 </div>
             </div>
 
-            <div class="item" :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''">
+            <div class="item"
+                 :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''"
+                 v-show="this.accountList && !this.accountShow">
                 <div class="item-wrapper">
                     <div class="item-label">密码</div>
                     <input
                             v-model="password"
                             class="item-input"
+                            :type="this.passwordShow ? 'text': 'password'"
                             placeholder="请输入密码"/>
-                    <p class="item-notice" v-show="this.loginRule[2] === 0 && this.loginRuleTextStatus === true">
+                    <i
+                            class="icon-eye"
+                            v-if="password"
+                            @click="passwordShowHandle()"
+                            :class="this.passwordShow ? 'icon-eye_open':''"
+                    ></i>
+                    <p
+                            class="item-notice"
+                            v-show="this.loginRule[2] === 0 && this.loginRuleTextStatus === true">
                         不能为空</p>
                 </div>
             </div>
@@ -63,6 +86,7 @@
                          btn-primary
                          mt14"
                     :class="loginStatus ? '': 'btn-disabled_white'"
+                    v-show="this.accountList && !this.accountShow"
                     @click="loginAction()">登录
             </button>
         </div>
@@ -199,12 +223,17 @@
             loginFetch() {
                 localStorage.setItem('departCurrentName', 'shabi');
             },
-            accountSelectHandle(status) {
-                console.log(status)
-                this.accountShow = !status;
+            accountSelectHandle() {
+                this.accountShow = !this.accountShow;
                 if (this.accountList) {
 
                 }
+            },
+            passwordShowHandle() {
+                this.passwordShow = !this.passwordShow;
+            },
+            deleteAccountAction(item, key) {
+                console.log(item)
             },
             sorry() {
                 Toast('暂无后续逻辑~');
@@ -256,10 +285,21 @@
                 }
                 &-notice {
                     position: absolute;
-                    bottom: 8px;
+                    bottom: -1px;
                     right: 0;
                     color: @red;
                     font-size: @font-small;
+                }
+                .icon-eye {
+                    position: absolute;
+                    right: 3px;
+                    bottom: 8px;
+                    width: 26px;
+                    height: 26px;
+                    &_open {
+                        right: 4px;
+                        background-image: url("../../images/icon_eye_open@2x.png");
+                    }
                 }
             }
         }
@@ -286,14 +326,31 @@
         &-name {
             font-size: @font-smaller;
             color: @white;
+            padding-left:4px;
             text-align: center;
+            margin-left: 3px;
+            .icon-select-left {
+                width: 10px;
+                height: 10px;
+            }
         }
     }
 
     .accountHistoryList {
-        position: absolute;
-        bottom: 0;
-        left: 0;
+        .accountHistoryItem {
+            position: relative;
+            font-size: @font-largest;
+            color: @white;
+            line-height: 1.5;
+            padding: 14px 0;
+            box-sizing: border-box;
+            border-bottom: 1px solid @whiteFilter;
+            .icon-delete {
+                position: absolute;
+                top: 22px;
+                right: 8px;
+            }
+        }
     }
 
     .icon-select {
@@ -308,7 +365,36 @@
         background-position: top center;
         background-size: 100% auto;
         &_toggle {
-            transform: rotate3d(90deg, 0, 0);
+            transform: rotate(180deg);
+            bottom: 18px;
         }
+    }
+    .icon-select-left {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-image: url("../../images/icon_down@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+        transform: rotate(270deg);
+    }
+    .icon-delete {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-image: url("../../images/icon_del@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+    }
+    .icon-eye {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-image: url("../../images/icon_eye_close@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
     }
 </style>
