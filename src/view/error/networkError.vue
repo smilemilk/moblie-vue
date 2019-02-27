@@ -42,7 +42,7 @@
     @import "../../style/formation.less";
 .prompt{
     &_small {
-        padding-top: 18vh;
+        padding-top: 14vh;
     }
 }
 

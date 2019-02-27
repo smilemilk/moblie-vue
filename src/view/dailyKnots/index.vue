@@ -4,7 +4,8 @@
 
         <div class="date-choose-box">
             <div class="date-choose-pre">上一天</div>
-            <div class="date-choose-current">{{dateSearch}}</div>
+            <div class="date-choose-current">{{dateSearch|$_filters_parseTime}}
+            </div>
             <div class="date-choose-next">下一天</div>
         </div>
 

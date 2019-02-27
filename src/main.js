@@ -4,6 +4,9 @@ import { router } from './router';
 
 import '@/style/total.less';
 
+import filter from '@/filters/filters';
+
+Vue.mixin(filter);
 new Vue({
   router,
   el: '#app',
