@@ -1,14 +1,12 @@
 <template>
     <div class="dailyKnots-wrapper container-wrapper">
 
-        <div class="date-choose-box">
-            <div class="date-choose-pre">上一天</div>
-            <div class="date-choose-current">{{dateSearch}}</div>
-            <div class="date-choose-next">下一天</div>
-        </div>
-
         <div class="interval-item">
-            收入（元）：￥1221.00
+            <div class="date-select-box">{{this.dateSearch|$_filters_parseDate}}</div>
+            <div class="">
+                <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
+                <div class="font-xs-l">退款 ￥2000.00</div>
+            </div>
         </div>
 
         <div class="set-form cell-group">
@@ -51,6 +49,8 @@
         GoodsActionMiniBtn
     } from 'vant';
     import storeData from './store/business-detail';
+    import ajax from '@/api/business';
+    import moment from 'moment';
 
     export default {
         components: {
@@ -71,8 +71,34 @@
         },
         created() {
             this.dateSearch = new Date();
+            this.getOrderList();
         },
-        methods: {}
+        methods: {
+            getOrderList() {
+                ajax.getTradeList({
+                    startDate: moment(this.dateSearch).format("YYYYMMDD"),
+                    endDate: moment(this.dateSearch).format("YYYYMMDD"),
+                    tradeOrderNo: ''
+                }).then(response => {
+                    if (!response.success === true) {
+                        Dialog.confirm({
+                            title: response.msg || '退出失败',
+                            message: ''
+                        }).then(() => {
+                        }).catch(() => {
+                        });
+                        return;
+                    } else {
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }, 800);
+                    }
+                }).catch(() => {
+                });
+            },
+        }
     };
 </script>
 

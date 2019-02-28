@@ -103,6 +103,7 @@
     } from 'vant';
     import storeData from './store/index';
     import moment from 'moment';
+    import ajax from '@/api/dailyKnots';
 
     export default {
         components: {
@@ -127,6 +128,7 @@
             this.dateSearch = new Date();
             this.minDate = new Date(2019, 0, 1);
             this.maxDate = new Date();
+            this.getDailyOrder();
         },
         methods: {
             dateChooseAction(status) {
@@ -135,6 +137,28 @@
                     'next': -1
                 };
                 this.dateSearch = moment(this.dateSearch).subtract(filter[status], 'days').format("YYYY-MM-DD");
+            },
+            getDailyOrder() {
+                ajax.getRJOrder({
+                    refundOrderNo: '99999'
+                }).then(response => {
+                    if (!response.success === true) {
+                        Dialog.confirm({
+                            title: response.msg || '退出失败',
+                            message: ''
+                        }).then(() => {
+                        }).catch(() => {
+                        });
+                        return;
+                    } else {
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }, 800);
+                    }
+                }).catch(() => {
+                });
             },
             dateChangeAction() {
                 this.dateTimePickerStatus = true;

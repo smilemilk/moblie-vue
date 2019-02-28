@@ -111,7 +111,6 @@
                 }
             },
             loginOutAction() {
-                console.log('----')
                 ajax.loginOut({
                 }).then(response => {
                     if (!response.success === true) {

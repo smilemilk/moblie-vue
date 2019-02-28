@@ -11,15 +11,6 @@ export function getToken (params) {
     });
 }
 
-export function getTokenPK (params) {
-    return request({
-        url: util.ajaxFront + 'sec/publickey',
-        method: 'get',
-        params: params
-    });
-}
-
-
 export function login (params) {
     return request({
         url: util.ajaxFront + 'user/mechantlogin',
@@ -37,15 +28,6 @@ export function getUser (params) {
     })
 }
 
-export function getRule (params) {
-    return request({
-        url: util.ajaxFront + 'user/getperms',
-        method: 'post',
-        params: params,
-        data: params
-    })
-}
-
 export function loginOut (params) {
     return request({
         url: util.ajaxFront + 'user/mechantlogout',
@@ -58,8 +40,6 @@ export function loginOut (params) {
 export default {
     getToken,
     login,
-    getTokenPK,
     getUser,
-    getRule,
     loginOut
 };

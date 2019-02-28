@@ -21,6 +21,7 @@ module.exports = {
     'border-color': '#e1e2e3',
     'border-color-dark': '#e5e5e5',
     'border-color-light': '#f0f0f0',
+    'border-color-darker': '#dbdbdb',
     'background-color': 'rgba(232, 232, 232, .5)',
     'background-gray-color': '#fbfbfb',
     'background-grayer-color': '#f3f5f9',

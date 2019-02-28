@@ -37,6 +37,7 @@
 
 <script>
     import storeData from './store/password-modify';
+    import ajax from '@/api/set';
 
     export default {
         data() {
@@ -119,6 +120,27 @@
                 }
             },
             submitFetch() {
+                ajax.modPassword({
+                    oldPwd: this.password.old,
+                    newPwd: this.password.new
+                }).then(response => {
+                    if (!response.success === true) {
+                        Dialog.confirm({
+                            title: response.msg || '修改密码失败',
+                            message: ''
+                        }).then(() => {
+                        }).catch(() => {
+                        });
+                        return;
+                    } else {
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }, 800);
+                    }
+                }).catch(() => {
+                });
             },
         }
     };
