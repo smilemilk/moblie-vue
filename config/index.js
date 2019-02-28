@@ -8,8 +8,8 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/unioncheck': {
-                target: 'http://test.weimaipay.com:8070',
+            '/ximai': {
+                target: 'https://test.weimaipay.com',
                 // target: 'http://172.16.21.184:8070/',  //甘松香ip
                 changeOrigin: true,
                 // pathRewrite: {

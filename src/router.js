@@ -65,6 +65,13 @@ const routes = [
         }
     },
     {
+        name: 'cashierCode',
+        component: () => import('./view/cashier/code'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'business',
         component: () => import('./view/business/index'),
         meta: {
