@@ -10,6 +10,7 @@
             <div class="date-choose-current"
                  @click="dateChangeAction()"
             >
+                <i class="icon-calendar"></i>
                 {{dateSearch|$_filters_parseDate}}
             </div>
             <div class="date-choose-next"
@@ -62,6 +63,25 @@
                 <div class="prompt-label">{{promptLabel}}</div>
             </div>
         </div>
+
+        <van-popup
+                v-model="dateTimePickerStatus"
+                position="bottom"
+                :overlay="true"
+        >
+            <van-datetime-picker
+                    v-model="dateSearch"
+                    v-if="dateTimePickerStatus"
+                    type="date"
+                    :min-date="minDate"
+                    :max-date="maxDate"
+                    :item-height="34"
+                    @change="dateTimeChangeAction(this.dateSearch)"
+                    @cancel="dateTimeCancelAction()"
+                    @confirm="dateTimeConfirmAction()"
+            />
+        </van-popup>
+
     </div>
 </template>
 
@@ -77,7 +97,9 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        DatetimePicker,
+        Popup
     } from 'vant';
     import storeData from './store/index';
     import moment from 'moment';
@@ -93,7 +115,9 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            DatetimePicker: DatetimePicker,
+            Popup: Popup
         },
 
         data() {
@@ -101,6 +125,8 @@
         },
         created() {
             this.dateSearch = new Date();
+            this.minDate = new Date(2019, 0, 1);
+            this.maxDate = new Date();
         },
         methods: {
             dateChooseAction(status) {
@@ -111,7 +137,17 @@
                 this.dateSearch = moment(this.dateSearch).subtract(filter[status], 'days').format("YYYY-MM-DD");
             },
             dateChangeAction() {
-
+                this.dateTimePickerStatus = true;
+            },
+            dateTimeChangeAction(picker) {
+                this.dateSearch = picker.getValues();
+            },
+            dateTimeCancelAction() {
+                this.dateTimePickerStatus = false;
+            },
+            dateTimeConfirmAction() {
+                this.dateTimeChangeAction(picker);
+                this.dateTimePickerStatus = false;
             }
         }
     };

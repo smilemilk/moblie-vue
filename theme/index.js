@@ -13,6 +13,7 @@ module.exports = {
     'text-color': '#333',
     'text-color-normal': '#666',
     'text-color-light': '#999',
+    'text-color-lighter': '#b2b2b2',
     'text-color-grayBlue': '#4B627F',
     'border-color': '#e1e2e3',
     'border-color-dark': '#e5e5e5',

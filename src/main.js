@@ -1,17 +1,24 @@
 import Vue from 'vue';
 import App from './App';
-import { router } from './router';
+import {router} from './router';
 
 import '@/style/total.less';
 
 import filter from '@/filters/filters';
 
-import { Dialog } from 'vant';
+import {
+    Dialog,
+    DatetimePicker,
+    Popup
+} from 'vant';
 
 Vue.use(Dialog);
+Vue.use(DatetimePicker);
+Vue.use(Popup);
+
 Vue.mixin(filter);
 new Vue({
-  router,
-  el: '#app',
-  render: h => h(App)
+    router,
+    el: '#app',
+    render: h => h(App)
 });
