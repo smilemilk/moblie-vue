@@ -112,6 +112,9 @@
         Dialog
     } from 'vant';
     import storeData from './store/index';
+    import ajax from '@/api/login';
+    import Cookies from 'js-cookie';
+    import RSA from '@/libs/RSA';
 
     export default {
         components: {
@@ -132,6 +135,8 @@
             return storeData.call(this);
         },
         created() {
+            this.getToken();
+
             localStorage.setItem('departCurrentName', 'shabi');
             localStorage.setItem('departCurrentList', "daizi, llllll");
             localStorage.setItem('account', 'shabi');
@@ -215,6 +220,25 @@
             },
         },
         methods: {
+            getToken () {
+                ajax.getToken({
+                    _: new Date().getTime()
+                }).then(response => {
+                    if (!response.success === true) {
+                        this.$Notice.open({
+                            title: '登陆验证错误',
+                            desc: response.msg ? response.msg : '获取用户认证错误'
+                        });
+                        return;
+                    }
+                    let res = response.data;
+                    const keyPair = RSA.getKeyPair(
+                        res.exponent, '', res.modulus
+                    );
+                    this.keyPair = keyPair;
+                }).catch(() => {
+                });
+            },
             loginAction() {
                 if (this.loginRule.join() === '1,1,1') {
                     this.loginStatus = true;
@@ -227,6 +251,7 @@
                 }
             },
             loginFetch() {
+
                 localStorage.setItem('departCurrentName', 'shabi');
                 Dialog.confirm({
                     title: '登录账号错误，请重新输入',

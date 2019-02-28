@@ -1,5 +1,7 @@
 export default function () {
     return {
+        keyPair: '',
+
         loginRule: [0, 0, 0],
         loginRuleText: [
             '请输入机构编号'
@@ -14,6 +16,6 @@ export default function () {
         departList: [],
         accountList: [],
         accountShow: false,
-        passwordShow: false
+        passwordShow: false,
     }
 }
