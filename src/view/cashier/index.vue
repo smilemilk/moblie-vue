@@ -1,25 +1,43 @@
 <template>
-    <div class="login-wrapper container-wrapper">
-        <div class="login-inner">
+    <div class="cashier-wrapper container-wrapper">
+        <div class="cashier-inner">
 
             <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
                 <div class="item-label">输入金额（元）</div>
                 <input v-model="depart"
-                       class="item-input"
+                       class="item-input account-input"
                        placeholder="请输入机构编码"/>
                 <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">不能为空</p>
             </div>
-
+            <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
+            <div class="mt20">
+                <div v-if="!remarkShow">
+                    <span
+                            @click="remarkToggleHandle()"
+                            class="font-n-b"
+                    >添加备注</span>
+                </div>
+                <div class="item"
+                     :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
+                     v-else
+                >
+                    <input v-model="depart"
+                           class="item-input"
+                           placeholder="请输入收款备注"/>
+                </div>
+            </div>
+        </div>
+        <div class="plr16">
             <button
                     class="
                          btn
                          btn-block
                          btn-primary
                          mt14"
-                    :class="loginStatus ? '': 'btn-disabled'"
-                    @click="loginAction()">登录
+                    @click="loginAction()">确定
             </button>
         </div>
+
     </div>
 </template>
 
@@ -153,6 +171,9 @@
             sorry() {
                 Toast('暂无后续逻辑~');
                 this.$router.push('incomeList');
+            },
+            remarkToggleHandle() {
+                this.remarkShow = true;
             }
         }
     };
@@ -161,9 +182,10 @@
 <style lang="less" scoped>
     @import "../../style/formation.less";
 
-    .login {
+    .cashier {
         &-inner {
-            padding: 14px 34px;
+            padding: 14px 16px 14px 18px;
+            background-color: @white;
         }
         &-wrapper {
             position: fixed;
@@ -173,9 +195,9 @@
             .item {
                 position: relative;
                 padding: 16px 0 8px;
-                border-bottom: 1px solid @whiteFilter;
+                border-bottom: 1px solid @border-color-dark;
                 &.bB1 {
-                    border-bottom-color: @white;
+                    border-bottom-color: @main-theme-color;
                 }
                 &-label {
                     font-size: 12px;
@@ -186,10 +208,10 @@
                 &-input {
                     border: none;
                     background-color: transparent;
-                    color: @white;
-                    lin-height: 1.75;
+                    color: @main-theme-color;
+                    line-height: 1.75;
                     &::-webkit-input-placeholder {
-                        color: @whiteFilter;
+                        color: @border-color-dark;
                     }
                 }
                 &-notice {
@@ -198,6 +220,19 @@
                     right: 0;
                     color: @red;
                     font-size: @font-small;
+                }
+            }
+            .account-input {
+                position: relative;
+                padding-left: 42px;
+                &:before {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    content: '￥';
+                    display: inline-block;
+                    color: @text-color;
+                    font-size: @font-hugeMore;
                 }
             }
         }

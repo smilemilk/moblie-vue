@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="home-entrance">
-            <div class="recharge-btn"></div>
+            <div class="recharge-btn" @click="entranceAction({key:'cashier'})"></div>
             <ul class="recharge-list">
                 <li
                         v-for="(item,key) in rechargeEntranceList"
@@ -87,6 +87,7 @@
                     } else {
                         setTimeout(() => {
                             const routerName = {
+                                'cashier': 'cashier',
                                 'search': 'business',
                                 'dailyKnots': 'daily',
                                 'set': 'set',
@@ -237,7 +238,7 @@
                             background-size: 100% auto;
                         }
                         &.dailyKnots {
-                            background-image: url("../../images/icon_dailyKnots@2x.png");
+                            background-image: url("../../images/icon_dailyKnotes@2x.png");
                             background-size: 100% auto;
                         }
                         &.set {

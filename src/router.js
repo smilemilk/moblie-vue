@@ -58,8 +58,8 @@ const routes = [
         }
     },
     {
-        name: 'recharge',
-        component: () => import('./view/recharge/index'),
+        name: 'cashier',
+        component: () => import('./view/cashier/index'),
         meta: {
             title: '登录'
         }

@@ -8,10 +8,11 @@ export default function () {
         depart: '',
         account: '',
         password: '',
-        loginStatus: false,
+        loginStatus: true,
         loginRuleTextStatus: false,
         departName: '',
         departList: '',
-        accountList: []
+        accountList: [],
+        remarkShow: false
     }
 }
