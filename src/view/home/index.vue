@@ -32,7 +32,8 @@
                 v-model="dialogShow"
                 show-cancel-button
                 :lazy-render="false"
-                :before-close="beforeClose"
+                :beforeClose="beforeClose"
+                @confirm="loginOutAction()"
         >
             <div class="dialog-text">
                 确认退出登录？
@@ -57,6 +58,7 @@
         Dialog
     } from 'vant';
     import storeData from './store/index';
+    import ajax from '@/api/login';
 
     export default {
         components: {
@@ -108,6 +110,28 @@
                     done();
                 }
             },
+            loginOutAction() {
+                console.log('----')
+                ajax.loginOut({
+                }).then(response => {
+                    if (!response.success === true) {
+                        Dialog.confirm({
+                            title: response.msg || '退出失败',
+                            message: ''
+                        }).then(() => {
+                        }).catch(() => {
+                        });
+                        return;
+                    } else {
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }, 800);
+                    }
+                }).catch(() => {
+                });
+            }
         }
     };
 </script>

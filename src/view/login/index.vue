@@ -225,10 +225,6 @@
                     _: new Date().getTime()
                 }).then(response => {
                     if (!response.success === true) {
-                        this.$Notice.open({
-                            title: '登陆验证错误',
-                            desc: response.msg ? response.msg : '获取用户认证错误'
-                        });
                         return;
                     }
                     let res = response.data;
@@ -251,13 +247,32 @@
                 }
             },
             loginFetch() {
+                ajax.login({
+                    // clientMerchantId: this.departName,
+                    login_name: this.account,
+                    login_pwd: RSA.encryptedString(this.keyPair, this.password)
+                }).then(response => {
+                    if (!response.success === true) {
+                        Dialog.confirm({
+                            title: response.msg || '登录失败',
+                            message: ''
+                        }).then(() => {
+                        }).catch(() => {
+                        });
+                        return;
+                    }
+                    // this.getUser();
+                    // Cookies.set('user', this.form.userName);
+                    // Cookies.set('password', this.form.password);
+                    localStorage.setItem('departCurrentName', 'shabi');
 
-                localStorage.setItem('departCurrentName', 'shabi');
-                Dialog.confirm({
-                    title: '登录账号错误，请重新输入',
-                    message: ''
-                }).then(() => {
+                    setTimeout(() => {
+                        this.$router.push({
+                            name: 'home'
+                        });
+                    }, 800);
                 }).catch(() => {
+                    Toast('未成功提交登陆');
                 });
             },
             accountSelectHandle() {
