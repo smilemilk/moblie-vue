@@ -5,8 +5,11 @@
         <div class="date-choose-box">
             <div class="date-choose-pre"
                  @click="dateChooseAction('pre')"
-            ><i class="icon-left"></i>上一天</div>
-            <div class="date-choose-current">
+            ><i class="icon-left"></i>上一天
+            </div>
+            <div class="date-choose-current"
+                 @click="dateChangeAction()"
+            >
                 {{dateSearch|$_filters_parseDate}}
             </div>
             <div class="date-choose-next"
@@ -77,6 +80,7 @@
         GoodsActionMiniBtn
     } from 'vant';
     import storeData from './store/index';
+    import moment from 'moment';
 
     export default {
         components: {
@@ -100,12 +104,14 @@
         },
         methods: {
             dateChooseAction(status) {
-                if (status === 'pre') {
+                const filter = {
+                    'pre': 1,
+                    'next': -1
+                };
+                this.dateSearch = moment(this.dateSearch).subtract(filter[status], 'days').format("YYYY-MM-DD");
+            },
+            dateChangeAction() {
 
-                }
-                if (status === 'next') {
-
-                }
             }
         }
     };

@@ -6,6 +6,9 @@ import '@/style/total.less';
 
 import filter from '@/filters/filters';
 
+import { Dialog } from 'vant';
+
+Vue.use(Dialog);
 Vue.mixin(filter);
 new Vue({
   router,

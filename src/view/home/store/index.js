@@ -17,6 +17,7 @@ export default function () {
                 key: 'loginOut',
                 label: '退出'
             }
-        ]
+        ],
+        dialogShow: false
     }
 }

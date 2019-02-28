@@ -1,7 +1,7 @@
 <template>
     <div class="home-wrapper container-wrapper">
         <div class="home-header">
-            <p class="home-header-title">喜脉健康</p>
+            <p class="home-header-title"></p>
             <div class="user-info">
                 <div class="user-info-sculpture"></div>
                 <div class="user-info-detail">
@@ -27,6 +27,17 @@
                 </li>
             </ul>
         </div>
+
+        <van-dialog
+                v-model="dialogShow"
+                show-cancel-button
+                :lazy-render="false"
+                :before-close="beforeClose"
+        >
+            <div class="dialog-text">
+                确认退出登录？
+            </div>
+        </van-dialog>
     </div>
 </template>
 
@@ -42,7 +53,8 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        Dialog
     } from 'vant';
     import storeData from './store/index';
 
@@ -57,7 +69,8 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            Dialog: Dialog
         },
 
         data() {
@@ -69,20 +82,31 @@
         methods: {
             entranceAction(item) {
                 if (item.key) {
-                    setTimeout(() => {
-                        const routerName = {
-                            'search': 'business',
-                            'dailyKnots': 'daily',
-                            'set': 'set',
-                            'loginOut': 'loginOut'
-                        };
-                        this.$router.push({
-                            name: routerName[item.key],
-                            query: ''
-                        });
-                    }, 800);
+                    if (item.key === 'loginOut') {
+                       this.dialogShow = true;
+                    } else {
+                        setTimeout(() => {
+                            const routerName = {
+                                'search': 'business',
+                                'dailyKnots': 'daily',
+                                'set': 'set',
+                                'loginOut': 'loginOut'
+                            };
+                            this.$router.push({
+                                name: routerName[item.key],
+                                query: ''
+                            });
+                        }, 800);
+                    }
                 }
-            }
+            },
+            beforeClose(action, done) {
+                if (action === 'confirm') {
+                    setTimeout(done, 1000);
+                } else {
+                    done();
+                }
+            },
         }
     };
 </script>
