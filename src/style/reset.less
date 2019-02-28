@@ -2,7 +2,6 @@ body, p, b, small, strong, code, h1, h2, h3, h4, h5, h6, div, label, span {
   padding: 0;
   margin: 0;
   font-weight: normal;
-  color: @text-color;
   box-sizing: border-box;
 }
 
@@ -21,6 +20,9 @@ body {
 .van-dialog__confirm:active span{
   color: @main-theme-color;
 }
+.van-dialog__message {
+  text-align: center;
+}
 
 .van-picker__title {
   color: @text-color-light;
@@ -31,3 +33,4 @@ body {
 .van-picker__cancel {
   color: @text-color-lighter;
 }
+

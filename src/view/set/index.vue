@@ -20,6 +20,14 @@
             <div class="cell">
                 <div class="cell-inner cell-inner-lr">
                     <label>打印小票</label>
+                    <div class="cell-right printSwitch" @click="printTouchHandle()">
+                        <van-switch
+                                v-model="printChecked"
+                                disabled
+                                size="22px"
+                                inactive-color="#d9d9d9"
+                        />
+                    </div>
                 </div>
             </div>
             <div class="cell">
@@ -39,24 +47,20 @@
                 </div>
             </div>
         </div>
-
-        <button
-                class="
-                         btn
-                         btn-block
-                         btn-default
-                         btn-radius-none
-                         btn-large
-                         mt16"
-        >退出登录
-        </button>
     </div>
 </template>
 
 <script>
+    import {
+        Switch,
+        Toast
+    } from 'vant';
     import storeData from './store/index';
 
     export default {
+        components: {
+            [Switch.name]: Switch,
+        },
         data() {
             return storeData.call(this);
         },
@@ -66,12 +70,15 @@
         watch: {},
         methods: {
             modifyPasswordAction() {
-                setTimeout(()=> {
+                setTimeout(() => {
                     this.$router.push({
                         name: 'passwordModify',
                         query: ''
                     });
                 }, 800);
+            },
+            printTouchHandle() {
+                Toast('暂不支持打印小票');
             }
         }
     };
@@ -103,6 +110,12 @@
                 line-height: 1.5;
             }
         }
+    }
+
+    .printSwitch {
+        position: absolute;
+        right: 0;
+        top: 13px;
     }
 
 </style>

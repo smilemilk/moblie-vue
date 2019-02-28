@@ -35,7 +35,7 @@
                             class="item-input"
                             placeholder="请输入账号"/>
                     <i class="icon-select"
-                       v-if="accountList"
+                       v-if="this.accountList"
                        @click="accountSelectHandle()"
                        :class="this.accountShow ? 'icon-select_toggle' : ''"
                     ></i>
@@ -45,9 +45,12 @@
             </div>
 
             <div class="accountHistoryList"
-                 v-if="this.accountList && this.accountShow">
+                 v-if="this.accountList && this.accountList.length > 0 && this.accountShow">
                 <div class="accountHistoryItem"
-                     v-for="(item,key) in accountList" :key="key">
+                     v-for="(item,key) in accountList"
+                     :key="key"
+                     @click="accountChangeHandle(item)"
+                >
                     {{item}}
                     <i
                             class="icon-delete"
@@ -105,7 +108,8 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        Dialog
     } from 'vant';
     import storeData from './store/index';
 
@@ -120,7 +124,8 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            Dialog: Dialog
         },
 
         data() {
@@ -130,7 +135,7 @@
             localStorage.setItem('departCurrentName', 'shabi');
             localStorage.setItem('departCurrentList', "daizi, llllll");
             localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "daizi, llllll");
+            localStorage.setItem('accountList', "daizi, llllll, 000000, 0000000, kkkkkk");
             if (localStorage.getItem('departCurrentName')) {
                 this.departName = localStorage.getItem('departCurrentName');
             }
@@ -218,10 +223,17 @@
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
+                    Toast('机构编号输入错误');
                 }
             },
             loginFetch() {
                 localStorage.setItem('departCurrentName', 'shabi');
+                Dialog.confirm({
+                    title: '登录账号错误，请重新输入',
+                    message: ''
+                }).then(() => {
+                }).catch(() => {
+                });
             },
             accountSelectHandle() {
                 this.accountShow = !this.accountShow;
@@ -229,11 +241,31 @@
 
                 }
             },
+            accountChangeHandle(item) {
+                this.account = item;
+                this.accountShow=false;
+            },
             passwordShowHandle() {
                 this.passwordShow = !this.passwordShow;
             },
             deleteAccountAction(item, key) {
                 console.log(item)
+                Dialog.confirm({
+                    title: '确认删除登录账号',
+                    message: item
+                }).then(() => {
+                    this.accountList.splice(this.accountList.findIndex(v => v === item), 1);
+
+                    if (item === this.account) {
+                        this.account ='';
+                    }
+
+                    if (this.accountList.length === 0) {
+                        this.accountShow = false;
+                    }
+                }).catch(() => {
+                    this.accountShow = true;
+                });
             },
             sorry() {
                 Toast('暂无后续逻辑~');
@@ -285,7 +317,7 @@
                 }
                 &-notice {
                     position: absolute;
-                    bottom: -1px;
+                    bottom: 2px;
                     right: 0;
                     color: @red;
                     font-size: @font-small;
@@ -326,7 +358,7 @@
         &-name {
             font-size: @font-smaller;
             color: @white;
-            padding-left:4px;
+            padding-left: 4px;
             text-align: center;
             margin-left: 3px;
             .icon-select-left {
@@ -369,6 +401,7 @@
             bottom: 18px;
         }
     }
+
     .icon-select-left {
         display: inline-block;
         width: 16px;
@@ -379,6 +412,7 @@
         background-size: 100% auto;
         transform: rotate(270deg);
     }
+
     .icon-delete {
         display: inline-block;
         width: 16px;
@@ -388,6 +422,7 @@
         background-position: top center;
         background-size: 100% auto;
     }
+
     .icon-eye {
         display: inline-block;
         width: 16px;
@@ -396,5 +431,9 @@
         background-repeat: no-repeat;
         background-position: top center;
         background-size: 100% auto;
+    }
+
+    .van-toast>div{
+        color: @white;
     }
 </style>

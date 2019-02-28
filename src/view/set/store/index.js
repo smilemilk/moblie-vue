@@ -10,6 +10,7 @@ export default function () {
         password: '',
         loginStatus: false,
         loginRuleTextStatus: false,
-        departName: ''
+        departName: '',
+        printChecked: false
     }
 }
