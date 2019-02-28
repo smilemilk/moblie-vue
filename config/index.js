@@ -9,12 +9,12 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/ximai': {
-                target: 'https://test.weimaipay.com',
+                target: 'https://test.weimaipay.com/',
                 // target: 'http://172.16.21.184:8070/',  //甘松香ip
                 changeOrigin: true,
-                // pathRewrite: {
-                //     '^/sec': '/unioncheck/sec/'
-                // }
+                pathRewrite: {
+                    '^/ximai': ''
+                }
             }
         },
 
