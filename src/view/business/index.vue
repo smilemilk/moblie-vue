@@ -1,20 +1,18 @@
 <template>
-    <div class="dailyKnots-wrapper container-wrapper">
-
+    <div class="dailyKnots-wrapper container-wrapper white">
         <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
             <div class="date-select-box">
                 <span>{{this.dateSearch|$_filters_parseDate}}</span>
                 <i class="icon-triangle-dark ml5"></i>
             </div>
             <div class=""
-                 v-if="this.orderList &&
-                  this.orderList.length > 0">
+                 v-if="this.orderList && this.orderList.length>0">
                 <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
                 <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
             </div>
         </div>
 
-        <div class="set-form cell-group">
+        <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
             <div class="cell">
                 <div class="cell-inner flex-content flex-content-spaceBetween">
                     <div class="flex-content flex-content-top">
@@ -45,12 +43,14 @@
                 </div>
             </div>
         </div>
-        <div class="set-form cell-group mt10">
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
-                </div>
+
+        <div
+                v-else
+                class="order-none-container"
+        >
+            <div class="prompt-item prompt_small">
+                <i class="prompt-img noneFound"></i>
+                <div class="font-l-d align-c mt14">还没有交易记录哦！</div>
             </div>
         </div>
     </div>
@@ -70,7 +70,7 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn
     } from 'vant';
-    import storeData from './store/business-detail';
+    import storeData from './store/index';
     import ajax from '@/api/business';
     import moment from 'moment';
 
@@ -98,11 +98,14 @@
         methods: {
             getOrderList() {
                 ajax.getTradeList({
-                    startDate: moment(this.dateSearch).format("YYYYMMDD"),
-                    endDate: moment(this.dateSearch).format("YYYYMMDD"),
-                    tradeOrderNo: ''
+                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
+                    startDate: moment(this.dateSearch).format("YYYYMMDD")+'000000',
+                    endDate: moment(this.dateSearch).format("YYYYMMDD")+"235959",
+                    tradeOrderNo: '',
+                    payOrderType: 'xxsk'
                 }).then(response => {
                     if (!response.success === true) {
+                        this.orderList = [];
                         Dialog.confirm({
                             title: response.msg || '退出失败',
                             message: ''
@@ -118,6 +121,7 @@
                         }, 800);
                     }
                 }).catch(() => {
+                    this.orderList = [];
                 });
             },
         }
@@ -132,5 +136,9 @@
         font-size: @font-smaller;
         line-height: 1.5;
         margin-top: 6px;
+    }
+
+    .order-none-container {
+
     }
 </style>
