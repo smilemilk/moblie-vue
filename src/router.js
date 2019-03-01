@@ -72,6 +72,20 @@ const routes = [
         }
     },
     {
+        name: 'cashierSuccess',
+        component: () => import('./view/cashier/cashier-success'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
+        name: 'cashierFailure',
+        component: () => import('./view/cashier/cashier-failure'),
+        meta: {
+            title: '登录'
+        }
+    },
+    {
         name: 'business',
         component: () => import('./view/business/index'),
         meta: {
