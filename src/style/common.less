@@ -181,8 +181,8 @@
 
 .icon-left {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 26px;
+  height: 26px;
   background-image: url("../images/icon_down@2x.png");
   background-repeat: no-repeat;
   background-position: top center;
@@ -192,8 +192,8 @@
 
 .icon-right {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 26px;
+  height: 26px;
   background-image: url("../images/icon_down@2x.png");
   background-repeat: no-repeat;
   background-position: top center;
@@ -233,6 +233,26 @@
   }
 }
 
+.icon-payKind {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  &_alipay {
+    background-image: url("../images/icon_alipay@2x.png");
+    background-size: 100% auto;
+  }
+  &_wechat {
+    background-image: url("../images/icon_wechat@2x.png");
+    background-size: 100% auto;
+  }
+  &_wm {
+    background-image: url("../images/icon_wm@2x.png");
+    background-size: 100% auto;
+  }
+}
+
 .font-n-l {
   font-size: @font-normal; // 14
   color: @text-color-normal; // 333
@@ -261,7 +281,11 @@
   color: @main-theme-color; // 333
   line-height: 1.25;
 }
-
+.font-s-l {
+  font-size: @font-smaller; // 12
+  color: @text-color-light; // 333
+  line-height: 1.25;
+}
 .font-n-b {
   font-size: @font-normal;
   color: @main-theme-color;

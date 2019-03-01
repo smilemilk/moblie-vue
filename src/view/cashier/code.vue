@@ -2,15 +2,25 @@
     <div class="cashier-wrapper container-wrapper p16">
         <div class="card">
             <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
-            <div class="cashier-tip"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
+            <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
             <div class="cashier-code-container">
-                <img src="" alt="二维码"/>
+                <div ref="code" id="code"></div>
+                <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
             </div>
         </div>
-        <div>
-            <ul>
-                <li>
-
+        <div class="payType-box">
+            <ul class="payType-box-container">
+                <li class="payType-item">
+                    <i class="icon-payKind icon-payKind_alipay"></i>
+                    <div class="font-s-l">支付宝</div>
+                </li>
+                <li class="payType-item">
+                    <i class="icon-payKind icon-payKind_wechat"></i>
+                    <div class="font-s-l">微信</div>
+                </li>
+                <li class="payType-item">
+                    <i class="icon-payKind icon-payKind_wm"></i>
+                    <div class="font-s-l">微脉</div>
                 </li>
             </ul>
         </div>
@@ -32,6 +42,7 @@
         GoodsActionMiniBtn
     } from 'vant';
     import storeData from './store/index';
+    import QRCode from 'qrcodejs2';
 
     export default {
         components: {
@@ -44,7 +55,8 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            QRCode: QRCode
         },
 
         data() {
@@ -67,89 +79,22 @@
                 console.log(departListPrimary)
                 this.departList = departListPrimary;
             }
-        },
-        watch: {
-            'depart': function (old, val) {
-                if (val) {
-                    this.loginRule[0] = 1;
-                    if (this.account && this.password) {
-                        this.loginStatus = true;
-                    } else {
-                        this.loginStatus = false;
-                    }
-                } else {
-                    this.loginRule[0] = 0;
-                    this.loginStatus = false;
-                }
-                if (val !== old) {
-                    this.loginInputStatus[0] = 1;
-                    this.loginInputStatus[1] = 0;
-                    this.loginInputStatus[2] = 0;
-                } else {
-                    this.loginInputStatus[0] = 0;
-                }
-            },
-            'account': function (old, val) {
-                if (val) {
-                    this.loginRule[1] = 1;
-                    if (this.account && this.password) {
-                        this.loginStatus = true;
-                    } else {
-                        this.loginStatus = false;
-                    }
-                } else {
-                    this.loginRule[1] = 0;
-                    this.loginStatus = false;
-                }
-                if (val !== old) {
-                    this.loginInputStatus[0] = 0;
-                    this.loginInputStatus[1] = 1;
-                    this.loginInputStatus[2] = 0;
-                } else {
-                    this.loginInputStatus[1] = 0;
-                }
-            },
-            'password': function (old, val) {
-                if (val) {
-                    this.loginRule[2] = 1;
-                    if (this.account && this.password) {
-                        this.loginStatus = true;
-                    } else {
-                        this.loginStatus = false;
-                    }
-                } else {
-                    this.loginRule[2] = 0;
-                    this.loginStatus = false;
-                }
-                if (val !== old) {
-                    this.loginInputStatus[0] = 0;
-                    this.loginInputStatus[1] = 0;
-                    this.loginInputStatus[2] = 1;
-                } else {
-                    this.loginInputStatus[2] = 0;
-                }
-            },
+            console.log(this.$route)
+            if (this.$route && this.$route.query && this.$router.query) {
+                this.codeUrl = this.$route.query;
+                console.log(this.codeUrl)
+            }
+            this.$nextTick(function () {
+                this.codeCanvas();
+            });
         },
         methods: {
-            loginAction() {
-                if (this.loginRule.join() === '1,1,1') {
-                    this.loginStatus = true;
-                    this.loginRuleTextStatus = false;
-                    this.loginFetch();
-                } else {
-                    this.loginStatus = false;
-                    this.loginRuleTextStatus = true;
-                }
-            },
-            loginFetch() {
-                localStorage.setItem('departCurrentName', 'shabi');
-            },
-            sorry() {
-                Toast('暂无后续逻辑~');
-                this.$router.push('incomeList');
-            },
-            remarkToggleHandle() {
-                this.remarkShow = true;
+            codeCanvas() {
+                let code = new QRCode('code', {
+                    width: 235,  // 设置宽度
+                    height: 235, // 设置高度
+                    text: 'https://baidu.com'
+                })
             }
         }
     };
@@ -161,16 +106,33 @@
     .cashier {
         &-wrapper {
             .card {
-                padding: 16px 0 30px;
+                padding: 16px 0 18px;
             }
             .icon-redPacket {
                 display: inline-block;
-                width: 14px;
-                height: 14px;
+                width: 29px;
+                height: 29px;
+                vertical-align: middle;
+                margin-right: 6px;
                 background-image: url("../../images/icon_redPacket@2x.png");
                 background-repeat: no-repeat;
                 background-position: top center;
                 background-size: 100% auto;
+            }
+            .payType-box {
+                padding-top: 22px;
+                text-align: center;
+                &-container {
+                    display: inline-block;
+                }
+                .payType-item {
+                    display: inline-block;
+                    margin-left: 10vw;
+                    margin-right: 10vw;
+                    .font-s-l {
+                        margin-top: 2px;
+                    }
+                }
             }
         }
         &-account {
@@ -190,7 +152,7 @@
             color: @redLight;
             font-size: @font-smaller;
             line-height: 1.5;
-            padding: 13px 14px 13px 12px;
+            padding: 7px 14px 7px 12px;
         }
         &-code-container {
             padding-left: 45px;

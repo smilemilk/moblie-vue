@@ -4,9 +4,9 @@
 
             <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
                 <div class="item-label">输入金额（元）</div>
-                <input v-model="depart"
-                       class="item-input account-input"
-                       placeholder="请输入机构编码"/>
+                <input v-model="amount"
+                       class="item-input amount-input"
+                       placeholder="0.00"/>
                 <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">不能为空</p>
             </div>
             <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
@@ -18,10 +18,10 @@
                     >添加备注</span>
                 </div>
                 <div class="item"
-                     :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
+                     :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''"
                      v-else
                 >
-                    <input v-model="depart"
+                    <input v-model="remark"
                            class="item-input"
                            placeholder="请输入收款备注"/>
                 </div>
@@ -56,6 +56,7 @@
         GoodsActionMiniBtn
     } from 'vant';
     import storeData from './store/index';
+    import ajax from '@/api/cashier';
 
     export default {
         components: {
@@ -75,28 +76,13 @@
             return storeData.call(this);
         },
         created() {
-            localStorage.setItem('departCurrentName', 'shabi');
-            localStorage.setItem('departCurrentList', "daizi, llllll");
-            localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "daizi, llllll");
-            if (localStorage.getItem('departCurrentName')) {
-                this.departName = localStorage.getItem('departCurrentName');
-            }
-            if (localStorage.getItem('departCurrentList')) {
-                let departListPrimary = localStorage.getItem('departCurrentList').split(",");
 
-                if (this.departName) {
-
-                }
-                console.log(departListPrimary)
-                this.departList = departListPrimary;
-            }
         },
         watch: {
-            'depart': function (old, val) {
+            'amount': function (old, val) {
                 if (val) {
                     this.loginRule[0] = 1;
-                    if (this.account && this.password) {
+                    if (this.remark) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
@@ -108,15 +94,14 @@
                 if (val !== old) {
                     this.loginInputStatus[0] = 1;
                     this.loginInputStatus[1] = 0;
-                    this.loginInputStatus[2] = 0;
                 } else {
                     this.loginInputStatus[0] = 0;
                 }
             },
-            'account': function (old, val) {
+            'remark': function (old, val) {
                 if (val) {
                     this.loginRule[1] = 1;
-                    if (this.account && this.password) {
+                    if (this.amount) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
@@ -128,45 +113,50 @@
                 if (val !== old) {
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[1] = 1;
-                    this.loginInputStatus[2] = 0;
                 } else {
                     this.loginInputStatus[1] = 0;
                 }
-            },
-            'password': function (old, val) {
-                if (val) {
-                    this.loginRule[2] = 1;
-                    if (this.account && this.password) {
-                        this.loginStatus = true;
-                    } else {
-                        this.loginStatus = false;
-                    }
-                } else {
-                    this.loginRule[2] = 0;
-                    this.loginStatus = false;
-                }
-                if (val !== old) {
-                    this.loginInputStatus[0] = 0;
-                    this.loginInputStatus[1] = 0;
-                    this.loginInputStatus[2] = 1;
-                } else {
-                    this.loginInputStatus[2] = 0;
-                }
-            },
+            }
         },
         methods: {
             loginAction() {
-                if (this.loginRule.join() === '1,1,1') {
+                if (this.loginRule.join() === '1,1') {
                     this.loginStatus = true;
                     this.loginRuleTextStatus = false;
-                    this.loginFetch();
+                    this.createOrderFetch();
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
                 }
             },
-            loginFetch() {
-                localStorage.setItem('departCurrentName', 'shabi');
+            createOrderFetch() {
+                ajax.createOrder({
+                    orderId: (Math.floor(Math.random () * 900) + 100)+''+(new Date()).valueOf(),
+                    payOrderType: 'xxsk',
+                    payAmount: this.amount*100,
+                    remark: this.remark,
+                    deadTime: 5 // 五分钟
+                }).then(response => {
+                    if (!response.success === true) {
+                        Toast(response.msg || '收款创建失败');
+                        return;
+                    } else {
+                        if (response.data) {
+                            setTimeout(() => {
+                                this.$router.push({
+                                    name: 'cashierCode',
+                                    query: {code: response.data}
+                                });
+                            }, 800);
+                        } else {
+                            Toast(response.msg || '收款创建失败');
+                            return;
+                        }
+                    }
+                }).catch(() => {
+                    Toast(response.msg || '收款创建失败');
+                    return;
+                });
             },
             sorry() {
                 Toast('暂无后续逻辑~');
@@ -222,9 +212,8 @@
                     font-size: @font-small;
                 }
             }
-            .account-input {
+            .amount-input {
                 position: relative;
-                padding-left: 42px;
                 &:before {
                     position: absolute;
                     top: 0;

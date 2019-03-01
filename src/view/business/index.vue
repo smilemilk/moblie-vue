@@ -6,7 +6,9 @@
                 <span>{{this.dateSearch|$_filters_parseDate}}</span>
                 <i class="icon-triangle-dark ml5"></i>
             </div>
-            <div class="">
+            <div class=""
+                 v-if="this.orderList &&
+                  this.orderList.length > 0">
                 <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
                 <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
             </div>
