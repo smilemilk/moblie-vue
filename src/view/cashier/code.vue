@@ -63,26 +63,8 @@
             return storeData.call(this);
         },
         created() {
-            localStorage.setItem('departCurrentName', 'shabi');
-            localStorage.setItem('departCurrentList', "daizi, llllll");
-            localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "daizi, llllll");
-            if (localStorage.getItem('departCurrentName')) {
-                this.departName = localStorage.getItem('departCurrentName');
-            }
-            if (localStorage.getItem('departCurrentList')) {
-                let departListPrimary = localStorage.getItem('departCurrentList').split(",");
-
-                if (this.departName) {
-
-                }
-                console.log(departListPrimary)
-                this.departList = departListPrimary;
-            }
-            console.log(this.$route)
-            if (this.$route && this.$route.query && this.$router.query) {
+            if (this.$route && this.$route.query) {
                 this.codeUrl = this.$route.query;
-                console.log(this.codeUrl)
             }
             this.$nextTick(function () {
                 this.codeCanvas();
@@ -93,7 +75,7 @@
                 let code = new QRCode('code', {
                     width: 235,  // 设置宽度
                     height: 235, // 设置高度
-                    text: 'https://baidu.com'
+                    text: this.codeUrl.code || ''
                 })
             }
         }
