@@ -76,9 +76,9 @@
                     :min-date="minDate"
                     :max-date="maxDate"
                     :item-height="34"
-                    @change="dateTimeChangeAction(this.dateSearch)"
+                    @change="dateTimeChangeAction(dateSearch)"
                     @cancel="dateTimeCancelAction()"
-                    @confirm="dateTimeConfirmAction()"
+                    @confirm="dateTimeConfirmAction(dateSearch)"
             />
         </van-popup>
 
@@ -164,13 +164,13 @@
                 this.dateTimePickerStatus = true;
             },
             dateTimeChangeAction(picker) {
-                this.dateSearch = picker.getValues();
+                console.log(picker)
             },
             dateTimeCancelAction() {
                 this.dateTimePickerStatus = false;
             },
-            dateTimeConfirmAction() {
-                this.dateTimeChangeAction(picker);
+            dateTimeConfirmAction(values) {
+                this.dateSearch = values;
                 this.dateTimePickerStatus = false;
             }
         }

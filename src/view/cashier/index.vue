@@ -2,12 +2,20 @@
     <div class="cashier-wrapper container-wrapper">
         <div class="cashier-inner">
 
-            <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
+            <div class="item pb3" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
                 <div class="item-label">输入金额（元）</div>
-                <input v-model="amount"
-                       class="item-input amount-input"
-                       placeholder="0.00"/>
-                <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">不能为空</p>
+
+                <div class="cashier-input">
+                    <div class="flex-content flex-content-spaceBetween flex-content-align">
+                        <div class="cashier-input-unit mr10">￥</div>
+                        <input v-model="amount"
+                               class="item-input amount-input"
+                               placeholder="0.00"/>
+                    </div>
+                    <p class="item-notice"
+                       v-show="this.loginRule[0] === 0 &&
+                   this.loginRuleTextStatus === true">不能为空</p>
+                </div>
             </div>
             <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
             <div class="mt20">
@@ -131,9 +139,9 @@
             },
             createOrderFetch() {
                 ajax.createOrder({
-                    orderId: (Math.floor(Math.random () * 900) + 100)+''+(new Date()).valueOf(),
+                    orderId: (Math.floor(Math.random() * 900) + 100) + '' + (new Date()).valueOf(),
                     payOrderType: 'xxsk',
-                    payAmount: this.amount*100,
+                    payAmount: this.amount * 100,
                     remark: this.remark,
                     deadTime: 5 // 五分钟
                 }).then(response => {
@@ -198,8 +206,10 @@
                 &-input {
                     border: none;
                     background-color: transparent;
-                    color: @main-theme-color;
-                    line-height: 1.75;
+                    color: @text-color;
+                    line-height: 1.25;
+                    font-size: @font-normal;
+                    caret-color: @main-theme-color;
                     &::-webkit-input-placeholder {
                         color: @border-color-dark;
                     }
@@ -229,6 +239,16 @@
             color: #fff;
             font-weight: 400;
             font-size: @font-largest;
+        }
+    }
+
+    .cashier-input {
+        &-unit {
+            font-size: @font-hugeMore;
+            color: @text-color;
+        }
+        .amount-input {
+            font-size: 36px;
         }
     }
 </style>
