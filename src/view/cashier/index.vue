@@ -61,7 +61,7 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/cashier';
@@ -87,7 +87,7 @@
 
         },
         watch: {
-            'amount': function (old, val) {
+            'amount': function (val, old) {
                 if (val) {
                     this.loginRule[0] = 1;
                     if (this.remark) {
@@ -109,14 +109,8 @@
             'remark': function (old, val) {
                 if (val) {
                     this.loginRule[1] = 1;
-                    if (this.amount) {
-                        this.loginStatus = true;
-                    } else {
-                        this.loginStatus = false;
-                    }
                 } else {
                     this.loginRule[1] = 0;
-                    this.loginStatus = false;
                 }
                 if (val !== old) {
                     this.loginInputStatus[0] = 0;
@@ -128,16 +122,20 @@
         },
         methods: {
             loginAction() {
-                if (this.loginRule.join() === '1,1') {
+                if ((this.loginRule.join() === '1,1') || (this.loginRule.join() === '1,0')) {
                     this.loginStatus = true;
                     this.loginRuleTextStatus = false;
-                    this.createOrderFetch();
+                    let fetchLoading = Toast.loading({
+                        mask: true,
+                        message: '请等待...'
+                    });
+                    this.createOrderFetch(fetchLoading);
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
                 }
             },
-            createOrderFetch() {
+            createOrderFetch(fetchLoading) {
                 ajax.createOrder({
                     orderId: (Math.floor(Math.random() * 900) + 100) + '' + (new Date()).valueOf(),
                     payOrderType: 'xxsk',
@@ -145,6 +143,7 @@
                     remark: this.remark,
                     deadTime: 5 // 五分钟
                 }).then(response => {
+                    fetchLoading.clear();
                     if (!response.success === true) {
                         Toast(response.msg || '收款创建失败');
                         return;
@@ -162,6 +161,7 @@
                         }
                     }
                 }).catch(() => {
+                    fetchLoading.clear();
                     Toast(response.msg || '收款创建失败');
                     return;
                 });
