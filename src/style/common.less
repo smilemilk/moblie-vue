@@ -7,8 +7,17 @@
     &-align {
       align-items: center;
     }
+    &-top {
+      align-items: flex-start;
+    }
     &-justify {
       justify-content: center;
+    }
+    &-spaceBetween {
+      justify-content: space-between;
+    }
+    &-end {
+      justify-content: flex-end;
     }
   }
   &-left {
@@ -202,9 +211,54 @@
   background-size: 100% auto;
 }
 
+.icon-triangle-dark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-image: url("../images/icon_triangle_dark@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
+.icon-payType {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  &_alipay {
+    background-image: url("../images/icon_alipay_circle@2x.png");
+    background-size: 100% auto;
+  }
+}
+
 .font-n-l {
-  font-size: @font-normal;
-  color: @text-color-normal;
+  font-size: @font-normal; // 14
+  color: @text-color-normal; // 333
+  line-height: 1.25;
+}
+
+.font-l-d {
+  font-size: @font-larger; // 18
+  color: @text-color; // 333
+  line-height: 1.25;
+}
+
+.font-n-d {
+  font-size: @font-normal; // 14
+  color: @text-color; // 333
+  line-height: 1.25;
+}
+
+.font-s-d {
+  font-size: @font-smaller; // 12
+  color: @text-color; // 333
+  line-height: 1.25;
+}
+.font-s-b {
+  font-size: @font-smaller; // 12
+  color: @main-theme-color; // 333
   line-height: 1.25;
 }
 
@@ -213,6 +267,7 @@
   color: @main-theme-color;
   line-height: 1.25;
 }
+
 .font-xs-l {
   font-size: @font-smallMore;
   color: @text-color-light;

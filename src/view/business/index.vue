@@ -1,19 +1,39 @@
 <template>
     <div class="dailyKnots-wrapper container-wrapper">
 
-        <div class="interval-item">
-            <div class="date-select-box">{{this.dateSearch|$_filters_parseDate}}</div>
+        <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
+            <div class="date-select-box">
+                <span>{{this.dateSearch|$_filters_parseDate}}</span>
+                <i class="icon-triangle-dark ml5"></i>
+            </div>
             <div class="">
                 <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
-                <div class="font-xs-l">退款 ￥2000.00</div>
+                <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
             </div>
         </div>
 
         <div class="set-form cell-group">
             <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
+                <div class="cell-inner flex-content flex-content-spaceBetween">
+                    <div class="flex-content flex-content-top">
+                        <i class="icon-payType icon-payType_alipay mr10"></i>
+                        <div>
+                            <div class="font-n-d">富阳喜脉健康</div>
+                            <div class="font-s-d mt10">
+                                富阳喜脉健康
+                            </div>
+                            <div class="font-s-d">
+                                富阳喜脉健康
+                            </div>
+                            <div class="time">9999</div>
+                        </div>
+
+                    </div>
+
+                    <div class="cell-right">
+                         <div class="font-l-d">99999</div>
+                        <div class="font-s-b mt4 align-r">有退款</div>
+                    </div>
                 </div>
             </div>
             <div class="cell">
@@ -105,23 +125,10 @@
 <style lang="less" scoped>
     @import "../../style/formation.less";
 
-    .date-choose-box {
-        padding: 20px 16px;
-        background-color: @main-theme-color;
-        overflow: hidden;
-        [class*='date-choose-'] {
-            display: inline-block;
-            color: @white;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-    }
-
-    .interval-item {
-        padding: 10px 16px;
-        color: @text-color;
-        font-size: @font-normal;
+    .time {
+        color: @text-color-light;
+        font-size: @font-smaller;
         line-height: 1.5;
-        box-sizing: border-box;
+        margin-top: 6px;
     }
 </style>
