@@ -8,6 +8,7 @@ export default function () {
             old: '',
             new: '',
             again: ''
-        }
+        },
+        userName: ''
     }
 }

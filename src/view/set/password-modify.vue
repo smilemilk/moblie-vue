@@ -37,6 +37,9 @@
 <script>
     import storeData from './store/password-modify';
     import ajax from '@/api/set';
+    import {
+        Toast,
+    } from 'vant';
 
     export default {
         data() {
@@ -46,7 +49,7 @@
 
         },
         watch: {
-            'old': function (val, old) {
+            'password.old': function (val, old) {
                 if (val) {
                     this.submitRule[0] = 1;
                     if (this.password.new && this.password.again) {
@@ -66,7 +69,7 @@
                     this.submitInputStatus[0] = 0;
                 }
             },
-            'new': function (val, old) {
+            'password.new': function (val, old) {
                 if (val) {
                     this.submitRule[1] = 1;
                     if (this.password.old && this.password.again) {
@@ -86,7 +89,7 @@
                     this.submitInputStatus[1] = 0;
                 }
             },
-            'again': function (val, old) {
+            'password.again': function (val, old) {
                 if (val) {
                     this.submitRule[2] = 1;
                     if (this.password.old && this.password.new) {
@@ -132,11 +135,20 @@
                         });
                         return;
                     } else {
-                        setTimeout(() => {
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }, 800);
+                        if (response.data.success) {
+                            if (this.userName) {
+                                localStorage.setItem('userNameLast', this.userName);
+                            } else {
+                                localStorage.setItem('userNameLast', '');
+                            }
+                            setTimeout(() => {
+                                this.$router.push({
+                                    name: 'login'
+                                });
+                            }, 800);
+                        } else {
+                            Toast(response.msg || '修改密码失败');
+                        }
                     }
                 }).catch(() => {
                 });
@@ -157,7 +169,7 @@
                 padding: 16px 0 8px;
                 border-bottom: 1px solid @border-color-dark;
                 &.bB1 {
-                    border-bottom-color: @text-color-normal;
+                    border-bottom-color: @main-theme-color;
                 }
                 &-input {
                     width: 100%;
@@ -168,6 +180,7 @@
                     line-height: 1.75;
                     outline: none;
                     -webkit-appearance: none;
+                    caret-color: @main-theme-color;
                     &::-webkit-input-placeholder {
                         color: @text-color-light;
                     }

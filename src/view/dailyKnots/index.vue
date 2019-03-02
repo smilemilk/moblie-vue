@@ -136,7 +136,21 @@
                     'pre': 1,
                     'next': -1
                 };
-                this.dateSearch = moment(this.dateSearch).subtract(filter[status], 'days').format("YYYY-MM-DD");
+
+                let dateLast;
+
+                dateLast = moment(this.dateSearch).format("YYYY-MM-DD");
+
+                if (status === 'pre' && dateLast === '2019-01-01') {
+                    Toast('不能早于2019年01月01日');
+                    return;
+                } else if (status === 'next' && dateLast === moment(new Date()).format("YYYY-MM-DD")) {
+                    Toast('不能选择今天之后的日期');
+                    return;
+                } else {
+                    this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
+                }
+                console.log(this.dateSearch)
             },
             getDailyOrder() {
                 ajax.getRJOrder({
