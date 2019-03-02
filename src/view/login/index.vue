@@ -35,7 +35,7 @@
                             class="item-input"
                             placeholder="请输入账号"/>
                     <i class="icon-select"
-                       v-if="this.accountList"
+                       v-if="this.accountList && this.accountList.length > 0"
                        @click="accountSelectHandle()"
                        :class="this.accountShow ? 'icon-select_toggle' : ''"
                     ></i>
@@ -51,7 +51,7 @@
                      :key="key"
                      @click="accountChangeHandle(item)"
                 >
-                    {{item}}
+                    {{item.account}}
                     <i
                             class="icon-delete"
                             @click="deleteAccountAction(item, key)"
@@ -140,7 +140,7 @@
             localStorage.setItem('departCurrentName', 'shabi');
             localStorage.setItem('departCurrentList', "daizi, llllll");
             localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "daizi, llllll, 000000, 0000000, kkkkkk");
+            localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}]");
             if (localStorage.getItem('departCurrentName')) {
                 this.departName = localStorage.getItem('departCurrentName');
             }
@@ -155,10 +155,10 @@
             }
 
             let accountList = localStorage.getItem('accountList').split(",");
-            this.accountList = accountList;
+            // this.accountList = accountList;
         },
         watch: {
-            'depart': function (old, val) {
+            'depart': function (val, old) {
                 if (val) {
                     this.loginRule[0] = 1;
                     if (this.account && this.password) {
@@ -178,7 +178,7 @@
                     this.loginInputStatus[0] = 0;
                 }
             },
-            'account': function (old, val) {
+            'account': function (val, old) {
                 if (val) {
                     this.loginRule[1] = 1;
                     if (this.account && this.password) {
@@ -198,7 +198,7 @@
                     this.loginInputStatus[1] = 0;
                 }
             },
-            'password': function (old, val) {
+            'password': function (val, old) {
                 if (val) {
                     this.loginRule[2] = 1;
                     if (this.account && this.password) {
@@ -218,6 +218,16 @@
                     this.loginInputStatus[2] = 0;
                 }
             },
+        },
+        computed: {
+            'accountList': ()=> {
+                let userListOld = eval(localStorage.getItem('accountList')) || [];
+
+                if (localStorage.getItem('userNameLast')) {
+
+                    return userListOld;
+                }
+            }
         },
         methods: {
             getToken () {
@@ -402,8 +412,8 @@
             text-align: center;
             margin-left: 3px;
             .icon-select-left {
-                width: 10px;
-                height: 10px;
+                width: 22px;
+                height: 22px;
             }
         }
     }
@@ -427,11 +437,11 @@
 
     .icon-select {
         position: absolute;
-        right: 8px;
-        bottom: 14px;
+        right: 2px;
+        bottom: 10px;
         display: inline-block;
-        width: 16px;
-        height: 16px;
+        width: 30px;
+        height: 30px;
         background-image: url("../../images/icon_down@2x.png");
         background-repeat: no-repeat;
         background-position: top center;
@@ -444,8 +454,8 @@
 
     .icon-select-left {
         display: inline-block;
-        width: 16px;
-        height: 16px;
+        width: 22px;
+        height: 22px;
         background-image: url("../../images/icon_down@2x.png");
         background-repeat: no-repeat;
         background-position: top center;
@@ -455,8 +465,8 @@
 
     .icon-delete {
         display: inline-block;
-        width: 16px;
-        height: 16px;
+        width: 22px;
+        height: 22px;
         background-image: url("../../images/icon_del@2x.png");
         background-repeat: no-repeat;
         background-position: top center;
@@ -465,8 +475,8 @@
 
     .icon-eye {
         display: inline-block;
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
         background-image: url("../../images/icon_eye_close@2x.png");
         background-repeat: no-repeat;
         background-position: top center;

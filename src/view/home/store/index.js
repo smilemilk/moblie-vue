@@ -18,6 +18,8 @@ export default function () {
                 label: '退出'
             }
         ],
-        dialogShow: false
+        dialogShow: false,
+        userRealName: '',
+        userName: ''
     }
 }

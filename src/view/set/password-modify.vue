@@ -28,7 +28,6 @@
                          btn-block
                          btn-primary
                          mt27"
-                :class="submitStatus ? '': 'btn-disabled'"
                 @click="submitAction()"
         >提交
         </button>
@@ -47,7 +46,7 @@
 
         },
         watch: {
-            'old': function (old, val) {
+            'old': function (val, old) {
                 if (val) {
                     this.submitRule[0] = 1;
                     if (this.password.new && this.password.again) {
@@ -67,7 +66,7 @@
                     this.submitInputStatus[0] = 0;
                 }
             },
-            'new': function (old, val) {
+            'new': function (val, old) {
                 if (val) {
                     this.submitRule[1] = 1;
                     if (this.password.old && this.password.again) {
@@ -87,7 +86,7 @@
                     this.submitInputStatus[1] = 0;
                 }
             },
-            'again': function (old, val) {
+            'again': function (val, old) {
                 if (val) {
                     this.submitRule[2] = 1;
                     if (this.password.old && this.password.new) {

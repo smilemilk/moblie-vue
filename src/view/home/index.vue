@@ -5,8 +5,8 @@
             <div class="user-info">
                 <div class="user-info-sculpture"></div>
                 <div class="user-info-detail">
-                    <div class="user-info-detail_l">禄白</div>
-                    <div class="user-info-detail_s">门店:</div>
+                    <div class="user-info-detail_l text-ellipsis">{{userRealName}}</div>
+                    <div class="user-info-detail_s text-ellipsis">门店:</div>
                 </div>
                 <sub class="user-info-sub">收银机编号001</sub>
             </div>
@@ -58,6 +58,7 @@
         Dialog
     } from 'vant';
     import storeData from './store/index';
+    import ajaxUser from '@/api/user';
     import ajax from '@/api/login';
 
     export default {
@@ -79,13 +80,53 @@
             return storeData.call(this);
         },
         created() {
-
+            this.userInfo();
         },
         methods: {
+            merchantId() {
+                return new Promise((resolve, reject) => {
+                    ajaxUser.merchantId({
+                        isQueryAll: false
+                    }).then(response => {
+                        if (!response.success === true) {
+                            Toast(response.msg || '获取用户信息异常');
+                            return reject({});
+                        } else {
+                            if (response.data && response.data.userId) {
+                                return resolve(
+                                    response.data.userId
+                                );
+                            } else {
+                                return reject({});
+                            }
+                        }
+                    }).catch(() => {
+                        Toast('请求异常');
+                        return reject({});
+                    });
+                });
+            },
+            userInfo() {
+                Promise.all([this.merchantId()]).then((results) => {
+                    ajaxUser.userDetail({
+                        userId: results
+                    }).then(response => {
+                        if (!response.success === true) {
+                            return;
+                        } else {
+                            if (response.data && response.data.list)
+                            this.userRealName =response.data.list[0].userRealName || '';
+                            this.userName = response.data.list[0].userName || '';
+                        }
+                    }).catch(() => {
+                    });
+                }).catch((e)=>{
+                });
+            },
             entranceAction(item) {
                 if (item.key) {
                     if (item.key === 'loginOut') {
-                       this.dialogShow = true;
+                        this.dialogShow = true;
                     } else {
                         setTimeout(() => {
                             const routerName = {
@@ -111,8 +152,7 @@
                 }
             },
             loginOutAction() {
-                ajax.loginOut({
-                }).then(response => {
+                ajax.loginOut({}).then(response => {
                     if (!response.success === true) {
                         Dialog.confirm({
                             title: response.msg || '退出失败',
@@ -122,6 +162,12 @@
                         });
                         return;
                     } else {
+                        if (this.userName) {
+                            localStorage.setItem('userNameLast', this.userName);
+                        } else {
+                            localStorage.setItem('userNameLast', '');
+                        }
+
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'login'
@@ -162,6 +208,7 @@
                         color: #fff;
                         font-weight: @font-weight_500;
                         line-height: 1.75;
+                        width: 175px;
                     }
                     &_s {
                         font-size: @font-normal;
