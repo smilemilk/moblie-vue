@@ -15,7 +15,7 @@
                               this.departList &&
                               this.departList.length > 0"
                     >
-                        {{departList[0].depart}}
+                        {{departListCurrent}}
                         <i
                                 v-if="this.departList &&
                                 this.departList.length > 1"
@@ -164,7 +164,14 @@
         },
         created() {
             this.getToken();
+            console.log(localStorage.getItem('accountList'))
+            this.accountList = this.accountListComputed();
+            this.departList = this.departListComputed();
 
+            if (this.departList && this.departList.length > 0) {
+                this.departListCurrent =this.departList[0]['depart'];
+                this.depart = this.departListCurrent;
+            }
             // localStorage.setItem('departCurrentName', 'shabi');
             // localStorage.setItem('departCurrentList', "[{depart:'daizi'}, {depart:'daizi'}, {depart:'yuangong1'}]");
             // localStorage.setItem('account', 'shabi');
@@ -247,57 +254,17 @@
                 }
             },
             accountList() {
-                let userListOld;
-                if (localStorage.getItem('accountList')) {
-                    userListOld = eval(localStorage.getItem('accountList')) || [];
-                } else {
-                    userListOld = [];
-                }
-                let userList;
-                if (localStorage.getItem('userName_current')) {
-                    if (userListOld) {
-                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}].concat(userListOld.filter((it) => {
-                            if (it.account !== localStorage.getItem('userName_current') || this.accountName) {
-                                return it;
-                            }
-                        }));
-                    } else {
-                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}];
-                    }
-                } else {
-                    userList = userListOld
-                }
-                console.log(userList)
-
-                return userList;
+               this.accountListComputed();
             },
             departList() {
-                let departListOld;
-                if (localStorage.getItem('departList')) {
-                    departListOld = eval(localStorage.getItem('departList')) || [];
-                } else {
-                    departListOld = [];
-                }
-                let departList;
-                if (localStorage.getItem('departName_current')) {
-                    if (departListOld) {
-                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}].concat(departListOld.filter((it) => {
-                            if (it.depart !== localStorage.getItem('departName_current') || this.departName) {
-                                return it;
-                            }
-                        }));
-                    } else {
-                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}]
-                    }
-                } else {
-                    departList = departListOld
-                }
-                console.log('----')
-                console.log(departList)
-                return departList;
+                this.departListComputed();
             },
         },
-        computed: {},
+        computed: {
+            // 'departListCurrent': function() {
+            //
+            // }
+        },
         methods: {
             getToken() {
                 ajax.getToken({
@@ -351,8 +318,8 @@
                     // console.log('[[[[[[[[[')
                     // console.log(this.departList)
                     // this.departList = [{depart: localStorage.getItem('departName_current')}]
-                    // // localStorage.setItem('accountList', JSON.parse(this.accountList));
-                    // localStorage.setItem('departList', this.departList());
+                    localStorage.setItem('accountList', JSON.stringify(this.accountListComputed()));
+                    localStorage.setItem('departList', JSON.stringify(this.departListComputed()));
                     setTimeout(() => {
                         this.$router.push({
                             name: 'home'
@@ -404,6 +371,56 @@
             },
             onChange(picker, value, index) {
                 Toast(`当前值：${value}, 当前索引：${index}`);
+            },
+            accountListComputed() {
+                let userListOld;
+                if (localStorage.getItem('accountList')) {
+                    userListOld = eval(localStorage.getItem('accountList')) || [];
+                } else {
+                    userListOld = [];
+                }
+                let userList;
+                if (localStorage.getItem('userName_current')) {
+                    if (userListOld) {
+                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}].concat(userListOld.filter((it) => {
+                            if (it.account !== localStorage.getItem('userName_current') || this.accountName) {
+                                return it;
+                            }
+                        }));
+                    } else {
+                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}];
+                    }
+                } else {
+                    userList = userListOld
+                }
+                console.log(userList)
+
+                return userList;
+            },
+            departListComputed() {
+                let departListOld;
+                if (localStorage.getItem('departList')) {
+                    departListOld = eval(localStorage.getItem('departList')) || [];
+                } else {
+                    departListOld = [];
+                }
+                let departList;
+                if (localStorage.getItem('departName_current')) {
+                    if (departListOld) {
+                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}].concat(departListOld.filter((it) => {
+                            if (it.depart !== localStorage.getItem('departName_current') || this.departName) {
+                                return it;
+                            }
+                        }));
+                    } else {
+                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}]
+                    }
+                } else {
+                    departList = departListOld
+                }
+                console.log('----')
+                console.log(departList)
+                return departList;
             }
         }
     };
