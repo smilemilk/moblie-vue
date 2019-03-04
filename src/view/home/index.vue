@@ -6,7 +6,7 @@
                 <div class="user-info-sculpture"></div>
                 <div class="user-info-detail">
                     <div class="user-info-detail_l text-ellipsis">{{userRealName}}</div>
-                    <div class="user-info-detail_s text-ellipsis">门店:</div>
+                    <div class="user-info-detail_s text-ellipsis">门店:{{merchantNickName}}</div>
                 </div>
                 <sub class="user-info-sub">收银机编号001</sub>
             </div>
@@ -81,6 +81,7 @@
         },
         created() {
             this.userInfo();
+            this.merchantInfo();
         },
         methods: {
             merchantId() {
@@ -114,13 +115,26 @@
                         if (!response.success === true) {
                             return;
                         } else {
-                            if (response.data && response.data.list)
-                            this.userRealName =response.data.list[0].userRealName || '';
-                            this.userName = response.data.list[0].userName || '';
+                            if (response.data && response.data.list) {
+                                this.userRealName = response.data.list[0].userRealName || '';
+                                this.userName = response.data.list[0].userName || '';
+                            }
                         }
                     }).catch(() => {
                     });
-                }).catch((e)=>{
+                }).catch((e) => {
+                });
+            },
+            merchantInfo() {
+                ajaxUser.merchantUser({}).then(response => {
+                    if (!response.success === true) {
+                        return;
+                    } else {
+                        if (response.data && response.data) {
+                            this.merchantNickName = response.data.merchantNickName || '';
+                        }
+                    }
+                }).catch(() => {
                 });
             },
             entranceAction(item) {

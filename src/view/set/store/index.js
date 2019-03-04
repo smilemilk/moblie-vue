@@ -11,6 +11,8 @@ export default function () {
         loginStatus: false,
         loginRuleTextStatus: false,
         departName: '',
-        printChecked: false
+        printChecked: false,
+        merchantNickName: '', // 门店
+        userRealName: '',
     }
 }

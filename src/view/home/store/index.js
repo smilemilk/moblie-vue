@@ -19,6 +19,7 @@ export default function () {
             }
         ],
         dialogShow: false,
+        merchantNickName: '', // 门店
         userRealName: '',
         userName: ''
     }

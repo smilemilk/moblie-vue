@@ -368,6 +368,10 @@
             },
             departPickerHandle() {
                 this.departPickerShow = !this.departPickerShow;
+                if (this.departPickerShow) {
+                    this.loginInputStatus[0] = 0;
+                    this.loginInputStatus[2] = 0;
+                }
             },
             onChange(picker, value, index) {
                 Toast(`当前值：${value}, 当前索引：${index}`);

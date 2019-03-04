@@ -3,8 +3,6 @@
 import request from '@/libs/request';
 import util from '@/libs/util';
 
-
-
 export function userDetail (params) {
     return request({
         url: util.ajaxFront + 'authority/merchantuser/getuser',
@@ -12,7 +10,6 @@ export function userDetail (params) {
         params: params
     });
 }
-
 
 export function merchantId (params) {
     return request({
@@ -22,7 +19,16 @@ export function merchantId (params) {
     });
 }
 
+export function merchantUser (params) {
+    return request({
+        url: util.ajaxFront + 'merchantuser',
+        method: 'get',
+        params: params
+    });
+}
+
 export default {
     userDetail,
-    merchantId
+    merchantId,
+    merchantUser // 商户
 };

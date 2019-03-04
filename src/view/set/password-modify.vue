@@ -4,21 +4,38 @@
         <div class="item" :class="this.submitInputStatus[0] === 1 ? 'bB1' : ''">
             <input v-model="password.old"
                    class="item-input"
+                   :type="this.oldShow ? 'text': 'password'"
                    placeholder="请输入原密码"/>
+            <i class="icon-eye"
+               v-if="password.old"
+               @click="showHandle('old')"
+               :class="this.oldShow ? 'icon-eye_open':''"></i>
             <p class="item-notice" v-show="this.submitRule[0] === 0 && this.submitRuleTextStatus === true">不能为空</p>
         </div>
 
         <div class="item mt16" :class="this.submitInputStatus[1] === 1 ? 'bB1' : ''">
             <input v-model="password.new"
                    class="item-input"
+                   :type="this.newShow ? 'text': 'password'"
                    placeholder="请输入新的登录密码"/>
+            <i class="icon-eye"
+               v-if="password.new"
+               @click="showHandle('new')"
+               :class="this.newShow ? 'icon-eye_open':''"
+            ></i>
             <p class="item-notice" v-show="this.submitRule[1] === 0 && this.submitRuleTextStatus === true">不能为空</p>
         </div>
 
         <div class="item mt16" :class="this.submitInputStatus[2] === 1 ? 'bB1' : ''">
             <input v-model="password.again"
                    class="item-input"
+                   :type="this.againShow ? 'text': 'password'"
                    placeholder="请再次输入新的登录密码"/>
+            <i class="icon-eye"
+               v-if="password.again"
+               @click="showHandle('again')"
+               :class="this.againShow ? 'icon-eye_open':''"
+            ></i>
             <p class="item-notice" v-show="this.submitRule[2] === 0 && this.submitRuleTextStatus === true">不能为空</p>
         </div>
 
@@ -43,7 +60,11 @@
 
     export default {
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                oldShow: false,
+                newShow: false,
+                againShow: false
+            });
         },
         created() {
 
@@ -111,6 +132,9 @@
             }
         },
         methods: {
+            showHandle(item) {
+                this[item+'Show'] = !this[item+'Show'];
+            },
             submitAction() {
                 if (this.submitRule.join() === '1,1,1') {
                     this.submitStatus = true;
@@ -191,6 +215,24 @@
                     right: 0;
                     color: @red;
                     font-size: @font-small;
+                }
+                .icon-eye {
+                    position: absolute;
+                    right: 3px;
+                    bottom: 8px;
+                }
+            }
+            .icon-eye {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                background-image: url("../../images/icon_eye_close_dark@2x.png");
+                background-repeat: no-repeat;
+                background-position: top center;
+                background-size: 100% auto;
+                &_open {
+                    background-image: url("../../images/icon_eye_open_dark@2x.png");
+                    background-size: 100% auto;
                 }
             }
         }

@@ -9,12 +9,14 @@ import filter from '@/filters/filters';
 import {
     Dialog,
     DatetimePicker,
-    Popup
+    Popup,
+    NumberKeyboard
 } from 'vant';
 
 Vue.use(Dialog);
 Vue.use(DatetimePicker);
 Vue.use(Popup);
+Vue.use(NumberKeyboard);
 
 Vue.mixin(filter);
 new Vue({

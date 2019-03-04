@@ -2,13 +2,16 @@
     <div class="cashier-wrapper container-wrapper">
         <div class="cashier-inner">
 
-            <div class="item pb3" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
+            <div class="item pb3"
+                 :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
+            >
                 <div class="item-label">输入金额（元）</div>
 
                 <div class="cashier-input">
                     <div class="flex-content flex-content-spaceBetween flex-content-align">
                         <div class="cashier-input-unit mr10">￥</div>
                         <input v-model="amount"
+                               @touchstart.native.stop="show = true"
                                class="item-input amount-input"
                                placeholder="0.00"/>
                     </div>
@@ -45,6 +48,14 @@
                     @click="loginAction()">确定
             </button>
         </div>
+        <van-number-keyboard
+                :show="show"
+                extra-key="."
+                close-button-text="完成"
+                @blur="show = false"
+                @input="onInput"
+                @delete="onDelete"
+        />
 
     </div>
 </template>
@@ -62,6 +73,7 @@
         GoodsAction,
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
+        NumberKeyboard
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/cashier';
@@ -81,7 +93,9 @@
         },
 
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                show: true
+            });
         },
         created() {
 
@@ -172,6 +186,12 @@
             },
             remarkToggleHandle() {
                 this.remarkShow = true;
+            },
+            onInput(value) {
+                Toast(value);
+            },
+            onDelete() {
+                Toast('delete');
             }
         }
     };

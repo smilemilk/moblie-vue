@@ -2,13 +2,13 @@
     <div class="set-wrapper container-wrapper">
         <div class="set-sculpture">
             <i class="set-sculpture-img"></i>
-            <div class="set-sculpture-name">-000</div>
+            <div class="set-sculpture-name">{{userRealName}}</div>
         </div>
         <div class="set-form cell-group">
             <div class="cell">
                 <div class="cell-inner cell-inner-lr">
                     <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
+                    <div class="cell-right">{{merchantNickName}}</div>
                 </div>
             </div>
             <div class="cell">
@@ -56,6 +56,7 @@
         Toast
     } from 'vant';
     import storeData from './store/index';
+    import ajaxUser from '@/api/user';
 
     export default {
         components: {
@@ -65,10 +66,64 @@
             return storeData.call(this);
         },
         created() {
-
+            this.userInfo();
+            this.merchantInfo();
         },
         watch: {},
         methods: {
+            merchantId() {
+                return new Promise((resolve, reject) => {
+                    ajaxUser.merchantId({
+                        isQueryAll: false
+                    }).then(response => {
+                        if (!response.success === true) {
+                            Toast(response.msg || '获取用户信息异常');
+                            return reject({});
+                        } else {
+                            if (response.data && response.data.userId) {
+                                return resolve(
+                                    response.data.userId
+                                );
+                            } else {
+                                return reject({});
+                            }
+                        }
+                    }).catch(() => {
+                        Toast('请求异常');
+                        return reject({});
+                    });
+                });
+            },
+            userInfo() {
+                Promise.all([this.merchantId()]).then((results) => {
+                    ajaxUser.userDetail({
+                        userId: results
+                    }).then(response => {
+                        if (!response.success === true) {
+                            return;
+                        } else {
+                            if (response.data && response.data.list) {
+                                this.userRealName = response.data.list[0].userRealName || '';
+                                this.userName = response.data.list[0].userName || '';
+                            }
+                        }
+                    }).catch(() => {
+                    });
+                }).catch((e) => {
+                });
+            },
+            merchantInfo() {
+                ajaxUser.merchantUser({}).then(response => {
+                    if (!response.success === true) {
+                        return;
+                    } else {
+                        if (response.data && response.data) {
+                            this.merchantNickName = response.data.merchantNickName || '';
+                        }
+                    }
+                }).catch(() => {
+                });
+            },
             modifyPasswordAction() {
                 setTimeout(() => {
                     this.$router.push({
