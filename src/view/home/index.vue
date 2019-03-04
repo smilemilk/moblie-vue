@@ -162,10 +162,16 @@
                         });
                         return;
                     } else {
-                        if (this.userName) {
-                            localStorage.setItem('userNameLast', this.userName);
-                        } else {
-                            localStorage.setItem('userNameLast', '');
+                        if (localStorage.getItem('userName_current')) {
+                            localStorage.setItem('userName_current', '');
+                        }
+                        // else {
+                        //     localStorage.setItem('userName_current', '');
+                        // }
+
+
+                        if (localStorage.getItem('departName_current')) {
+                            localStorage.setItem('departName_current', '');
                         }
 
                         setTimeout(() => {

@@ -3,16 +3,19 @@
         <div class="login-inner">
             <h3 class="login-title">欢迎登录!</h3>
 
-            <div v-if="departName" class="sculpture-item">
+            <div v-if="this.departList ||
+            this.departList.length > 0"
+                 class="sculpture-item">
                 <i src=""
                    class="sculpture-item-img"
                 />
                 <div class="align-c">
                     <div class="sculpture-item-name"
-                         @Click="departPickerHandle()">
-                        {{departName}}
+                         @click="departPickerHandle()">
+                        <!--{{departList[0].depart}}-->
                         <i
-                                v-if="this.departList && this.departList.length > 1"
+                                v-if="this.departList &&
+                                this.departList.length > 1"
                                 class="icon-select-left"
                         ></i>
                     </div>
@@ -25,7 +28,10 @@
                     <input v-model="depart"
                            class="item-input"
                            placeholder="请输入机构编码"/>
-                    <p class="item-notice" v-show="this.loginRule[0] === 0 && this.loginRuleTextStatus === true">
+                    <p class="item-notice"
+                       v-show="
+                       this.loginRule[0] === 0 &&
+                       this.loginRuleTextStatus === true">
                         不能为空</p>
                 </div>
             </div>
@@ -64,7 +70,7 @@
 
             <div class="item"
                  :class="this.loginInputStatus[2] === 1 ? 'bB1' : ''"
-                 v-show="this.accountList && !this.accountShow">
+                 v-show="(this.accountList && !this.accountShow) || this.accountList.length===0">
                 <div class="item-wrapper">
                     <div class="item-label">密码</div>
                     <input
@@ -92,16 +98,19 @@
                          btn-primary
                          mt14"
                     :class="loginStatus ? '': 'btn-disabled_white'"
-                    v-show="this.accountList && !this.accountShow"
+                    v-show="(this.accountList && !this.accountShow) || this.accountList.length===0"
                     @click="loginAction()">登录
             </button>
         </div>
         <van-picker
+                class="depart-picker-container"
                 v-if="this.departPickerShow"
                 :columns="departList"
                 @change="onChange"
                 :item-height="34"
                 :visible-item-count="5"
+                confirm-button-text="确定"
+                cancel-button-text="取消"
                 value-key="">
         </van-picker>
     </div>
@@ -150,24 +159,24 @@
         created() {
             this.getToken();
 
-            localStorage.setItem('departCurrentName', 'shabi');
-            localStorage.setItem('departCurrentList', "[{depart:'daizi'}, {depart:'daizi'}, {depart:'yuangong1'}]");
-            localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}, {account:'yuangong1'}]");
-            if (localStorage.getItem('departCurrentName')) {
-                this.departName = localStorage.getItem('departCurrentName');
-            }
-            if (localStorage.getItem('departCurrentList')) {
-                let departListPrimary = localStorage.getItem('departCurrentList').split(",");
+            // localStorage.setItem('departCurrentName', 'shabi');
+            // localStorage.setItem('departCurrentList', "[{depart:'daizi'}, {depart:'daizi'}, {depart:'yuangong1'}]");
+            // localStorage.setItem('account', 'shabi');
+            // localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}, {account:'yuangong1'}]");
+            // if (localStorage.getItem('departCurrentName')) {
+            //     this.departName = localStorage.getItem('departCurrentName');
+            // }
+            // if (localStorage.getItem('departList')) {
+            //     let departListPrimary = localStorage.getItem('departList').split(",");
+            //
+            //     if (this.departName) {
+            //
+            //     }
+            //     console.log(departListPrimary)
+            //     this.departList = departListPrimary;
+            // }
 
-                if (this.departName) {
-
-                }
-                console.log(departListPrimary)
-                this.departList = departListPrimary;
-            }
-
-            let accountList = localStorage.getItem('accountList').split(",");
+            // let accountList = localStorage.getItem('accountList').split(",");
             // this.accountList = accountList;
         },
         watch: {
@@ -231,27 +240,58 @@
                     this.loginInputStatus[2] = 0;
                 }
             },
-        },
-        computed: {
-            'accountList': () => {
-                let userListOld = eval(localStorage.getItem('accountList')) || [];
+            accountList() {
+                let userListOld;
+                if (localStorage.getItem('accountList')) {
+                    userListOld = eval(localStorage.getItem('accountList')) || [];
+                } else {
+                    userListOld = [];
+                }
                 let userList;
-                if (localStorage.getItem('userNameLast')) {
-                    userList = [{account: localStorage.getItem('userNameLast')}].concat(userListOld.filter((it) => {
-                        if (it.account !== localStorage.getItem('userNameLast')) {
-                            return it;
-                        }
-                    }));
-                    console.log(userList)
+                if (localStorage.getItem('userName_current')) {
+                    if (userListOld) {
+                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}].concat(userListOld.filter((it) => {
+                            if (it.account !== localStorage.getItem('userName_current') || this.accountName) {
+                                return it;
+                            }
+                        }));
+                    } else {
+                        userList = [{account: localStorage.getItem('userName_current') || this.accountName}];
+                    }
                 } else {
                     userList = userListOld
                 }
+                console.log(userList)
+
                 return userList;
             },
-            'departListColumns': () => {
-
-            }
+            departList() {
+                let departListOld;
+                if (localStorage.getItem('departList')) {
+                    departListOld = eval(localStorage.getItem('departList')) || [];
+                } else {
+                    departListOld = [];
+                }
+                let departList;
+                if (localStorage.getItem('departName_current')) {
+                    if (departListOld) {
+                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}].concat(departListOld.filter((it) => {
+                            if (it.depart !== localStorage.getItem('departName_current') || this.departName) {
+                                return it;
+                            }
+                        }));
+                    } else {
+                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}]
+                    }
+                } else {
+                    departList = departListOld
+                }
+                console.log('----')
+                console.log(departList)
+                return departList;
+            },
         },
+        computed: {},
         methods: {
             getToken() {
                 ajax.getToken({
@@ -292,20 +332,31 @@
                         }).then(() => {
                         }).catch(() => {
                         });
+                        localStorage.setItem('departName_current', '');
+                        localStorage.setItem('userName_current', '');
                         return;
                     }
                     // this.getUser();
                     // Cookies.set('user', this.form.userName);
                     // Cookies.set('password', this.form.password);
-                    localStorage.setItem('departCurrentName', 'shabi');
-
+                    localStorage.setItem('departName_current', this.depart);
+                    localStorage.setItem('userName_current', this.account);
+                    // this.accountList();
+                    // this.departList();
+                    // console.log('[[[[[[[[[')
+                    // console.log(this.departList)
+                    // this.departList = [{depart: localStorage.getItem('departName_current')}]
+                    // // localStorage.setItem('accountList', JSON.parse(this.accountList));
+                    // localStorage.setItem('departList', this.departList());
                     setTimeout(() => {
                         this.$router.push({
                             name: 'home'
                         });
                     }, 800);
                 }).catch(() => {
-                    Toast('未成功提交登陆');
+                    // localStorage.setItem('departName_current', '');
+                    // localStorage.setItem('userName_current', '');
+                    // Toast('未成功提交登陆');
                 });
             },
             accountSelectHandle() {
@@ -322,13 +373,12 @@
                 this.passwordShow = !this.passwordShow;
             },
             deleteAccountAction(item, key) {
-                console.log(item)
                 Dialog.confirm({
                     title: '确认删除登录账号',
                     message: item.account
                 }).then(() => {
                     if (key === 0) {
-                        localStorage.setItem('userNameLast', '');
+                        localStorage.setItem('userName_current', '');
                     }
                     this.accountList.splice(this.accountList.findIndex(v => v === item), 1);
                     localStorage.setItem('accountList', this.accountList + '');
@@ -345,8 +395,6 @@
                 });
             },
             departPickerHandle() {
-                console.log('-------;;;')
-                console.log(this.departPickerShow)
                 this.departPickerShow = !this.departPickerShow;
             },
             onChange(picker, value, index) {
@@ -519,5 +567,13 @@
 
     .van-toast > div {
         color: @white;
+    }
+
+    .depart-picker-container {
+        position: absolute;
+        bottom: 0;
+        let: 0;
+        right: 0;
+        width: 100%;
     }
 </style>

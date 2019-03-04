@@ -14,6 +14,7 @@ export default function () {
         loginRuleTextStatus: false,
         departName: '',
         departList: [],
+        accountList:[],
         accountShow: false,
         passwordShow: false,
         departPickerShow: false
