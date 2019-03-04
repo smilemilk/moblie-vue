@@ -7,12 +7,15 @@
                 <i src=""
                    class="sculpture-item-img"
                 />
-                <div class="sculpture-item-name">
-                    {{departName}}
-                    <i
-                            v-if="this.departList && this.departList.length > 1"
-                            class="icon-select-left"
-                    ></i>
+                <div class="align-c">
+                    <div class="sculpture-item-name"
+                         @Click="departPickerHandle()">
+                        {{departName}}
+                        <i
+                                v-if="this.departList && this.departList.length > 1"
+                                class="icon-select-left"
+                        ></i>
+                    </div>
                 </div>
             </div>
 
@@ -93,6 +96,14 @@
                     @click="loginAction()">登录
             </button>
         </div>
+        <van-picker
+                v-if="this.departPickerShow"
+                :columns="departList"
+                @change="onChange"
+                :item-height="34"
+                :visible-item-count="5"
+                value-key="">
+        </van-picker>
     </div>
 </template>
 
@@ -109,7 +120,8 @@
         GoodsAction,
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
-        Dialog
+        Dialog,
+        Picker
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/login';
@@ -128,7 +140,8 @@
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
-            Dialog: Dialog
+            Dialog: Dialog,
+            [Picker.name]: Picker
         },
 
         data() {
@@ -138,9 +151,9 @@
             this.getToken();
 
             localStorage.setItem('departCurrentName', 'shabi');
-            localStorage.setItem('departCurrentList', "daizi, llllll");
+            localStorage.setItem('departCurrentList', "[{depart:'daizi'}, {depart:'daizi'}, {depart:'yuangong1'}]");
             localStorage.setItem('account', 'shabi');
-            localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}]");
+            localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}, {account:'yuangong1'}]");
             if (localStorage.getItem('departCurrentName')) {
                 this.departName = localStorage.getItem('departCurrentName');
             }
@@ -220,17 +233,27 @@
             },
         },
         computed: {
-            'accountList': ()=> {
+            'accountList': () => {
                 let userListOld = eval(localStorage.getItem('accountList')) || [];
-
+                let userList;
                 if (localStorage.getItem('userNameLast')) {
-
-                    return userListOld;
+                    userList = [{account: localStorage.getItem('userNameLast')}].concat(userListOld.filter((it) => {
+                        if (it.account !== localStorage.getItem('userNameLast')) {
+                            return it;
+                        }
+                    }));
+                    console.log(userList)
+                } else {
+                    userList = userListOld
                 }
+                return userList;
+            },
+            'departListColumns': () => {
+
             }
         },
         methods: {
-            getToken () {
+            getToken() {
                 ajax.getToken({
                     _: new Date().getTime()
                 }).then(response => {
@@ -292,8 +315,8 @@
                 }
             },
             accountChangeHandle(item) {
-                this.account = item;
-                this.accountShow=false;
+                this.account = item.account;
+                this.accountShow = false;
             },
             passwordShowHandle() {
                 this.passwordShow = !this.passwordShow;
@@ -302,12 +325,16 @@
                 console.log(item)
                 Dialog.confirm({
                     title: '确认删除登录账号',
-                    message: item
+                    message: item.account
                 }).then(() => {
+                    if (key === 0) {
+                        localStorage.setItem('userNameLast', '');
+                    }
                     this.accountList.splice(this.accountList.findIndex(v => v === item), 1);
+                    localStorage.setItem('accountList', this.accountList + '');
 
                     if (item === this.account) {
-                        this.account ='';
+                        this.account = '';
                     }
 
                     if (this.accountList.length === 0) {
@@ -317,9 +344,13 @@
                     this.accountShow = true;
                 });
             },
-            sorry() {
-                Toast('暂无后续逻辑~');
-                this.$router.push('incomeList');
+            departPickerHandle() {
+                console.log('-------;;;')
+                console.log(this.departPickerShow)
+                this.departPickerShow = !this.departPickerShow;
+            },
+            onChange(picker, value, index) {
+                Toast(`当前值：${value}, 当前索引：${index}`);
             }
         }
     };
@@ -406,14 +437,16 @@
             background-size: 100% auto;
         }
         &-name {
+            display: inline-block;
             font-size: @font-smaller;
             color: @white;
             padding-left: 4px;
-            text-align: center;
             margin-left: 3px;
+            cursor: pointer;
             .icon-select-left {
-                width: 22px;
-                height: 22px;
+                width: 18px;
+                height: 18px;
+                vertical-align: middle;
             }
         }
     }
@@ -447,6 +480,7 @@
         background-position: top center;
         background-size: 100% auto;
         &_toggle {
+            cursor: pointer;
             transform: rotate(180deg);
             bottom: 18px;
         }
@@ -483,7 +517,7 @@
         background-size: 100% auto;
     }
 
-    .van-toast>div{
+    .van-toast > div {
         color: @white;
     }
 </style>

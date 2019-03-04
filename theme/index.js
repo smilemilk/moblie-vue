@@ -18,6 +18,7 @@ module.exports = {
     'text-color-lighter': '#b2b2b2',
     'text-color-grayBlue': '#4B627F',
     'text-color-dark': '#151515',
+    'text-color-gray': '#bbb',
     'border-color': '#e1e2e3',
     'border-color-dark': '#e5e5e5',
     'border-color-light': '#f0f0f0',
@@ -25,5 +26,6 @@ module.exports = {
     'background-color': 'rgba(232, 232, 232, .5)',
     'background-gray-color': '#fbfbfb',
     'background-grayer-color': '#f3f5f9',
-    'background-blue-dark': '#d3dfed'
+    'background-blue-dark': '#d3dfed',
+    'background-grayest-color': '#ebebeb'
 };

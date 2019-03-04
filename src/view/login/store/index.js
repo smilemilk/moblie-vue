@@ -16,5 +16,6 @@ export default function () {
         departList: [],
         accountShow: false,
         passwordShow: false,
+        departPickerShow: false
     }
 }
