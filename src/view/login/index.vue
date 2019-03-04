@@ -2,8 +2,7 @@
     <div class="login-wrapper container-wrapper">
         <div class="login-inner">
             <h3 class="login-title">欢迎登录!</h3>
-
-            <div v-if="this.departList ||
+            <div v-if="this.departList &&
             this.departList.length > 0"
                  class="sculpture-item">
                 <i src=""
@@ -11,8 +10,12 @@
                 />
                 <div class="align-c">
                     <div class="sculpture-item-name"
-                         @click="departPickerHandle()">
-                        <!--{{departList[0].depart}}-->
+                         @click="departPickerHandle()"
+                         v-if="
+                              this.departList &&
+                              this.departList.length > 0"
+                    >
+                        {{departList[0].depart}}
                         <i
                                 v-if="this.departList &&
                                 this.departList.length > 1"
@@ -27,6 +30,7 @@
                     <div class="item-label">机构编码</div>
                     <input v-model="depart"
                            class="item-input"
+                           max="20"
                            placeholder="请输入机构编码"/>
                     <p class="item-notice"
                        v-show="
@@ -42,6 +46,7 @@
                     <input
                             v-model="account"
                             class="item-input"
+                            max="20"
                             placeholder="请输入账号"/>
                     <i class="icon-select"
                        v-if="this.accountList && this.accountList.length > 0"
@@ -76,6 +81,7 @@
                     <input
                             v-model="password"
                             class="item-input"
+                            max="20"
                             :type="this.passwordShow ? 'text': 'password'"
                             placeholder="请输入密码"/>
                     <i
@@ -316,7 +322,6 @@
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
-                    Toast('机构编号输入错误');
                 }
             },
             loginFetch() {
@@ -434,6 +439,7 @@
                     margin-bottom: 4px;
                 }
                 &-input {
+                    width: 100%;
                     border: none;
                     background-color: transparent;
                     color: @white;
