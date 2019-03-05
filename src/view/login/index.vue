@@ -62,9 +62,10 @@
                 <div class="accountHistoryItem"
                      v-for="(item,key) in accountList"
                      :key="key"
-                     @click="accountChangeHandle(item)"
                 >
-                    {{item.account}}
+                    <div    style="width: 80%;"
+                            @click="accountChangeHandle(item)"
+                    >{{item.account}}</div>
                     <i
                             class="icon-delete"
                             @click="deleteAccountAction(item, key)"
@@ -230,6 +231,7 @@
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[1] = 1;
                     this.loginInputStatus[2] = 0;
+                    this.accountShow= false;
                 } else {
                     this.loginInputStatus[1] = 0;
                 }
@@ -309,15 +311,12 @@
                     localStorage.setItem('userName_current', this.account);
                     localStorage.setItem('accountList', JSON.stringify(this.accountListComputed()));
                     localStorage.setItem('departList', JSON.stringify(this.departListComputed()));
-                    setTimeout(() => {
+                    // setTimeout(() => {
                         this.$router.push({
                             name: 'home'
                         });
-                    }, 800);
+                    // }, 800);
                 }).catch(() => {
-                    localStorage.setItem('departName_current', '');
-                    localStorage.setItem('userName_current', '');
-                    Toast('未成功提交登陆');
                 });
             },
             accountSelectHandle() {
@@ -334,19 +333,19 @@
                 this.passwordShow = !this.passwordShow;
             },
             deleteAccountAction(item, key) {
+                console.log(item)
                 Dialog.confirm({
                     title: '确认删除登录账号',
                     message: item.account
                 }).then(() => {
+                    if (item.account === this.account) {
+                        this.account = '';
+                    }
                     if (key === 0) {
                         localStorage.setItem('userName_current', '');
                     }
                     this.accountList.splice(this.accountList.findIndex(v => v === item), 1);
-                    localStorage.setItem('accountList', this.accountList + '');
-
-                    if (item === this.account) {
-                        this.account = '';
-                    }
+                    localStorage.setItem('accountList', JSON.stringify(this.accountList));
 
                     if (this.accountList.length === 0) {
                         this.accountShow = false;
@@ -407,7 +406,6 @@
                 if (this.departPickerShow) {
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[2] = 0;
-
                 }
 
             },
