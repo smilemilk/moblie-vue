@@ -11,13 +11,14 @@
                     <div class="flex-content flex-content-spaceBetween flex-content-align">
                         <div class="cashier-input-unit mr10">￥</div>
                         <input v-model="amount"
-                               @touchstart.native.stop="show = true"
+                               @touchstart.native.stop="keyboardShow = true"
+                               @focus="keyboardShow = true"
                                class="item-input amount-input"
                                placeholder="0.00"/>
                     </div>
                     <p class="item-notice"
                        v-show="this.loginRule[0] === 0 &&
-                   this.loginRuleTextStatus === true">不能为空</p>
+                               this.loginRuleTextStatus === true">不能为空</p>
                 </div>
             </div>
             <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
@@ -49,10 +50,10 @@
             </button>
         </div>
         <van-number-keyboard
-                :show="show"
+                :show="keyboardShow"
                 extra-key="."
                 close-button-text="完成"
-                @blur="show = false"
+                @blur="keyboardShow = false"
                 @input="onInput"
                 @delete="onDelete"
         />
@@ -89,12 +90,13 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            NumberKeyboard: NumberKeyboard
         },
 
         data() {
             return Object.assign(storeData.call(this), {
-                show: true
+                keyboardShow: true
             });
         },
         created() {
@@ -188,6 +190,26 @@
                 this.remarkShow = true;
             },
             onInput(value) {
+                console.log(value)
+                console.log(typeof(value))
+                if (value === '.') {
+                    if ((this.amount+'').indexOf('.')>-1) {
+                        return;
+                    }
+                }
+                if (value === '0' || value === 0) {
+                    if (this.amount+'' === '0') {
+                        return;
+                    }
+                }
+
+                if (this.amount+'' === '0') {
+                    if (value !== '.') {
+                        return;
+                    }
+                }
+
+                this.amount = this.amount + (value+'');
                 Toast(value);
             },
             onDelete() {

@@ -21,9 +21,11 @@
                         class="recharge-item"
                         @click="entranceAction(item)"
                 >
-                    <i :class="item.key"
-                       class="recharge-item-img"></i>
-                    <p>{{item.label}}</p>
+                    <div class="recharge-item-container">
+                        <i :class="item.key"
+                           class="recharge-item-img"></i>
+                        <p>{{item.label}}</p>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -179,11 +181,6 @@
                         if (localStorage.getItem('userName_current')) {
                             localStorage.setItem('userName_current', '');
                         }
-                        // else {
-                        //     localStorage.setItem('userName_current', '');
-                        // }
-
-
                         if (localStorage.getItem('departName_current')) {
                             localStorage.setItem('departName_current', '');
                         }
@@ -311,10 +308,32 @@
                     float: left;
                     color: @text-color;
                     font-size: @font-large;
-                    text-align: center;
                     font-weight: @font-weight_500 !important;
-                    text-align: center;
-                    padding: 25px;
+                    padding: 25px 0;
+                    box-sizing: border-box;
+                    &:nth-child(2n+1) {
+                        text-align: left;
+                        .recharge-item-container {
+                            margin-left: 15px;
+                            box-sizing: border-box;
+                        }
+                    }
+                    &:nth-child(2n) {
+                        text-align: right;
+                        .recharge-item-container {
+                            margin-right: 15px;
+                            box-sizing: border-box;
+                        }
+                    }
+                    &-container {
+                        display: inline-block;
+                        width: 56%;
+                        text-align: center;
+                        p {
+                            font-weight: @font-weight_500;
+                            text-align: center;
+                        }
+                    }
                     &-img {
                         display: inline-block;
                         width: 60px;
@@ -353,6 +372,10 @@
                 left: 146px;
                 top: 16px;
             }
+        }
+
+        .home-header .user-info-sub {
+            top: -18px;
         }
     }
 </style>

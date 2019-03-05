@@ -15,7 +15,7 @@ function resolve(dir) {
 
 module.exports = merge(webpackDevConfig, {
     outputDir: '../dist',
-    baseUrl: process.env.NODE_ENV === 'production' ? '/dist/' : '/',
+    baseUrl: process.env.NODE_ENV === 'production' ? './' : '/',
     lintOnSave: true,
     chainWebpack: (config) => {
         config

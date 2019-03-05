@@ -113,17 +113,18 @@
                 :overlay="true"
         >
             <van-picker
+                    ref="departpicker"
                     v-if="this.departPickerShow"
                     :columns="departListColumns"
                     @change="onChange"
+                    :setColumnValue="indexPicker"
                     :item-height="34"
                     show-toolbar
                     :visible-item-count="5"
                     confirm-button-text="确定"
                     cancel-button-text="取消"
                     @cancel="onCancel"
-                    @confirm="onConfirm"
-                    value-key="value.depart">
+                    @confirm="onConfirm">
             </van-picker>
         </van-popup>
     </div>
@@ -170,24 +171,24 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                // departListColumns: []
+                indexPicker:  0,
+                valuePicker: ''
             });
         },
         created() {
             this.getToken();
-            console.log(localStorage.getItem('accountList'))
             this.accountList = this.accountListComputed();
             this.departList = this.departListComputed();
 
             if (this.departList && this.departList.length > 0) {
                 this.departListCurrent = this.departList[0]['depart'];
                 this.depart = this.departListCurrent;
+                this.valuePicker = this.departListCurrent;
             }
 
             if (this.departList) {
                 let arr = [];
                 this.departList.forEach(it=>{
-
                     arr.push(it.depart);
                 });
                 this.departListColumns = arr;
@@ -260,16 +261,6 @@
             departList() {
                 this.departListComputed();
             },
-        },
-        computed: {
-            // 'departListColumns': ()=> {
-            //     let arr = [];
-            //    this.departList.forEach(it=>{
-            //
-            //        arr.push(it.depart);
-            //    });
-            //    return arr;
-            // }
         },
         methods: {
             getToken() {
@@ -365,16 +356,6 @@
                     this.accountShow = true;
                 });
             },
-            departPickerHandle() {
-                this.departPickerShow = !this.departPickerShow;
-                if (this.departPickerShow) {
-                    this.loginInputStatus[0] = 0;
-                    this.loginInputStatus[2] = 0;
-                }
-            },
-            onChange(picker, value, index) {
-                Toast(`当前值：${value}, 当前索引：${index}`);
-            },
             accountListComputed() {
                 let userListOld;
                 if (localStorage.getItem('accountList')) {
@@ -398,8 +379,9 @@
                 }
                 return userList;
             },
-            departListComputed() {
+            departListComputed(status, index) {
                 let departListOld;
+
                 if (localStorage.getItem('departList')) {
                     departListOld = eval(localStorage.getItem('departList')) || [];
                 } else {
@@ -421,11 +403,35 @@
                 }
                 return departList;
             },
+            departPickerHandle() {
+                this.departPickerShow = !this.departPickerShow;
+                if (this.departPickerShow) {
+                    this.loginInputStatus[0] = 0;
+                    this.loginInputStatus[2] = 0;
+                }
+
+                console.log(this);
+            },
+            onChange(picker, value, index) {
+                // Toast(`当前值：${value}, 当前索引：${index}`);
+                // this['picker'] = picker;
+            },
             onConfirm(value, index) {
-                this.$toast(value, index);
+                if (this.depart !== value) {
+                    this.departListCurrent=value;
+                    this.depart = value;
+                    this.indexPicker=index;
+                    this.valuePicker=value;
+                }
+
+                setTimeout(() => {
+                    this.departPickerShow = false;
+                }, 800);
+                // this.$toast(value, index);
             },
             onCancel() {
-                this.$toast('取消');
+                // this.$toast('取消');
+                this.departPickerShow = false;
             }
         }
     };
@@ -597,11 +603,4 @@
         color: @white;
     }
 
-    /*.depart-picker-container {*/
-    /*position: absolute;*/
-    /*bottom: 0;*/
-    /*let: 0;*/
-    /*right: 0;*/
-    /*width: 100%;*/
-    /*}*/
 </style>
