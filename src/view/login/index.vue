@@ -117,7 +117,6 @@
                     v-if="this.departPickerShow"
                     :columns="departListColumns"
                     @change="onChange"
-                    :setColumnValue="indexPicker"
                     :item-height="34"
                     show-toolbar
                     :visible-item-count="5"
@@ -171,8 +170,8 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                indexPicker:  0,
-                valuePicker: ''
+                // indexPicker:  0,
+                // valuePicker: ''
             });
         },
         created() {
@@ -408,9 +407,9 @@
                 if (this.departPickerShow) {
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[2] = 0;
+
                 }
 
-                console.log(this);
             },
             onChange(picker, value, index) {
                 // Toast(`当前值：${value}, 当前索引：${index}`);
@@ -420,8 +419,9 @@
                 if (this.depart !== value) {
                     this.departListCurrent=value;
                     this.depart = value;
-                    this.indexPicker=index;
-                    this.valuePicker=value;
+                    let list = [value].concat(this.departListColumns);
+                    list.splice(index+1, 1);
+                    this.departListColumns = list;
                 }
 
                 setTimeout(() => {
