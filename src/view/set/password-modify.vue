@@ -118,6 +118,12 @@
                     } else {
                         this.submitStatus = false;
                     }
+
+                    if (this.password.new.length === 0) {
+                        this.password.again = '';
+                        Toast('请先填写新的登录密码');
+                        return;
+                    }
                 } else {
                     this.submitRule[2] = 0;
                     this.submitStatus = false;
@@ -146,6 +152,11 @@
                 }
             },
             submitFetch() {
+                if (this.password.new !== this.password.again) {
+                    Toast('新密码和确认密码不一致，请确定');
+                    return;
+                }
+
                 ajax.modPassword({
                     oldPwd: this.password.old,
                     newPwd: this.password.new

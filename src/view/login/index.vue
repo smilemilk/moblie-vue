@@ -17,8 +17,7 @@
                     >
                         {{departListCurrent}}
                         <i
-                                v-if="this.departList &&
-                                this.departList.length > 1"
+                                v-if="this.departList"
                                 class="icon-select-left"
                         ></i>
                     </div>
@@ -108,17 +107,25 @@
                     @click="loginAction()">登录
             </button>
         </div>
-        <van-picker
-                class="depart-picker-container"
-                v-if="this.departPickerShow"
-                :columns="departList"
-                @change="onChange"
-                :item-height="34"
-                :visible-item-count="5"
-                confirm-button-text="确定"
-                cancel-button-text="取消"
-                value-key="">
-        </van-picker>
+        <van-popup
+                v-model="departPickerShow"
+                position="bottom"
+                :overlay="true"
+        >
+            <van-picker
+                    v-if="this.departPickerShow"
+                    :columns="departListColumns"
+                    @change="onChange"
+                    :item-height="34"
+                    show-toolbar
+                    :visible-item-count="5"
+                    confirm-button-text="确定"
+                    cancel-button-text="取消"
+                    @cancel="onCancel"
+                    @confirm="onConfirm"
+                    value-key="value.depart">
+            </van-picker>
+        </van-popup>
     </div>
 </template>
 
@@ -136,7 +143,8 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
         Dialog,
-        Picker
+        Picker,
+        Popup
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/login';
@@ -156,11 +164,14 @@
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
             Dialog: Dialog,
-            [Picker.name]: Picker
+            [Picker.name]: Picker,
+            Popup: Popup
         },
 
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                // departListColumns: []
+            });
         },
         created() {
             this.getToken();
@@ -169,28 +180,18 @@
             this.departList = this.departListComputed();
 
             if (this.departList && this.departList.length > 0) {
-                this.departListCurrent =this.departList[0]['depart'];
+                this.departListCurrent = this.departList[0]['depart'];
                 this.depart = this.departListCurrent;
             }
-            // localStorage.setItem('departCurrentName', 'shabi');
-            // localStorage.setItem('departCurrentList', "[{depart:'daizi'}, {depart:'daizi'}, {depart:'yuangong1'}]");
-            // localStorage.setItem('account', 'shabi');
-            // localStorage.setItem('accountList', "[{account:'daizi'}, {account:'daizi'}, {account:'yuangong1'}]");
-            // if (localStorage.getItem('departCurrentName')) {
-            //     this.departName = localStorage.getItem('departCurrentName');
-            // }
-            // if (localStorage.getItem('departList')) {
-            //     let departListPrimary = localStorage.getItem('departList').split(",");
-            //
-            //     if (this.departName) {
-            //
-            //     }
-            //     console.log(departListPrimary)
-            //     this.departList = departListPrimary;
-            // }
 
-            // let accountList = localStorage.getItem('accountList').split(",");
-            // this.accountList = accountList;
+            if (this.departList) {
+                let arr = [];
+                this.departList.forEach(it=>{
+
+                    arr.push(it.depart);
+                });
+                this.departListColumns = arr;
+            }
         },
         watch: {
             'depart': function (val, old) {
@@ -254,15 +255,20 @@
                 }
             },
             accountList() {
-               this.accountListComputed();
+                this.accountListComputed();
             },
             departList() {
                 this.departListComputed();
             },
         },
         computed: {
-            // 'departListCurrent': function() {
+            // 'departListColumns': ()=> {
+            //     let arr = [];
+            //    this.departList.forEach(it=>{
             //
+            //        arr.push(it.depart);
+            //    });
+            //    return arr;
             // }
         },
         methods: {
@@ -287,6 +293,7 @@
                     this.loginRuleTextStatus = false;
                     this.loginFetch();
                 } else {
+                    this.loginInputStatus = [0, 0, 0];
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
                 }
@@ -308,16 +315,8 @@
                         localStorage.setItem('userName_current', '');
                         return;
                     }
-                    // this.getUser();
-                    // Cookies.set('user', this.form.userName);
-                    // Cookies.set('password', this.form.password);
                     localStorage.setItem('departName_current', this.depart);
                     localStorage.setItem('userName_current', this.account);
-                    // this.accountList();
-                    // this.departList();
-                    // console.log('[[[[[[[[[')
-                    // console.log(this.departList)
-                    // this.departList = [{depart: localStorage.getItem('departName_current')}]
                     localStorage.setItem('accountList', JSON.stringify(this.accountListComputed()));
                     localStorage.setItem('departList', JSON.stringify(this.departListComputed()));
                     setTimeout(() => {
@@ -326,9 +325,9 @@
                         });
                     }, 800);
                 }).catch(() => {
-                    // localStorage.setItem('departName_current', '');
-                    // localStorage.setItem('userName_current', '');
-                    // Toast('未成功提交登陆');
+                    localStorage.setItem('departName_current', '');
+                    localStorage.setItem('userName_current', '');
+                    Toast('未成功提交登陆');
                 });
             },
             accountSelectHandle() {
@@ -395,10 +394,8 @@
                         userList = [{account: localStorage.getItem('userName_current') || this.accountName}];
                     }
                 } else {
-                    userList = userListOld
+                    userList = userListOld;
                 }
-                console.log(userList)
-
                 return userList;
             },
             departListComputed() {
@@ -420,11 +417,15 @@
                         departList = [{depart: localStorage.getItem('departName_current') || this.departName}]
                     }
                 } else {
-                    departList = departListOld
+                    departList = departListOld;
                 }
-                console.log('----')
-                console.log(departList)
                 return departList;
+            },
+            onConfirm(value, index) {
+                this.$toast(value, index);
+            },
+            onCancel() {
+                this.$toast('取消');
             }
         }
     };
@@ -596,11 +597,11 @@
         color: @white;
     }
 
-    .depart-picker-container {
-        position: absolute;
-        bottom: 0;
-        let: 0;
-        right: 0;
-        width: 100%;
-    }
+    /*.depart-picker-container {*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*let: 0;*/
+    /*right: 0;*/
+    /*width: 100%;*/
+    /*}*/
 </style>
