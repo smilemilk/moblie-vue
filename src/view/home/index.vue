@@ -5,8 +5,8 @@
             <div class="user-info">
                 <div class="user-info-sculpture"></div>
                 <div class="user-info-detail">
-                    <div class="user-info-detail_l text-ellipsis">{{userRealName}}</div>
-                    <div class="user-info-detail_s text-ellipsis">门店:{{merchantNickName}}</div>
+                    <div class="user-info-detail_l text-ellipsis"><span v-if="userRealName" class="font-weight_800">{{userRealName}}</span><span v-else>用户:</span></div>
+                    <div class="user-info-detail_s text-ellipsis">门店:<span v-if="merchantNickName">{{merchantNickName}}</span></div>
                 </div>
                 <sub class="user-info-sub">收银机编号001</sub>
             </div>
