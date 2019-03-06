@@ -526,7 +526,7 @@
             .icon-select-left {
                 width: 18px;
                 height: 18px;
-                vertical-align: middle;
+                vertical-align: text-top;
             }
         }
     }

@@ -44,3 +44,24 @@ body {
   color: @text-color-lighter;
 }
 
+.bar-wrapper {
+  &[class*="van-nav"] {
+    height: 56px;
+    line-height: 56px;
+    background-color: @background-gray-color;
+    box-shadow: inset 0 0 0 0 @border-color-dark;
+  }
+  &+.container-wrapper{
+    top: 56px;
+  }
+  .van-nav-bar__title {
+    font-size: @font-huge;
+    color: @text-color;
+    font-weight:normal;
+  }
+  .van-icon {
+    font-size: 18px;
+    color: @text-color;
+    font-weight: bold;
+  }
+}

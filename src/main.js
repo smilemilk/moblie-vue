@@ -7,12 +7,14 @@ import '@/style/total.less';
 import filter from '@/filters/filters';
 
 import {
+    NavBar,
     Dialog,
     DatetimePicker,
     Popup,
     NumberKeyboard
 } from 'vant';
 
+Vue.use(NavBar);
 Vue.use(Dialog);
 Vue.use(DatetimePicker);
 Vue.use(Popup);

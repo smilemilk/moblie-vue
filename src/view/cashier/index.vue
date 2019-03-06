@@ -1,62 +1,73 @@
 <template>
-    <div class="cashier-wrapper container-wrapper">
-        <div class="cashier-inner">
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="cashier-wrapper container-wrapper">
+            <div class="cashier-inner">
 
-            <div class="item pb3"
-                 :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
-            >
-                <div class="item-label">输入金额（元）</div>
+                <div class="item pb3"
+                     :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
+                >
+                    <div class="item-label">输入金额（元）</div>
 
-                <div class="cashier-input">
-                    <div class="flex-content flex-content-spaceBetween flex-content-align">
-                        <div class="cashier-input-unit mr10">￥</div>
-                        <input v-model="amount"
-                               @touchstart.native.stop="keyboardShow = true"
-                               @focus="keyboardShow = true"
-                               class="item-input amount-input"
-                               placeholder="0.00"/>
-                    </div>
-                    <p class="item-notice"
-                       v-show="this.loginRule[0] === 0 &&
+                    <div class="cashier-input">
+                        <div class="flex-content flex-content-spaceBetween flex-content-align">
+                            <div class="cashier-input-unit mr4">￥</div>
+                            <input v-model="amount"
+                                   @touchstart.native.stop="keyboardShow = true"
+                                   @focus="keyFocus()"
+                                   class="item-input amount-input"
+                                   placeholder="0.00"/>
+                        </div>
+                        <p class="item-notice"
+                           v-show="this.loginRule[0] === 0 &&
                                this.loginRuleTextStatus === true">不能为空</p>
+                    </div>
                 </div>
-            </div>
-            <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
-            <div class="mt20">
-                <div v-if="!remarkShow">
+                <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
+                <div class="mt20">
+                    <div v-if="!remarkShow">
                     <span
                             @click="remarkToggleHandle()"
                             class="font-n-b"
                     >添加备注</span>
-                </div>
-                <div class="item"
-                     :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''"
-                     v-else
-                >
-                    <input v-model="remark"
-                           class="item-input"
-                           placeholder="请输入收款备注"/>
+                    </div>
+                    <div class="item pt0"
+                         :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''"
+                         v-else
+                    >
+                        <input v-model="remark"
+                               class="item-input"
+                               style="width: 100%;"
+                               placeholder="请输入收款备注"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="plr16">
-            <button
-                    class="
+            <div class="plr16">
+                <button
+                        class="
                          btn
                          btn-block
                          btn-primary
                          mt14"
-                    @click="loginAction()">确定
-            </button>
+                        @click="loginAction()">确定
+                </button>
+            </div>
+            <van-number-keyboard
+                    :show="keyboardShow"
+                    extra-key="."
+                    close-button-text="完成"
+                    @blur="keyboardShow = false"
+                    @input="onInput"
+                    @delete="onDelete"
+            />
+
         </div>
-        <van-number-keyboard
-                :show="keyboardShow"
-                extra-key="."
-                close-button-text="完成"
-                @blur="keyboardShow = false"
-                @input="onInput"
-                @delete="onDelete"
-        />
 
     </div>
 </template>
@@ -74,10 +85,12 @@
         GoodsAction,
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
-        NumberKeyboard
+        NumberKeyboard,
+        NavBar
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/cashier';
+    import {getBLen} from '@/validate/common';
 
     export default {
         components: {
@@ -91,7 +104,8 @@
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
-            NumberKeyboard: NumberKeyboard
+            NumberKeyboard: NumberKeyboard,
+            NavBar: NavBar
         },
 
         data() {
@@ -122,7 +136,7 @@
                     this.loginInputStatus[0] = 0;
                 }
             },
-            'remark': function (old, val) {
+            'remark': function (val, old) {
                 if (val) {
                     this.loginRule[1] = 1;
                 } else {
@@ -134,7 +148,12 @@
                 } else {
                     this.loginInputStatus[1] = 0;
                 }
-            }
+                if (getBLen(val+'') > 100) {
+                    this.remark=old;
+                    Toast('备注在100个字符之内');
+                    return;
+                }
+            },
         },
         methods: {
             loginAction() {
@@ -209,11 +228,29 @@
                     }
                 }
 
+                if ((this.amount+'').indexOf('.') > -1) {
+
+                }
+
                 this.amount = this.amount + (value+'');
                 Toast(value);
             },
             onDelete() {
                 Toast('delete');
+                if ((this.amount+'').length >0) {
+                    this.amount=this.amount.substring(0,this.amount.length-1);
+                }
+            },
+            keyFocus() {
+                this.keyboardShow = true;
+                document.activeElement.blur();
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'home'
+                    });
+                }, 800);
             }
         }
     };
@@ -224,14 +261,10 @@
 
     .cashier {
         &-inner {
-            padding: 14px 16px 14px 18px;
+            padding: 0 16px 14px 18px;
             background-color: @white;
         }
         &-wrapper {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
             .item {
                 position: relative;
                 padding: 16px 0 8px;
@@ -252,6 +285,7 @@
                     line-height: 1.25;
                     font-size: @font-normal;
                     caret-color: @main-theme-color;
+                    padding-left: 0;
                     &::-webkit-input-placeholder {
                         color: @border-color-dark;
                     }
