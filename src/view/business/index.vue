@@ -8,6 +8,27 @@
                 @click-left="navBackClick"
         />
         <div class="dailyKnots-wrapper container-wrapper white">
+            <div class="panel-item flex-content flex-content-align flex-content-spaceBetween">
+                <div>筛选</div>
+                <div>搜索</div>
+            </div>
+            <div class="panel-downContainer">
+                <ul class="panel-downBody">
+                    <li
+                            v-for="item in orderStatusList"
+                            class="panel-downBody-item flex-content flex-content-align flex-content-justify"
+                    >{{item.value}}</li>
+                </ul>
+                <button
+                        class="
+                         btn
+                         btn-block
+                         btn-primary
+                         mt27"
+                        @click="completeAction()"
+                >确定
+                </button>
+            </div>
             <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
                 <div class="date-select-box">
                     <span>{{this.dateSearch|$_filters_parseDate}}</span>

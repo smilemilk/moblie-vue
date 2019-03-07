@@ -23,9 +23,11 @@ module.exports = {
     'border-color-dark': '#e5e5e5',
     'border-color-light': '#f0f0f0',
     'border-color-darker': '#dbdbdb',
+    'border-color-darkest': '#d5d5d5',
     'background-color': 'rgba(232, 232, 232, .5)',
+    'background-blue-dark': '#d3dfed',
     'background-gray-color': '#fbfbfb',
     'background-grayer-color': '#f3f5f9',
-    'background-blue-dark': '#d3dfed',
-    'background-grayest-color': '#ebebeb'
+    'background-grayest-color': '#ebebeb',
+    'background-grayLight-color': '#f4f4f4',
 };

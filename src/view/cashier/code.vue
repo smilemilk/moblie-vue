@@ -48,7 +48,8 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        Dialog
     } from 'vant';
     import storeData from './store/index';
     import QRCode from 'qrcodejs2';
@@ -65,7 +66,8 @@
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
-            QRCode: QRCode
+            QRCode: QRCode,
+            Dialog: Dialog
         },
 
         data() {
@@ -76,6 +78,9 @@
         created() {
             if (this.$route && this.$route.query) {
                 this.codeUrl = this.$route.query;
+                if (Object.keys(this.codeUrl).length === 0) {
+                    this.failCodeBuild();
+                }
             }
             this.codeBuilding();
             this.$nextTick(function () {
@@ -99,6 +104,16 @@
                     height: 235, // 设置高度
                     text: this.codeUrl.code || ''
                 })
+            },
+            failCodeBuild() {
+                Dialog.confirm({
+                    title: '创建二维码订单失败',
+                    message: '',
+                    showCancelButton: false
+                }).then(() => {
+
+                }).catch(() => {
+                });
             },
             navBackClick() {
                 setTimeout(() => {

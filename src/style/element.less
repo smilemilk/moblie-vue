@@ -260,6 +260,32 @@
   padding: 6px 0;
 }
 
+.panel {
+  &-item {
+    padding: 10px 16px 13px;
+    color: @text-color-light;
+    font-size: @font-normal;
+    line-height: 1.5;
+  }
+  &-downContainer {
+    padding: 16px;
+    border-top: 1px solid @border-color-dark;
+    box-sizing: border-box;
+  }
+  &-downBody {
+    display: flex;
+    flex: 0 1;
+    &-item {
+      width: 88px;
+      height: 30px;
+      border: 1px solid @border-color-darkest;
+      border-radius: 3px;
+      box-sizing: border-box;
+      background-color: @background-grayLight-color;
+    }
+  }
+}
+
 .interval-item {
   padding: 10px 16px;
   color: @text-color;

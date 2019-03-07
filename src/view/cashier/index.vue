@@ -197,7 +197,7 @@
                     }
                 }).catch(() => {
                     fetchLoading.clear();
-                    Toast(response.msg || '收款创建失败');
+                    Toast('收款创建失败');
                     return;
                 });
             },
