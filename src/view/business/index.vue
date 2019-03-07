@@ -16,6 +16,7 @@
                 <ul class="panel-downBody">
                     <li
                             v-for="item in orderStatusList"
+                            :key="item.key"
                             class="panel-downBody-item flex-content flex-content-align flex-content-justify"
                     >{{item.value}}</li>
                 </ul>
@@ -119,7 +120,9 @@
         },
 
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                countDownNum: null
+            });
         },
         created() {
             this.dateSearch = new Date();
@@ -160,7 +163,7 @@
                         name: 'home'
                     });
                 }, 800);
-            }
+            },
         }
     };
 </script>

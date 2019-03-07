@@ -9,10 +9,14 @@
         />
         <div class="cashier-wrapper container-wrapper p16">
             <div class="card">
-                <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
+                <div class="flex-content flex-content-align plr16"
+                     :class="this.countDownNum ? 'flex-content-spaceBetween': 'flex-content-justify'">
+                    <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
+                    <div class="countDown" v-show="this.countDownNum">倒计时：<strong class="danger">{{countDownNum}}s</strong></div>
+                </div>
                 <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
                 <div class="cashier-code-container">
-                    <div ref="code" id="code"></div>
+                    <div ref="code" id="code" class="flex-content flex-content-justify"></div>
                     <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
                 </div>
             </div>
@@ -80,6 +84,8 @@
                 this.codeUrl = this.$route.query;
                 if (Object.keys(this.codeUrl).length === 0) {
                     this.failCodeBuild();
+                } else {
+                    this.countDown();
                 }
             }
             this.codeBuilding();
@@ -97,13 +103,25 @@
                 // });
             },
             codeCanvas() {
-                this.buildingTime = 10000;
-
                 let code = new QRCode('code', {
                     width: 235,  // 设置宽度
                     height: 235, // 设置高度
                     text: this.codeUrl.code || ''
                 })
+            },
+            countDown() {
+                this.countDownNum = 5;
+                console.log('-----')
+                const timer = window.setInterval(() => {
+                    console.log('===')
+                    this.countDownNum--;
+                    console.log(this.countDownNum)
+                    if (this.countDownNum) {
+                    } else {
+                        window.clearInterval(timer);
+                        Toast.clear();
+                    }
+                }, 1000);
             },
             failCodeBuild() {
                 Dialog.confirm({
@@ -191,4 +209,10 @@
             }
         }
     }
+
+    .countDown {
+        color: @text-color;
+        font-size: @font-small;
+    }
+
 </style>
