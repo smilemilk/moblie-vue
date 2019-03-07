@@ -111,19 +111,21 @@
             },
             userInfo() {
                 Promise.all([this.merchantId()]).then((results) => {
-                    ajaxUser.userDetail({
-                        userId: results
-                    }).then(response => {
-                        if (!response.success === true) {
-                            return;
-                        } else {
-                            if (response.data && response.data.list) {
-                                this.userRealName = response.data.list[0].userRealName || '';
-                                this.userName = response.data.list[0].userName || '';
+                    if (results && results.length > 0) {
+                        ajaxUser.userDetail({
+                            userId: results[0]
+                        }).then(response => {
+                            if (!response.success === true) {
+                                return;
+                            } else {
+                                if (response.data && response.data.list) {
+                                    this.userRealName = response.data.list[0].userRealName || '';
+                                    this.userName = response.data.list[0].userName || '';
+                                }
                             }
-                        }
-                    }).catch(() => {
-                    });
+                        }).catch(() => {
+                        });
+                    }
                 }).catch((e) => {
                 });
             },

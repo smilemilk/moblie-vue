@@ -63,9 +63,10 @@
                      v-for="(item,key) in accountList"
                      :key="key"
                 >
-                    <div    style="width: 80%;"
-                            @click="accountChangeHandle(item)"
-                    >{{item.account}}</div>
+                    <div style="width: 80%;"
+                         @click="accountChangeHandle(item)"
+                    >{{item.account}}
+                    </div>
                     <i
                             class="icon-delete"
                             @click="deleteAccountAction(item, key)"
@@ -188,7 +189,7 @@
 
             if (this.departList) {
                 let arr = [];
-                this.departList.forEach(it=>{
+                this.departList.forEach(it => {
                     arr.push(it.depart);
                 });
                 this.departListColumns = arr;
@@ -231,7 +232,7 @@
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[1] = 1;
                     this.loginInputStatus[2] = 0;
-                    this.accountShow= false;
+                    this.accountShow = false;
                 } else {
                     this.loginInputStatus[1] = 0;
                 }
@@ -292,7 +293,7 @@
             },
             loginFetch() {
                 ajax.login({
-                    // clientMerchantId: this.departName,
+                    clientMerchantId: this.depart,
                     login_name: this.account,
                     login_pwd: RSA.encryptedString(this.keyPair, this.password)
                 }).then(response => {
@@ -311,11 +312,9 @@
                     localStorage.setItem('userName_current', this.account);
                     localStorage.setItem('accountList', JSON.stringify(this.accountListComputed()));
                     localStorage.setItem('departList', JSON.stringify(this.departListComputed()));
-                    // setTimeout(() => {
-                        this.$router.push({
-                            name: 'home'
-                        });
-                    // }, 800);
+                    this.$router.push({
+                        name: 'home'
+                    });
                 }).catch(() => {
                 });
             },
@@ -333,7 +332,6 @@
                 this.passwordShow = !this.passwordShow;
             },
             deleteAccountAction(item, key) {
-                console.log(item)
                 Dialog.confirm({
                     title: '确认删除登录账号',
                     message: item.account
@@ -388,13 +386,13 @@
                 let departList;
                 if (localStorage.getItem('departName_current')) {
                     if (departListOld) {
-                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}].concat(departListOld.filter((it) => {
-                            if (it.depart !== localStorage.getItem('departName_current') || this.departName) {
+                        departList = [{depart: localStorage.getItem('departName_current') || this.depart}].concat(departListOld.filter((it) => {
+                            if (it.depart !== localStorage.getItem('departName_current') || this.depart) {
                                 return it;
                             }
                         }));
                     } else {
-                        departList = [{depart: localStorage.getItem('departName_current') || this.departName}]
+                        departList = [{depart: localStorage.getItem('departName_current') || this.depart}]
                     }
                 } else {
                     departList = departListOld;
@@ -407,7 +405,6 @@
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[2] = 0;
                 }
-
             },
             onChange(picker, value, index) {
                 // Toast(`当前值：${value}, 当前索引：${index}`);
@@ -415,10 +412,10 @@
             },
             onConfirm(value, index) {
                 if (this.depart !== value) {
-                    this.departListCurrent=value;
+                    this.departListCurrent = value;
                     this.depart = value;
                     let list = [value].concat(this.departListColumns);
-                    list.splice(index+1, 1);
+                    list.splice(index + 1, 1);
                     this.departListColumns = list;
                 }
 

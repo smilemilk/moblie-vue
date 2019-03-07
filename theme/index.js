@@ -20,6 +20,7 @@ module.exports = {
     'text-color-grayBlue': '#4B627F',
     'text-color-dark': '#151515',
     'text-color-gray': '#bbb',
+    'text-color-grayer': '#bebebe',
     'border-color': '#e1e2e3',
     'border-color-dark': '#e5e5e5',
     'border-color-light': '#f0f0f0',

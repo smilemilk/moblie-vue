@@ -8,13 +8,15 @@
                 @click-left="navBackClick"
         />
         <div class="dailyKnots-wrapper container-wrapper white">
-            <div class="panel-item_search panel-item flex-content flex-content-align flex-content-spaceBetween">
+            <div class="panel-item_search panel-item flex-content flex-content-align flex-content-spaceBetween pr0">
                 <div class="flex-content flex-content-align panel-item_searchInput">
                     <i class="icon-search"></i>
-                    <input placeholder="请输入相关信息"/>
+                    <input v-model="keySearch"
+                            class="searchInput"
+                           placeholder="请输入相关信息"/>
                 </div>
                 <div
-                        @click="orderHistoryAction()"
+                        @click="orderRecordAction()"
                         class="panel-item_searchBtn"
                 >搜索</div>
             </div>
@@ -104,6 +106,7 @@
 
         data() {
             return Object.assign(storeData.call(this), {
+                keySearch: ''
             });
         },
         created() {
@@ -142,6 +145,13 @@
             orderStatusAction() {
 
             },
+            orderRecordAction() {
+                if (this.keySearch.trim().length > 4) {
+
+                } else {
+                    Toast("至少5位的查询条件");
+                }
+            },
             navBackClick() {
                 setTimeout(() => {
                     this.$router.push({
@@ -165,5 +175,20 @@
 
     .order-none-container {
 
+    }
+
+    .panel-item_search {
+        .searchInput {
+            font-size: @font-normal;
+            color: @text-color;
+            &::-webkit-input-placeholder {
+                color: @text-color-grayer;
+            }
+        }
+        &Btn {
+            padding: 5px 16px;
+            color: @main-theme-color;
+            cursor: pointer;
+        }
     }
 </style>
