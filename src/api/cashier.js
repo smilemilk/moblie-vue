@@ -11,6 +11,15 @@ export function createOrder (params) {
     });
 }
 
+export function queryOrder (params) {
+    return request({
+        url: util.ajaxFront + 'XiMai/queryPayOrder',
+        method: 'get',
+        params: params
+    });
+}
+
 export default {
-    createOrder
+    createOrder,
+    queryOrder
 };

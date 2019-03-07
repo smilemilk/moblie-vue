@@ -184,10 +184,15 @@
                         return;
                     } else {
                         if (response.data) {
+                            let payOrderNo = response.data.match(/payOrderNo=(\S*)/)[1];
+                            let query = {
+                                payOrderNo:  payOrderNo || '',
+                                code: response.data
+                            };
                             setTimeout(() => {
                                 this.$router.push({
                                     name: 'cashierCode',
-                                    query: {code: response.data}
+                                    query: query
                                 });
                             }, 800);
                         } else {

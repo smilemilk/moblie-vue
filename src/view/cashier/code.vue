@@ -12,7 +12,8 @@
                 <div class="flex-content flex-content-align plr16"
                      :class="this.countDownNum ? 'flex-content-spaceBetween': 'flex-content-justify'">
                     <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
-                    <div class="countDown" v-show="this.countDownNum">倒计时：<strong class="danger">{{countDownNum}}s</strong></div>
+                    <div class="countDown" v-show="this.countDownNum">倒计时：<strong
+                            class="danger">{{countDownNum}}s</strong></div>
                 </div>
                 <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
                 <div class="cashier-code-container">
@@ -57,6 +58,7 @@
     } from 'vant';
     import storeData from './store/index';
     import QRCode from 'qrcodejs2';
+    import ajax from '@/api/cashier';
 
     export default {
         components: {
@@ -73,19 +75,23 @@
             QRCode: QRCode,
             Dialog: Dialog
         },
-
         data() {
             return Object.assign(storeData.call(this), {
-                buildingTime: 0
+                buildingTime: 0,
+                payOrderNo: '',
+                queryOrderInterval: undefined,
+                queryOrderCount: 0
             });
         },
         created() {
             if (this.$route && this.$route.query) {
                 this.codeUrl = this.$route.query;
+                this.payOrderNo = this.$route.query.payOrderNo || '';
                 if (Object.keys(this.codeUrl).length === 0) {
                     this.failCodeBuild();
                 } else {
-                        this.countDown();
+                    this.countDown();
+                    this.queryOrder();
                 }
             }
             this.codeBuilding();
@@ -127,6 +133,53 @@
                         Toast.clear();
                     }
                 }, 1000);
+            },
+            queryOrder() {
+                let self = this;
+                let _count = self.queryOrderCount;
+
+                    self.queryOrderInterval = setInterval(() => {
+                        _count++;
+
+                        if (_count > 5*60) {
+                            _count = 0;
+                            clearInterval(self.queryOrderInterval);
+                        }
+
+                        queryOrderFetch(_count);
+                    }, 2000);
+
+                function queryOrderFetch(_count) {
+                    ajax.queryOrder({
+                        payOrderNo: self.payOrderNo
+                    }).then(response => {
+                        if (!response.success === true) {
+                            Toast(response.msg || '收款创建失败');
+                            return;
+                        } else {
+                            if (response.data) {
+                                if (response.data.payOrderStatus) {
+                                    let payOrderStatus = response.data.payOrderStatus;
+                                    if (payOrderStatus === '0' || payOrderStatus === '8') {
+                                        _count = 0;
+                                        clearInterval(self.queryOrderInterval);
+                                        setTimeout(() => {
+                                            self.$router.push({
+                                                name: 'cashierSuccess'
+                                            });
+                                        }, 800);
+                                    }
+                                }
+                            } else {
+                                Toast(response.msg || '收款创建失败');
+                                return;
+                            }
+                        }
+                    }).catch(() => {
+                        Toast('收款创建失败');
+                        return;
+                    });
+                }
             },
             failCodeBuild() {
                 Dialog.confirm({

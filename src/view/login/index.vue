@@ -293,7 +293,7 @@
             },
             loginFetch() {
                 ajax.login({
-                    clientMerchantId: this.depart,
+                    // clientMerchantId: this.depart,
                     login_name: this.account,
                     login_pwd: RSA.encryptedString(this.keyPair, this.password)
                 }).then(response => {
