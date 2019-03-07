@@ -10,10 +10,10 @@
         <div class="cashier-wrapper container-wrapper p16">
             <div class="card">
                 <div class="flex-content flex-content-align plr16"
-                     :class="this.countDownNum ? 'flex-content-spaceBetween': 'flex-content-justify'">
+                     :class="this.countDownCount ? 'flex-content-spaceBetween': 'flex-content-justify'">
                     <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
-                    <div class="countDown" v-show="this.countDownNum">倒计时：<strong
-                            class="danger">{{countDownNum}}s</strong></div>
+                    <div class="countDown" v-show="this.countDownCount">倒计时：<strong
+                            class="danger">{{countDownCount}}s</strong></div>
                 </div>
                 <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
                 <div class="cashier-code-container">
@@ -79,8 +79,11 @@
             return Object.assign(storeData.call(this), {
                 buildingTime: 0,
                 payOrderNo: '',
+                countDownInterval: undefined,
+                countDownCount: 0,
                 queryOrderInterval: undefined,
-                queryOrderCount: 0
+                queryOrderCount: 0,
+
             });
         },
         created() {
@@ -116,21 +119,15 @@
                 })
             },
             countDown() {
-                let countNum = 5;
-                this.countDownNum = countNum;
-
-                const timer = window.setInterval(() => {
-
-                    console.log('===')
-                    countNum--;
-                    console.log(countNum)
-                    console.log(this)
-                    this.countDownNum = countNum;
-                    if (countNum > 0) {
+                let self= this;
+                self.countDownCount = 180;
+                self.countDownInterval = setInterval(() => {
+                    self.countDownCount--;
+                    if (self.countDownCount > 0) {
                     } else {
-                        countNum = 0;
-                        window.clearInterval(timer);
-                        Toast.clear();
+                        self.countDownCount = 0;
+                        self.orderOverTimeAction();
+                        clearInterval(self.countDownInterval);
                     }
                 }, 1000);
             },
@@ -141,20 +138,19 @@
                     self.queryOrderInterval = setInterval(() => {
                         _count++;
 
-                        if (_count > 5*60) {
+                        if (_count > 5*30) { // 有效时间 5分钟，5分钟后 同一笔订单失效
                             _count = 0;
                             clearInterval(self.queryOrderInterval);
                         }
-
                         queryOrderFetch(_count);
-                    }, 2000);
+                    }, 2000); // 2s查询一次 收款结果
 
                 function queryOrderFetch(_count) {
                     ajax.queryOrder({
                         payOrderNo: self.payOrderNo
                     }).then(response => {
                         if (!response.success === true) {
-                            Toast(response.msg || '收款创建失败');
+                            Toast(response.msg || '收款状态查询失败');
                             return;
                         } else {
                             if (response.data) {
@@ -163,23 +159,30 @@
                                     if (payOrderStatus === '0' || payOrderStatus === '8') {
                                         _count = 0;
                                         clearInterval(self.queryOrderInterval);
-                                        setTimeout(() => {
-                                            self.$router.push({
-                                                name: 'cashierSuccess'
-                                            });
-                                        }, 800);
+                                        // setTimeout(() => {
+                                        //     self.$router.push({
+                                        //         name: 'cashierSuccess'
+                                        //     });
+                                        // }, 800);
                                     }
                                 }
                             } else {
-                                Toast(response.msg || '收款创建失败');
+                                Toast(response.msg || '收款状态查询失败');
                                 return;
                             }
                         }
                     }).catch(() => {
-                        Toast('收款创建失败');
+                        Toast('收款状态查询失败');
                         return;
                     });
                 }
+            },
+            orderOverTimeAction() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'cashierFailure'
+                    });
+                }, 800);
             },
             failCodeBuild() {
                 Dialog.confirm({
@@ -271,6 +274,11 @@
     .countDown {
         color: @text-color;
         font-size: @font-small;
+        strong {
+            display: inline-block;
+            text-align: right;
+            width: 30px;
+        }
     }
 
 </style>
