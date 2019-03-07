@@ -1,0 +1,332 @@
+.btn {
+  height: 44px;
+  display: inline-block;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: @font-large;
+  -webkit-appearance: none;
+  outline: none;
+  &-block {
+    width: 100%;
+  }
+  &-large {
+    height: 50px;
+  }
+  &-radius-none {
+    border-radius: 0;
+  }
+  &-primary {
+    background-color: @main-theme-color;
+    border: 1px solid @main-theme-color;
+    color: @white;
+    &:hover {
+      background-color: @main-theme-light;
+      border-color: @main-theme-light;
+    }
+    &.btn-disabled {
+      background-color: @background-grayer-color;
+      border: 1px solid @background-grayer-color;
+      color: @main-theme-color;
+    }
+    &.btn-disabled_white {
+      background-color: @whiteFilter;
+      border: 1px solid @whiteFilter;
+      color: @white;
+    }
+  }
+  &-default {
+    background-color: @white;
+    border: 1px solid @white;
+    color: @redDark;
+    &.btn-disabled {
+      background-color: @whiteFilter;
+      border: 1px solid @whiteFilter;
+      color: @white;
+    }
+  }
+  &-ghost {
+    background-color: @white;
+    border: 1px solid @main-theme-color;
+    color: @main-theme-color;
+    &:hover {
+      background-color: @main-theme-lightest;
+    }
+  }
+}
+
+.cell {
+  padding: 0 17px;
+  color: @text-color;
+  font-size: @font-large;
+  line-height: 1;
+  background-color: @white;
+  &-inner {
+    position: relative;
+    &:after {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      content: '';
+      display: inline-block;
+      width: 100%;
+      height: 1px;
+      background-color: @border-color-dark;
+      transform: scale(1, .5);
+    }
+  }
+  &-group {
+    background-color: @white;
+    .cell {
+      padding: 0 17px;
+      &:nth-last-child(1) {
+        &:after {
+          transform: scale(1, 0);
+        }
+      }
+      &-right-arrow {
+        position: absolute;
+        top: 10px;
+        right: -12px;
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background-image: url("../images/icon_right_gray@2x.png");
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+      }
+      &_hover {
+        &:hover {
+          background-color: @background-gray-color;
+        }
+      }
+      .span_light {
+        color: @text-color-normal;
+      }
+    }
+  }
+  &-inner {
+    padding: 16px 0;
+    &-hover {
+      &:hover {
+        background-color: @background-blue-dark;
+      }
+    }
+    &-lr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  &_small {
+    .cell-inner {
+      padding: 15px 0;
+      font-size: @font-normal;
+    }
+  }
+}
+
+.card {
+  border: 1px solid @border-color-dark;
+  border-radius: 4px;
+  box-shadow: 0 5px 10px 0 rgba(91, 91, 91, 0.10);
+}
+
+.icon-left {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-image: url("../images/icon_down@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  transform: rotate(90deg);
+}
+
+.icon-right {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-image: url("../images/icon_down@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  transform: rotate(270deg);
+}
+
+.icon-calendar {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("../images/icon_calendar@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
+.icon-triangle-dark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-image: url("../images/icon_triangle_dark@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
+.icon-payType {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  &_alipay {
+    background-image: url("../images/icon_alipay_circle@2x.png");
+    background-size: 100% auto;
+  }
+}
+
+.icon-payKind {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  &_alipay {
+    background-image: url("../images/icon_alipay@2x.png");
+    background-size: 100% auto;
+  }
+  &_wechat {
+    background-image: url("../images/icon_wechat@2x.png");
+    background-size: 100% auto;
+  }
+  &_wm {
+    background-image: url("../images/icon_wm@2x.png");
+    background-size: 100% auto;
+  }
+}
+
+//---------------------- 业务组件  start
+.date-choose-box {
+  position: relative;
+  padding: 20px 16px;
+  height: 60px;
+  background-color: @main-theme-color;
+  overflow: hidden;
+  [class*='date-choose-'] {
+    position: absolute;
+    top: 20px;
+    display: inline-block;
+    color: @white;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  [class*='icon-'] {
+    padding-top: 0;
+    vertical-align: middle;
+  }
+  .icon-calendar {
+    padding-top: 2px;
+    margin-right: 3px;
+  }
+  .date-choose-pre {
+    left: 12px;
+    > [class*='icon'] {
+      margin-right: 5px;
+    }
+  }
+  .date-choose-current {
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .date-choose-next {
+    right: 12px;
+    > [class*='icon'] {
+      margin-left: 5px;
+    }
+  }
+}
+
+.date-select-box {
+  border: 1px solid @border-color-darker;
+  border-radius: 5px;
+  width: 100px;
+  text-align: center;
+  display: inline-block;
+  font-size: @font-small;
+  color: @text-color;
+  line-height: 1.5;
+  padding: 6px 0;
+}
+
+.interval-item {
+  padding: 10px 16px;
+  color: @text-color;
+  font-size: @font-normal;
+  line-height: 1.5;
+  box-sizing: border-box;
+  background-color: @background-grayer-color;
+}
+
+.prompt {
+  &-item {
+    padding: 8vh 0 42px;
+    text-align: center;
+  }
+  &-img {
+    display: inline-block;
+    width: 80px;
+    height: 87px;
+    background-image: url("../images/icon_large_success@2x.png");
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 100% auto;
+  }
+  &-label {
+    margin-top: 16px;
+    font-size: @font-hugest;
+    color: @text-color;
+    text-align: center;
+    line-height: 1;
+  }
+  &_small {
+    .prompt {
+      &-img {
+        display: inline-block;
+        width: 80px;
+        height: 87px;
+        background-repeat: no-repeat;
+        background-position: top center;
+        &.success {
+          background-image: url("../images/icon_large_success@2x.png");
+          background-size: 100% auto;
+        }
+        &.noneFound {
+          background-image: url("../images/icon_large_noneFound@2x.png");
+          background-size: 100% auto;
+        }
+        &.networkError {
+          background-image: url("../images/icon_large_networkError@2x.png");
+          background-size: 100% auto;
+        }
+      }
+      &-label {
+        margin-top: 15px;
+        font-size: @font-largest;
+        &.span_light {
+          color: @text-color-light;
+        }
+      }
+    }
+  }
+}
+
+.dialog-text {
+  font-size: @font-larger;
+  line-height: 1.25;
+  padding: 23px 25px;
+  text-align: center;
+}
+
+//---------------------- 业务组件  end

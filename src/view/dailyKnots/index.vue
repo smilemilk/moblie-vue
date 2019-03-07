@@ -1,87 +1,96 @@
 <template>
-    <div :class="dailyList && dailyList.length > 0 ? '' : 'white'"
-         class="dailyKnots-wrapper container-wrapper">
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div :class="dailyList && dailyList.length > 0 ? '' : 'white'"
+             class="dailyKnots-wrapper container-wrapper">
 
-        <div class="date-choose-box">
-            <div class="date-choose-pre"
-                 @click="dateChooseAction('pre')"
-            ><i class="icon-left"></i>上一天
+            <div class="date-choose-box">
+                <div class="date-choose-pre"
+                     @click="dateChooseAction('pre')"
+                ><i class="icon-left"></i>上一天
+                </div>
+                <div class="date-choose-current"
+                     @click="dateChangeAction()"
+                >
+                    <i class="icon-calendar"></i>
+                    {{dateSearch|$_filters_parseDate}}
+                </div>
+                <div class="date-choose-next"
+                     @click="dateChooseAction('next')"
+                >下一天<i class="icon-right"></i></div>
             </div>
-            <div class="date-choose-current"
-                 @click="dateChangeAction()"
+
+            <div v-if="dailyList && dailyList.length > 0">
+                <div class="interval-item">
+                    实收（元）：￥1221.00
+                </div>
+
+                <div class="set-form cell-group">
+                    <div class="cell cell_hover">
+                        <div class="cell-inner cell-inner-lr">
+                            <label>全部收银员</label>
+                            <i class="cell-right-arrow">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="set-form cell-group mt10">
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">门店</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">门店</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="set-form cell-group mt10">
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">门店</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else>
+                <div class="prompt-item prompt_small">
+                    <i class="prompt-img noneFound"></i>
+                    <div class="prompt-label">{{promptLabel}}</div>
+                </div>
+            </div>
+
+            <van-popup
+                    v-model="dateTimePickerStatus"
+                    position="bottom"
+                    :overlay="true"
             >
-                <i class="icon-calendar"></i>
-                {{dateSearch|$_filters_parseDate}}
-            </div>
-            <div class="date-choose-next"
-                 @click="dateChooseAction('next')"
-            >下一天<i class="icon-right"></i></div>
+                <van-datetime-picker
+                        v-model="dateSearch"
+                        v-if="dateTimePickerStatus"
+                        type="date"
+                        :min-date="minDate"
+                        :max-date="maxDate"
+                        :item-height="34"
+                        @change="dateTimeChangeAction(dateSearch)"
+                        @cancel="dateTimeCancelAction()"
+                        @confirm="dateTimeConfirmAction(dateSearch)"
+                />
+            </van-popup>
+
         </div>
-
-        <div v-if="dailyList && dailyList.length > 0">
-            <div class="interval-item">
-                实收（元）：￥1221.00
-            </div>
-
-            <div class="set-form cell-group">
-                <div class="cell cell_hover">
-                    <div class="cell-inner cell-inner-lr">
-                        <label>全部收银员</label>
-                        <i class="cell-right-arrow">
-                        </i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="set-form cell-group mt10">
-                <div class="cell cell_small">
-                    <div class="cell-inner cell-inner-lr">
-                        <label class="span_light">门店</label>
-                        <div class="cell-right">富阳喜脉健康</div>
-                    </div>
-                </div>
-                <div class="cell cell_small">
-                    <div class="cell-inner cell-inner-lr">
-                        <label class="span_light">门店</label>
-                        <div class="cell-right">富阳喜脉健康</div>
-                    </div>
-                </div>
-            </div>
-            <div class="set-form cell-group mt10">
-                <div class="cell cell_small">
-                    <div class="cell-inner cell-inner-lr">
-                        <label class="span_light">门店</label>
-                        <div class="cell-right">富阳喜脉健康</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div v-else>
-            <div class="prompt-item prompt_small">
-                <i class="prompt-img noneFound"></i>
-                <div class="prompt-label">{{promptLabel}}</div>
-            </div>
-        </div>
-
-        <van-popup
-                v-model="dateTimePickerStatus"
-                position="bottom"
-                :overlay="true"
-        >
-            <van-datetime-picker
-                    v-model="dateSearch"
-                    v-if="dateTimePickerStatus"
-                    type="date"
-                    :min-date="minDate"
-                    :max-date="maxDate"
-                    :item-height="34"
-                    @change="dateTimeChangeAction(dateSearch)"
-                    @cancel="dateTimeCancelAction()"
-                    @confirm="dateTimeConfirmAction(dateSearch)"
-            />
-        </van-popup>
-
     </div>
 </template>
 
@@ -186,6 +195,13 @@
             dateTimeConfirmAction(values) {
                 this.dateSearch = values;
                 this.dateTimePickerStatus = false;
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'home'
+                    });
+                }, 800);
             }
         }
     };

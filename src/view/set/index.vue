@@ -1,49 +1,58 @@
 <template>
-    <div class="set-wrapper container-wrapper">
-        <div class="set-sculpture">
-            <i class="set-sculpture-img"></i>
-            <div class="set-sculpture-name">{{userRealName}}</div>
-        </div>
-        <div class="set-form cell-group">
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">{{merchantNickName}}</div>
-                </div>
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="set-wrapper container-wrapper">
+            <div class="set-sculpture">
+                <i class="set-sculpture-img"></i>
+                <div class="set-sculpture-name">{{userRealName}}</div>
             </div>
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>收银机编号</label>
-                    <div class="cell-right">001</div>
+            <div class="set-form cell-group">
+                <div class="cell">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>门店</label>
+                        <div class="cell-right">{{merchantNickName}}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>打印小票</label>
-                    <div class="cell-right printSwitch" @click="printTouchHandle()">
-                        <van-switch
-                                v-model="printChecked"
-                                disabled
-                                size="22px"
-                                inactive-color="#d9d9d9"
-                        />
+                <div class="cell">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>收银机编号</label>
+                        <div class="cell-right">001</div>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>打印小票</label>
+                        <div class="cell-right printSwitch" @click="printTouchHandle()">
+                            <van-switch
+                                    v-model="printChecked"
+                                    disabled
+                                    size="22px"
+                                    inactive-color="#d9d9d9"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>当前版本</label>
+                        <div class="cell-right">V1.1.0</div>
                     </div>
                 </div>
             </div>
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>当前版本</label>
-                    <div class="cell-right">V1.1.0</div>
-                </div>
-            </div>
-        </div>
 
-        <div class="set-form cell-group mt16">
-            <div class="cell cell_hover" @click="modifyPasswordAction()">
-                <div class="cell-inner cell-inner-lr">
-                    <label>修改密码</label>
-                    <i class="cell-right-arrow">
-                    </i>
+            <div class="set-form cell-group mt16">
+                <div class="cell cell_hover" @click="modifyPasswordAction()">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>修改密码</label>
+                        <i class="cell-right-arrow">
+                        </i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,6 +143,13 @@
             },
             printTouchHandle() {
                 Toast('暂不支持打印小票');
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'home'
+                    });
+                }, 800);
             }
         }
     };

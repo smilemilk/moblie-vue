@@ -1,56 +1,65 @@
 <template>
-    <div class="dailyKnots-wrapper container-wrapper white">
-        <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
-            <div class="date-select-box">
-                <span>{{this.dateSearch|$_filters_parseDate}}</span>
-                <i class="icon-triangle-dark ml5"></i>
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="dailyKnots-wrapper container-wrapper white">
+            <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
+                <div class="date-select-box">
+                    <span>{{this.dateSearch|$_filters_parseDate}}</span>
+                    <i class="icon-triangle-dark ml5"></i>
+                </div>
+                <div class=""
+                     v-if="this.orderList && this.orderList.length>0">
+                    <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
+                    <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
+                </div>
             </div>
-            <div class=""
-                 v-if="this.orderList && this.orderList.length>0">
-                <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
-                <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
-            </div>
-        </div>
 
-        <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
-            <div class="cell">
-                <div class="cell-inner flex-content flex-content-spaceBetween">
-                    <div class="flex-content flex-content-top">
-                        <i class="icon-payType icon-payType_alipay mr10"></i>
-                        <div>
-                            <div class="font-n-d">富阳喜脉健康</div>
-                            <div class="font-s-d mt10">
-                                富阳喜脉健康
+            <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
+                <div class="cell">
+                    <div class="cell-inner flex-content flex-content-spaceBetween">
+                        <div class="flex-content flex-content-top">
+                            <i class="icon-payType icon-payType_alipay mr10"></i>
+                            <div>
+                                <div class="font-n-d">富阳喜脉健康</div>
+                                <div class="font-s-d mt10">
+                                    富阳喜脉健康
+                                </div>
+                                <div class="font-s-d">
+                                    富阳喜脉健康
+                                </div>
+                                <div class="time">9999</div>
                             </div>
-                            <div class="font-s-d">
-                                富阳喜脉健康
-                            </div>
-                            <div class="time">9999</div>
+
                         </div>
 
+                        <div class="cell-right">
+                            <div class="font-l-d">99999</div>
+                            <div class="font-s-b mt4 align-r">有退款</div>
+                        </div>
                     </div>
-
-                    <div class="cell-right">
-                         <div class="font-l-d">99999</div>
-                        <div class="font-s-b mt4 align-r">有退款</div>
+                </div>
+                <div class="cell">
+                    <div class="cell-inner cell-inner-lr">
+                        <label>门店</label>
+                        <div class="cell-right">富阳喜脉健康</div>
                     </div>
                 </div>
             </div>
-            <div class="cell">
-                <div class="cell-inner cell-inner-lr">
-                    <label>门店</label>
-                    <div class="cell-right">富阳喜脉健康</div>
-                </div>
-            </div>
-        </div>
 
-        <div
-                v-else
-                class="order-none-container"
-        >
-            <div class="prompt-item prompt_small">
-                <i class="prompt-img noneFound"></i>
-                <div class="font-l-d align-c mt14">还没有交易记录哦！</div>
+            <div
+                    v-else
+                    class="order-none-container"
+            >
+                <div class="prompt-item prompt_small">
+                    <i class="prompt-img noneFound"></i>
+                    <div class="font-l-d align-c mt14">还没有交易记录哦！</div>
+                </div>
             </div>
         </div>
     </div>
@@ -124,6 +133,13 @@
                     this.orderList = [];
                 });
             },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'home'
+                    });
+                }, 800);
+            }
         }
     };
 </script>

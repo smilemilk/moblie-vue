@@ -1,53 +1,62 @@
 <template>
-    <div class="set_password-wrapper container-wrapper">
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="set_password-wrapper container-wrapper">
 
-        <div class="item" :class="this.submitInputStatus[0] === 1 ? 'bB1' : ''">
-            <input v-model="password.old"
-                   class="item-input"
-                   :type="this.oldShow ? 'text': 'password'"
-                   placeholder="请输入原密码"/>
-            <i class="icon-eye"
-               v-if="password.old"
-               @click="showHandle('old')"
-               :class="this.oldShow ? 'icon-eye_open':''"></i>
-            <p class="item-notice" v-show="this.submitRule[0] === 0 && this.submitRuleTextStatus === true">不能为空</p>
-        </div>
+            <div class="item" :class="this.submitInputStatus[0] === 1 ? 'bB1' : ''">
+                <input v-model="password.old"
+                       class="item-input"
+                       :type="this.oldShow ? 'text': 'password'"
+                       placeholder="请输入原密码"/>
+                <i class="icon-eye"
+                   v-if="password.old"
+                   @click="showHandle('old')"
+                   :class="this.oldShow ? 'icon-eye_open':''"></i>
+                <p class="item-notice" v-show="this.submitRule[0] === 0 && this.submitRuleTextStatus === true">不能为空</p>
+            </div>
 
-        <div class="item mt16" :class="this.submitInputStatus[1] === 1 ? 'bB1' : ''">
-            <input v-model="password.new"
-                   class="item-input"
-                   :type="this.newShow ? 'text': 'password'"
-                   placeholder="请输入新的登录密码"/>
-            <i class="icon-eye"
-               v-if="password.new"
-               @click="showHandle('new')"
-               :class="this.newShow ? 'icon-eye_open':''"
-            ></i>
-            <p class="item-notice" v-show="this.submitRule[1] === 0 && this.submitRuleTextStatus === true">不能为空</p>
-        </div>
+            <div class="item mt16" :class="this.submitInputStatus[1] === 1 ? 'bB1' : ''">
+                <input v-model="password.new"
+                       class="item-input"
+                       :type="this.newShow ? 'text': 'password'"
+                       placeholder="请输入新的登录密码"/>
+                <i class="icon-eye"
+                   v-if="password.new"
+                   @click="showHandle('new')"
+                   :class="this.newShow ? 'icon-eye_open':''"
+                ></i>
+                <p class="item-notice" v-show="this.submitRule[1] === 0 && this.submitRuleTextStatus === true">不能为空</p>
+            </div>
 
-        <div class="item mt16" :class="this.submitInputStatus[2] === 1 ? 'bB1' : ''">
-            <input v-model="password.again"
-                   class="item-input"
-                   :type="this.againShow ? 'text': 'password'"
-                   placeholder="请再次输入新的登录密码"/>
-            <i class="icon-eye"
-               v-if="password.again"
-               @click="showHandle('again')"
-               :class="this.againShow ? 'icon-eye_open':''"
-            ></i>
-            <p class="item-notice" v-show="this.submitRule[2] === 0 && this.submitRuleTextStatus === true">不能为空</p>
-        </div>
+            <div class="item mt16" :class="this.submitInputStatus[2] === 1 ? 'bB1' : ''">
+                <input v-model="password.again"
+                       class="item-input"
+                       :type="this.againShow ? 'text': 'password'"
+                       placeholder="请再次输入新的登录密码"/>
+                <i class="icon-eye"
+                   v-if="password.again"
+                   @click="showHandle('again')"
+                   :class="this.againShow ? 'icon-eye_open':''"
+                ></i>
+                <p class="item-notice" v-show="this.submitRule[2] === 0 && this.submitRuleTextStatus === true">不能为空</p>
+            </div>
 
-        <button
-                class="
+            <button
+                    class="
                          btn
                          btn-block
                          btn-primary
                          mt27"
-                @click="submitAction()"
-        >提交
-        </button>
+                    @click="submitAction()"
+            >提交
+            </button>
+        </div>
     </div>
 </template>
 
@@ -188,6 +197,13 @@
                 }).catch(() => {
                 });
             },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'set'
+                    });
+                }, 800);
+            }
         }
     };
 </script>

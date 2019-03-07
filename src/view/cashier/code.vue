@@ -1,28 +1,37 @@
 <template>
-    <div class="cashier-wrapper container-wrapper p16">
-        <div class="card">
-            <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
-            <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
-            <div class="cashier-code-container">
-                <div ref="code" id="code"></div>
-                <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="cashier-wrapper container-wrapper p16">
+            <div class="card">
+                <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
+                <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
+                <div class="cashier-code-container">
+                    <div ref="code" id="code"></div>
+                    <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
+                </div>
             </div>
-        </div>
-        <div class="payType-box">
-            <ul class="payType-box-container">
-                <li class="payType-item">
-                    <i class="icon-payKind icon-payKind_alipay"></i>
-                    <div class="font-s-l">支付宝</div>
-                </li>
-                <li class="payType-item">
-                    <i class="icon-payKind icon-payKind_wechat"></i>
-                    <div class="font-s-l">微信</div>
-                </li>
-                <li class="payType-item">
-                    <i class="icon-payKind icon-payKind_wm"></i>
-                    <div class="font-s-l">微脉</div>
-                </li>
-            </ul>
+            <div class="payType-box">
+                <ul class="payType-box-container">
+                    <li class="payType-item">
+                        <i class="icon-payKind icon-payKind_alipay"></i>
+                        <div class="font-s-l">支付宝</div>
+                    </li>
+                    <li class="payType-item">
+                        <i class="icon-payKind icon-payKind_wechat"></i>
+                        <div class="font-s-l">微信</div>
+                    </li>
+                    <li class="payType-item">
+                        <i class="icon-payKind icon-payKind_wm"></i>
+                        <div class="font-s-l">微脉</div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -60,23 +69,43 @@
         },
 
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                buildingTime: 0
+            });
         },
         created() {
             if (this.$route && this.$route.query) {
                 this.codeUrl = this.$route.query;
             }
+            this.codeBuilding();
             this.$nextTick(function () {
                 this.codeCanvas();
             });
         },
         methods: {
+            codeBuilding() {
+                // Toast.loading({
+                //     mask: true,
+                //     message: '正在创建二维码订单…',
+                //     duration: this.buildingTime,
+                //     className: 'buildingToast'
+                // });
+            },
             codeCanvas() {
+                this.buildingTime = 10000;
+
                 let code = new QRCode('code', {
                     width: 235,  // 设置宽度
                     height: 235, // 设置高度
                     text: this.codeUrl.code || ''
                 })
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'cashier'
+                    });
+                }, 800);
             }
         }
     };

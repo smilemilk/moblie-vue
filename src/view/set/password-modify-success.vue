@@ -1,20 +1,29 @@
 <template>
-    <div class="set_password-wrapper container-wrapper">
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="set_password-wrapper container-wrapper">
 
-        <div class="prompt-item">
-            <i class="prompt-img success"></i>
-            <div class="prompt-label">{{promptLabel}}</div>
-        </div>
+            <div class="prompt-item">
+                <i class="prompt-img success"></i>
+                <div class="prompt-label">{{promptLabel}}</div>
+            </div>
 
-        <button
-                class="
+            <button
+                    class="
                          btn
                          btn-block
                          btn-primary
                          mt27"
-                @click="completeAction()"
-        >完成
-        </button>
+                    @click="completeAction()"
+            >完成
+            </button>
+        </div>
     </div>
 </template>
 
@@ -35,6 +44,13 @@
                     this.$router.push({
                         name: 'login',
                         query: ''
+                    });
+                }, 800);
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'set'
                     });
                 }, 800);
             }
