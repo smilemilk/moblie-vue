@@ -9,14 +9,20 @@
         />
         <div class="dailyKnots-wrapper container-wrapper white">
             <div class="panel-item flex-content flex-content-align flex-content-spaceBetween">
-                <div>筛选</div>
+                <div class="panel-item-select"
+                     @click="orderStatusToggleHandle()"
+                     :class="orderStatusShow ? 'panel-item-select_down':''"
+                >筛选</div>
                 <div>搜索</div>
             </div>
-            <div class="panel-downContainer">
+            <div class="panel-downContainer" v-if="orderStatusShow">
                 <ul class="panel-downBody">
                     <li
-                            v-for="item in orderStatusList"
+                            v-for="(item,key) in orderStatusList"
                             :key="item.key"
+                            :style="key === 5 ? {visibility: 'hidden'} : {}"
+                            :class="orderSelected ? 'active' :''"
+                            @click="orderStatusChooseHandle(item.key)"
                             class="panel-downBody-item flex-content flex-content-align flex-content-justify"
                     >{{item.value}}</li>
                 </ul>
@@ -25,8 +31,8 @@
                          btn
                          btn-block
                          btn-primary
-                         mt27"
-                        @click="completeAction()"
+                         mt10"
+                        @click="orderStatusAction()"
                 >确定
                 </button>
             </div>
@@ -121,7 +127,8 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                countDownNum: null
+                countDownNum: null,
+                orderStatusShow: false
             });
         },
         created() {
@@ -156,6 +163,15 @@
                 }).catch(() => {
                     this.orderList = [];
                 });
+            },
+            orderStatusAction() {
+
+            },
+            orderStatusToggleHandle() {
+               this.orderStatusShow = !this.orderStatusShow;
+            },
+            orderStatusChooseHandle(key) {
+
             },
             navBackClick() {
                 setTimeout(() => {
