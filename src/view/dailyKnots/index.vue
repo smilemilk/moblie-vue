@@ -84,7 +84,7 @@
                         :min-date="minDate"
                         :max-date="maxDate"
                         :item-height="34"
-                        @change="dateTimeChangeAction(dateSearch)"
+                        @change="dateTimeChangeAction()"
                         @cancel="dateTimeCancelAction()"
                         @confirm="dateTimeConfirmAction(dateSearch)"
                 />
@@ -187,7 +187,7 @@
                 this.dateTimePickerStatus = true;
             },
             dateTimeChangeAction(picker) {
-                console.log(picker)
+                console.log(this)
             },
             dateTimeCancelAction() {
                 this.dateTimePickerStatus = false;

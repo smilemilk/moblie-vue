@@ -85,7 +85,7 @@
                 if (Object.keys(this.codeUrl).length === 0) {
                     this.failCodeBuild();
                 } else {
-                    this.countDown();
+                        this.countDown();
                 }
             }
             this.codeBuilding();
@@ -110,14 +110,19 @@
                 })
             },
             countDown() {
-                this.countDownNum = 5;
-                console.log('-----')
+                let countNum = 5;
+                this.countDownNum = countNum;
+
                 const timer = window.setInterval(() => {
+
                     console.log('===')
-                    this.countDownNum--;
-                    console.log(this.countDownNum)
-                    if (this.countDownNum) {
+                    countNum--;
+                    console.log(countNum)
+                    console.log(this)
+                    this.countDownNum = countNum;
+                    if (countNum > 0) {
                     } else {
+                        countNum = 0;
                         window.clearInterval(timer);
                         Toast.clear();
                     }
