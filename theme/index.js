@@ -3,6 +3,7 @@
 module.exports = {
     'main-theme-color': '#4899FF',
     'main-theme-dark': '#4C6682',
+    'main-theme-lighter': '#eaf3ff',
     'main-theme-light': 'rgba(24, 162, 255, .9)',
     'main-theme-lightest': 'rgba(24, 162, 255, .1)',
     white: '#fff',

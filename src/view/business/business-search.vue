@@ -8,48 +8,20 @@
                 @click-left="navBackClick"
         />
         <div class="dailyKnots-wrapper container-wrapper white">
-            <div class="panel-item flex-content flex-content-align flex-content-spaceBetween">
-                <div class="panel-item-select"
-                     @click="orderStatusToggleHandle()"
-                     :class="orderStatusShow ? 'panel-item-select_down':''"
-                >筛选</div>
-                <div @click="orderHistoryAction()"
-                     class=""
-                >
+            <div class="panel-item_search panel-item flex-content flex-content-align flex-content-spaceBetween">
+                <div class="flex-content flex-content-align panel-item_searchInput">
                     <i class="icon-search"></i>
-                    搜索
+                    <input placeholder="请输入相关信息"/>
                 </div>
-            </div>
-            <div class="panel-downContainer" v-if="orderStatusShow">
-                <ul class="panel-downBody">
-                    <li
-                            v-for="(item,key) in orderStatusList"
-                            :key="item.key"
-                            :style="key === 5 ? {visibility: 'hidden'} : {}"
-                            :class="item.key === orderSelected ? 'active' :''"
-                            @click="orderStatusChooseHandle(item.key)"
-                            class="panel-downBody-item flex-content flex-content-align flex-content-justify"
-                    >{{item.value}}</li>
-                </ul>
-                <button
-                        class="
-                         btn
-                         btn-block
-                         btn-primary
-                         mt10"
-                        @click="orderStatusAction()"
-                >确定
-                </button>
+                <div
+                        @click="orderHistoryAction()"
+                        class="panel-item_searchBtn"
+                >搜索</div>
             </div>
             <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
                 <div class="date-select-box">
                     <span>{{this.dateSearch|$_filters_parseDate}}</span>
                     <i class="icon-triangle-dark ml5"></i>
-                </div>
-                <div class=""
-                     v-if="this.orderList && this.orderList.length>0">
-                    <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
-                    <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
                 </div>
             </div>
 
@@ -91,7 +63,7 @@
             >
                 <div class="prompt-item prompt_small">
                     <i class="prompt-img noneFound"></i>
-                    <div class="font-l-d align-c mt14">还没有交易记录哦！</div>
+                    <div class="font-l-d align-c mt14">未查询到本月该订单</div>
                 </div>
             </div>
         </div>
@@ -112,7 +84,7 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn
     } from 'vant';
-    import storeData from './store/index';
+    import storeData from './store/business-search';
     import ajax from '@/api/business';
     import moment from 'moment';
 
@@ -132,8 +104,6 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                countDownNum: null,
-                orderStatusShow: false
             });
         },
         created() {
@@ -172,23 +142,10 @@
             orderStatusAction() {
 
             },
-            orderStatusToggleHandle() {
-               this.orderStatusShow = !this.orderStatusShow;
-            },
-            orderStatusChooseHandle(key) {
-                this.orderSelected = key;
-            },
-            orderHistoryAction() {
-                setTimeout(() => {
-                    this.$router.push({
-                        name: 'businessSearch'
-                    });
-                }, 800);
-            },
             navBackClick() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'home'
+                        name: 'business'
                     });
                 }, 800);
             },
@@ -206,7 +163,7 @@
         margin-top: 6px;
     }
 
-    .icon-search {
-        vertical-align: middle;
+    .order-none-container {
+
     }
 </style>

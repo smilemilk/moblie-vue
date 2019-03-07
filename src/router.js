@@ -93,6 +93,13 @@ const routes = [
         }
     },
     {
+        name: 'businessSearch',
+        component: () => import('./view/business/business-search'),
+        meta: {
+            title: '搜索'
+        }
+    },
+    {
         name: 'businessDetail',
         component: () => import('./view/business/business-detail'),
         meta: {

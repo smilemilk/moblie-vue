@@ -206,6 +206,16 @@
   }
 }
 
+.icon-search {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-image: url("../images/icon_searchQuestion@2x.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
 //---------------------- 业务组件  start
 .date-choose-box {
   position: relative;
@@ -284,6 +294,7 @@
         color: @main-theme-color;
       }
       &_down {
+        color: @main-theme-color;
         &:after {
           transform: rotate(180deg);
           border-top-color: @main-theme-color;
@@ -317,7 +328,37 @@
       box-sizing: border-box;
       margin-bottom: 16px;
       background-color: @background-grayLight-color;
-
+      overflow: hidden;
+      &.active {
+        position: relative;
+        border-color: @main-theme-color;
+        color: @main-theme-color;
+        background-color: @main-theme-lighter;
+        &:after {
+          position: absolute;
+          bottom: 0;
+          right: -1px;
+          content: '';
+          display: inline-block;
+          width: 23px;
+          height: 17px;
+          background-image: url("../images/icon_selected@2x.png");
+          background-repeat: no-repeat;
+          background-position: top center;
+          background-size: 100% auto;
+        }
+      }
+    }
+  }
+  &_search {
+    &Btn {
+      width: 30px;
+    }
+    &Input {
+      width: 100%;
+      input {
+        width: 100%;
+      }
     }
   }
 }

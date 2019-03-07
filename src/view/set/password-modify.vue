@@ -246,7 +246,7 @@
                 .icon-eye {
                     position: absolute;
                     right: 3px;
-                    bottom: 8px;
+                    bottom: 12px;
                 }
             }
             .icon-eye {
