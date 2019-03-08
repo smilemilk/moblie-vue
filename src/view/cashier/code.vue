@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="flex-content flex-content-align plr16"
                      :class="this.countDownCount ? 'flex-content-spaceBetween': 'flex-content-justify'">
-                    <div class="cashier-account">收款金额：<strong>￥1000.00</strong></div>
+                    <div class="cashier-account">收款金额：<strong v-if="this.amount">￥{{amount}}</strong></div>
                     <div class="countDown" v-show="this.countDownCount">倒计时：<strong
                             class="danger">{{countDownCount}}s</strong></div>
                 </div>
@@ -77,6 +77,7 @@
         },
         data() {
             return Object.assign(storeData.call(this), {
+                amount: undefined,
                 buildingTime: 0,
                 payOrderNo: '',
                 countDownInterval: undefined,
@@ -90,6 +91,7 @@
             if (this.$route && this.$route.query) {
                 this.codeUrl = this.$route.query;
                 this.payOrderNo = this.$route.query.payOrderNo || '';
+                this.amount = this.$route.query.amount || '';
                 if (Object.keys(this.codeUrl).length === 0) {
                     this.failCodeBuild();
                 } else {

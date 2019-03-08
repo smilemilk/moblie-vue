@@ -12,13 +12,14 @@
                 <div class="flex-content flex-content-align panel-item_searchInput">
                     <i class="icon-search"></i>
                     <input v-model="keySearch"
-                            class="searchInput"
+                           class="searchInput"
                            placeholder="请输入相关信息"/>
                 </div>
                 <div
                         @click="orderRecordAction()"
                         class="panel-item_searchBtn"
-                >搜索</div>
+                >搜索
+                </div>
             </div>
             <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
                 <div class="date-select-box">
@@ -26,6 +27,8 @@
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
             </div>
+
+            <div ><samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp></div>
 
             <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
                 <div class="cell">
@@ -117,8 +120,8 @@
             getOrderList() {
                 ajax.getTradeList({
                     orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
-                    startDate: moment(this.dateSearch).format("YYYYMMDD")+'000000',
-                    endDate: moment(this.dateSearch).format("YYYYMMDD")+"235959",
+                    startDate: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                    endDate: moment(this.dateSearch).format("YYYYMMDD") + "235959",
                     tradeOrderNo: '',
                     payOrderType: 'xxsk'
                 }).then(response => {
@@ -190,5 +193,13 @@
             color: @main-theme-color;
             cursor: pointer;
         }
+    }
+
+    .date-item {
+        color: @text-color;
+        font-size: @font-small;
+        border-radius: 15px;
+        padding: 3px 8px;
+        background-color: @background-grayDark-color;
     }
 </style>

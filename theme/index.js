@@ -32,4 +32,5 @@ module.exports = {
     'background-grayer-color': '#f3f5f9',
     'background-grayest-color': '#ebebeb',
     'background-grayLight-color': '#f4f4f4',
+    'background-grayDark-color': '#d4dae1'
 };

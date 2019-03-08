@@ -9,7 +9,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/ximai': {
-                target: 'https://test.weimaipay.com/',
+                target: 'http://test2.weimaipay.com:7070/',
+                // target: 'https://test.weimaipay.com/', // https
                 // target: 'http://172.16.21.184:8070/',  //甘松香ip
                 changeOrigin: true,
                 pathRewrite: {

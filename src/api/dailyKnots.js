@@ -3,14 +3,14 @@
 import request from '@/libs/request';
 import util from '@/libs/util';
 
-export function getRJOrder (params) {
+export function queryDailyList (params) {
     return request({
-        url: util.ajaxFront + 'XiMai/queryRJOrder',
+        url: util.ajaxFront + 'XiMai/queryDailySettlement',
         method: 'get',
         params: params
     });
 }
 
 export default {
-    getRJOrder
+    queryDailyList
 };

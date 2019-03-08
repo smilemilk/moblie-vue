@@ -186,6 +186,7 @@
                         if (response.data) {
                             let payOrderNo = response.data.match(/payOrderNo=(\S*)/)[1];
                             let query = {
+                                amount: this.amount,
                                 payOrderNo:  payOrderNo || '',
                                 code: response.data
                             };

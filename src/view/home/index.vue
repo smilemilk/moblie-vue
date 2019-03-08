@@ -89,7 +89,7 @@
             merchantId() {
                 return new Promise((resolve, reject) => {
                     ajaxUser.merchantId({
-                        isQueryAll: false
+                        // isQueryAll: false
                     }).then(response => {
                         if (!response.success === true) {
                             Toast(response.msg || '获取用户信息异常');

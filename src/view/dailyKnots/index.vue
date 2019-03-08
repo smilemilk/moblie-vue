@@ -26,43 +26,66 @@
                 >下一天<i class="icon-right"></i></div>
             </div>
 
+            <div class="set-form cell-group" v-if="this.userShow && this.userList.length > 0">
+                <div class="cell cell_hover">
+                    <div class="cell-inner cell-inner-lr" @click="userPickerAction()">
+                        <label>全部收银员</label>
+                        <i class="cell-right-arrow">
+                        </i>
+                    </div>
+                </div>
+            </div>
+
             <div v-if="dailyList && dailyList.length > 0">
                 <div class="interval-item">
                     实收（元）：￥1221.00
                 </div>
 
-                <div class="set-form cell-group">
-                    <div class="cell cell_hover">
+                <div class="set-form cell-group mt10">
+                    <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
-                            <label>全部收银员</label>
-                            <i class="cell-right-arrow">
-                            </i>
+                            <label class="span_light">支付宝(实收)</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">微信</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">优惠金额</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">退款</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">交易笔数</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">支付笔数</label>
+                            <div class="cell-right">富阳喜脉健康</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">退款笔数</label>
+                            <div class="cell-right">富阳喜脉健康</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="set-form cell-group mt10">
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">门店</label>
-                            <div class="cell-right">富阳喜脉健康</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">门店</label>
-                            <div class="cell-right">富阳喜脉健康</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="set-form cell-group mt10">
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">门店</label>
-                            <div class="cell-right">富阳喜脉健康</div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div v-else>
@@ -90,6 +113,27 @@
                 />
             </van-popup>
 
+
+            <van-popup
+                    v-model="userPickerShow"
+                    position="bottom"
+                    :overlay="true"
+            >
+                <van-picker
+                        ref="departpicker"
+                        v-if="this.userPickerShow"
+                        :columns="userListColumns"
+                        @change="onUserChange"
+                        :item-height="34"
+                        show-toolbar
+                        :visible-item-count="5"
+                        confirm-button-text="确定"
+                        cancel-button-text="取消"
+                        @cancel="onUserCancel"
+                        @confirm="onUserConfirm">
+                </van-picker>
+            </van-popup>
+
         </div>
     </div>
 </template>
@@ -108,11 +152,13 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
         DatetimePicker,
+        Picker,
         Popup
     } from 'vant';
     import storeData from './store/index';
     import moment from 'moment';
     import ajax from '@/api/dailyKnots';
+    import ajaxUser from '@/api/user';
 
     export default {
         components: {
@@ -127,11 +173,17 @@
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
             DatetimePicker: DatetimePicker,
+            [Picker.name]: Picker,
             Popup: Popup
         },
 
         data() {
-            return storeData.call(this);
+            return Object.assign(storeData.call(this), {
+                userList: [], // 用户列表,
+                userPickerShow: false,
+                userListColumns: [],
+                userShow: false
+            });
         },
         created() {
             this.dateSearch = new Date();
@@ -158,29 +210,73 @@
                     return;
                 } else {
                     this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
+                    this.getDailyOrder();
                 }
                 console.log(this.dateSearch)
             },
+            merchantId() {
+                return new Promise((resolve, reject) => {
+                    ajaxUser.merchantId({
+                        // isQueryAll: true
+                    }).then(response => {
+                        if (!response.success === true) {
+                            Toast(response.msg || '获取用户信息异常');
+                            return reject({});
+                        } else {
+                            if (response.data && response.data.isMerchant) {
+
+                                return resolve(
+                                    response.data
+                                );
+                            } else {
+                                return reject({});
+                            }
+                        }
+                    }).catch(() => {
+                        return reject({});
+                    });
+                })
+            },
             getDailyOrder() {
-                ajax.getRJOrder({
-                    refundOrderNo: '99999'
+                Promise.all([this.merchantId()]).then((results) => {
+                    if (results && results.length > 0) {
+                        console.log(results)
+                        if (results[0]) {
+                            if (results[0].isMerchant === true) {
+                                this.userShow = true;
+                                this.userList = results[0].merchantUsers;
+
+                                if (this.userList) {
+                                    let arr = [];
+                                    this.userList.forEach(it => {
+                                        arr.push(it.userRealName);
+                                    });
+                                    this.userListColumns = arr;
+                                }
+                            } else {
+                                this.userShow = false;
+                            }
+                        }
+
+                        this.dailyOrderFetch();
+                    }
+                });
+            },
+            dailyOrderFetch() {
+                ajax.queryDailyList({
+                    startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                    endTime: moment(this.dateSearch).format("YYYYMMDD") + "235959",
+                    operId: '', // 根据条件传
+                    payOrderType: 'xxsk'
                 }).then(response => {
                     if (!response.success === true) {
-                        Dialog.confirm({
-                            title: response.msg || '退出失败',
-                            message: ''
-                        }).then(() => {
-                        }).catch(() => {
-                        });
+                        Toast(response.msg ? response.msg : '日结请求失败');
                         return;
                     } else {
-                        setTimeout(() => {
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }, 800);
+
                     }
                 }).catch(() => {
+                    return;
                 });
             },
             dateChangeAction() {
@@ -195,6 +291,19 @@
             dateTimeConfirmAction(values) {
                 this.dateSearch = values;
                 this.dateTimePickerStatus = false;
+                this.getDailyOrder();
+            },
+            userPickerAction() {
+                this.userPickerShow = true;
+            },
+            onUserChange() {
+
+            },
+            onUserCancel() {
+                this.userPickerShow = false;
+            },
+            onUserConfirm() {
+                this.userPickerShow = false;
             },
             navBackClick() {
                 setTimeout(() => {

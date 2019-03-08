@@ -1,27 +1,36 @@
 <template>
-    <div class="cashier_failure-wrapper container-wrapper">
-<div class="prompt">
-    <div class="prompt-label">{{promptLabel}}</div>
-</div>
+    <div>
+        <van-nav-bar
+                class="bar-wrapper"
+                :title="this.$route.meta.title"
+                left-arrow
+                :z-index="999"
+                @click-left="navBackClick"
+        />
+        <div class="cashier_failure-wrapper container-wrapper">
+            <div class="prompt">
+                <div class="prompt-label">{{promptLabel}}</div>
+            </div>
 
-        <button
-                class="
+            <button
+                    class="
                          btn
                          btn-block
                          btn-primary
                          mt35"
-                @click="completeAction()"
-        >重新收款
-        </button>
-        <button
-                class="
+                    @click="completeAction()"
+            >重新收款
+            </button>
+            <button
+                    class="
                          btn
                          btn-block
                          btn-ghost
                          mt20"
-                @click="completeAction()"
-        >撤销订单
-        </button>
+                    @click="completeAction()"
+            >撤销订单
+            </button>
+        </div>
     </div>
 </template>
 
@@ -43,6 +52,13 @@
                     this.$router.push({
                         name: 'login',
                         query: ''
+                    });
+                }, 800);
+            },
+            navBackClick() {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'home'
                     });
                 }, 800);
             }
