@@ -82,6 +82,44 @@ export function moneyFormat(value) {
   }
 }
 
+// 金额格式化
+export function moneyFormat_noComma(value) {
+    let number = (value + '').replace(/\,/g, '')
+    if (isNaN(number) || number === '') {
+        return ''
+    }
+    number = Math.round(number * 100) / 100;
+    if (number < 0) {
+        return (
+            '-' +
+            outputDollars(Math.floor(Math.abs(number) - 0) + '') +
+            outputCents(Math.abs(number) - 0)
+        );
+    } else {
+        return outputDollars(Math.floor(number - 0) + '') + outputCents(number - 0);
+    }
+
+    // 格式化金额
+    function outputDollars(number) {
+        if (number.length <= 3) {
+            return number === '' ? '0' : number
+        } else {
+            let mod = number.length % 3;
+            let output = mod === 0 ? '' : number.substring(0, mod);
+            for (let i = 0; i < Math.floor(number.length / 3); i++) {
+                if (mod === 0 && i === 0) {
+                    output += number.substring(mod + 3 * i, mod + 3 * i + 3);
+                }
+            }
+            return output;
+        }
+    }
+    function outputCents(value) {
+        let amount = Math.round((value - Math.floor(value)) * 100);
+        return amount < 10 ? '.0' + amount : '.' + amount;
+    }
+}
+
 export function codefans_net_CC2PY(l1) {
     var l2 = l1.length;
     var I1 = "";

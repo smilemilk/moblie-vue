@@ -234,15 +234,21 @@
                     }
                 }
 
-                if ((this.amount+'').indexOf('.') > -1) {
 
+                if ((this.amount+'').indexOf('.') > -1) {
+                    console.log((this.amount+''))
+
+                    console.log((this.amount+'').split(".")[1])
+                    if ((this.amount+'').split(".")[1].length > 2) {
+                        return;
+                    }
                 }
 
                 this.amount = this.amount + (value+'');
                 Toast(value);
             },
             onDelete() {
-                Toast('delete');
+                // Toast('delete');
                 if ((this.amount+'').length >0) {
                     this.amount=this.amount.substring(0,this.amount.length-1);
                 }

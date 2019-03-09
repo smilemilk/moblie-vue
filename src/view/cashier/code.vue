@@ -11,7 +11,8 @@
             <div class="card">
                 <div class="flex-content flex-content-align plr16"
                      :class="this.countDownCount ? 'flex-content-spaceBetween': 'flex-content-justify'">
-                    <div class="cashier-account">收款金额：<strong v-if="this.amount">￥{{amount}}</strong></div>
+                    <div class="cashier-account">收款金额：<strong
+                            v-if="this.amount">￥{{amount|$_filters_moneyFormat_noComma}}</strong></div>
                     <div class="countDown" v-show="this.countDownCount">倒计时：<strong
                             class="danger">{{countDownCount}}s</strong></div>
                 </div>

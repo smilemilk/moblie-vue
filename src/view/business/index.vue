@@ -147,7 +147,9 @@
                     startDate: moment(this.dateSearch).format("YYYYMMDD")+'000000',
                     endDate: moment(this.dateSearch).format("YYYYMMDD")+"235959",
                     tradeOrderNo: '',
-                    payOrderType: 'xxsk'
+                    payOrderType: 'xxsk',
+                    limit: 20,
+                    page: 1
                 }).then(response => {
                     if (!response.success === true) {
                         this.orderList = [];

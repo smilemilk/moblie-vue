@@ -4,7 +4,7 @@ export default function () {
         minDate: '',
         maxDate: '',
         dateTimePickerStatus: false,
-        dailyList: [],
+        dailyList: {},
         promptLabel: '没有日结记录~'
     }
 }

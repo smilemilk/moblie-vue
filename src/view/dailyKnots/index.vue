@@ -36,52 +36,52 @@
                 </div>
             </div>
 
-            <div v-if="dailyList && dailyList.length > 0">
+            <div v-if="dailyList && Object.keys(dailyList).length > 0">
                 <div class="interval-item">
-                    实收（元）：￥1221.00
+                    实收（元）：{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
                 </div>
 
                 <div class="set-form cell-group mt10">
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">支付宝(实收)</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.alipayAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">微信</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.wxAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">优惠金额</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.discountAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">退款</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.refundAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">交易笔数</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.tradeNums}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">支付笔数</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.payNums}}</div>
                         </div>
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">退款笔数</label>
-                            <div class="cell-right">富阳喜脉健康</div>
+                            <div class="cell-right">{{dailyList.refundNums}}</div>
                         </div>
                     </div>
                 </div>
@@ -240,7 +240,6 @@
             getDailyOrder() {
                 Promise.all([this.merchantId()]).then((results) => {
                     if (results && results.length > 0) {
-                        console.log(results)
                         if (results[0]) {
                             if (results[0].isMerchant === true) {
                                 this.userShow = true;
@@ -273,7 +272,15 @@
                         Toast(response.msg ? response.msg : '日结请求失败');
                         return;
                     } else {
-
+                       if (response.data) {
+                           if ((response.data.refundNums === 0) &&
+                               (response.data.tradeNums === 0)
+                           ) {
+                               this.dailyList = {};
+                           } else {
+                               this.dailyList = response.data;
+                           }
+                       }
                     }
                 }).catch(() => {
                     return;

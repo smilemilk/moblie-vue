@@ -2,6 +2,7 @@ import {
     parseTime,
     moneyFormat
 } from '@/filters/index';
+import {moneyFormat_noComma} from "./index";
 
 export default {
     filters: {
@@ -13,6 +14,9 @@ export default {
         },
         $_filters_moneyFormat_fen: (val) => {
             return moneyFormat(val/100);
+        },
+        $_filters_moneyFormat_noComma: (val) => {
+            return moneyFormat_noComma(val)
         }
     }
 }
