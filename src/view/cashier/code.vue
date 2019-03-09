@@ -160,13 +160,20 @@
                                 if (response.data.payOrderStatus) {
                                     let payOrderStatus = response.data.payOrderStatus;
                                     if (payOrderStatus === '0' || payOrderStatus === '8') {
+                                        // _count = 0;
+                                        console.log(_count)
+                                        clearInterval(self.queryOrderInterval);
+                                    }
+
+                                    // 2 表示支付成功
+                                    if (payOrderStatus === '2') {
                                         _count = 0;
                                         clearInterval(self.queryOrderInterval);
-                                        // setTimeout(() => {
-                                        //     self.$router.push({
-                                        //         name: 'cashierSuccess'
-                                        //     });
-                                        // }, 800);
+                                        setTimeout(() => {
+                                            self.$router.push({
+                                                name: 'cashierSuccess'
+                                            });
+                                        }, 800);
                                     }
                                 }
                             } else {
@@ -181,11 +188,20 @@
                 }
             },
             orderOverTimeAction() {
-                setTimeout(() => {
-                    this.$router.push({
-                        name: 'cashierFailure'
-                    });
-                }, 800);
+                Dialog.confirm({
+                    title: '收款已超时',
+                    message: '是否撤销此次交易?',
+                    showCancelButton: true
+                }).then(() => {
+
+                }).catch(() => {
+                });
+
+                // setTimeout(() => {
+                //     this.$router.push({
+                //         name: 'cashierFailure'
+                //     });
+                // }, 800);
             },
             failCodeBuild() {
                 Dialog.confirm({
