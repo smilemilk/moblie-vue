@@ -3,7 +3,7 @@
 import request from '@/libs/request';
 import util from '@/libs/util';
 
-export function getTradeList (params) {
+export function getTradeSumAmount (params) {
     return request({
         url: util.ajaxFront + 'XiMai/queryTradeOrderSum',
         method: 'get',
@@ -20,6 +20,6 @@ export function getTrade (params) {
 }
 
 export default {
-    getTradeList,
+    getTradeSumAmount,
     getTrade
 };

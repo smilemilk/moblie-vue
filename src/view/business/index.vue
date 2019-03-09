@@ -12,7 +12,8 @@
                 <div class="panel-item-select"
                      @click="orderStatusToggleHandle()"
                      :class="orderStatusShow ? 'panel-item-select_down':''"
-                >筛选</div>
+                >筛选
+                </div>
                 <div @click="orderHistoryAction()"
                      class=""
                 >
@@ -29,7 +30,8 @@
                             :class="item.key === orderSelected ? 'active' :''"
                             @click="orderStatusChooseHandle(item.key)"
                             class="panel-downBody-item flex-content flex-content-align flex-content-justify"
-                    >{{item.value}}</li>
+                    >{{item.value}}
+                    </li>
                 </ul>
                 <button
                         class="
@@ -54,33 +56,28 @@
             </div>
 
             <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
-                <div class="cell">
+                <div class="cell" v-for="(item, key) in this.orderList" :key="key">
                     <div class="cell-inner flex-content flex-content-spaceBetween">
                         <div class="flex-content flex-content-top">
                             <i class="icon-payType icon-payType_alipay mr10"></i>
+                            {{item.payType}}
                             <div>
-                                <div class="font-n-d">富阳喜脉健康</div>
+                                <div class="font-n-d">{{item.tradeOrderName}}</div>
                                 <div class="font-s-d mt10">
-                                    富阳喜脉健康
+                                    {{item.tradeThirdNo}}
                                 </div>
                                 <div class="font-s-d">
-                                    富阳喜脉健康
+                                    {{item.radeOrderNo}}
                                 </div>
-                                <div class="time">9999</div>
+                                <div class="time">{{item.tradeTime}}</div>
                             </div>
 
                         </div>
 
                         <div class="cell-right">
-                            <div class="font-l-d">99999</div>
-                            <div class="font-s-b mt4 align-r">有退款</div>
+                            <div class="font-l-d">{{item.tradeAmount}}</div>
+                            <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
                         </div>
-                    </div>
-                </div>
-                <div class="cell">
-                    <div class="cell-inner cell-inner-lr">
-                        <label>门店</label>
-                        <div class="cell-right">富阳喜脉健康</div>
                     </div>
                 </div>
             </div>
@@ -132,52 +129,80 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                countDownNum: null,
+                queryOrder: {
+                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
+                    startDate: '',
+                    endDate: '',
+                    tradeOrderNo: '',
+                    payOrderType: 'xxsk',
+                    limit: 20,
+                    page: 1
+                },
                 orderStatusShow: false
             });
         },
         created() {
             this.dateSearch = new Date();
+            this.queryOrder = {
+                ...this.queryOrder,
+                startDate: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                endDate: moment(this.dateSearch).format("YYYYMMDD") + "235959"
+            };
             this.getOrderList();
+            this.getOrderSumAmount();
         },
         methods: {
             getOrderList() {
-                ajax.getTradeList({
-                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
-                    startDate: moment(this.dateSearch).format("YYYYMMDD")+'000000',
-                    endDate: moment(this.dateSearch).format("YYYYMMDD")+"235959",
-                    tradeOrderNo: '',
-                    payOrderType: 'xxsk',
-                    limit: 20,
-                    page: 1
-                }).then(response => {
+                ajax.getTrade(this.queryOrder).then(response => {
                     if (!response.success === true) {
                         this.orderList = [];
-                        Dialog.confirm({
-                            title: response.msg || '退出失败',
-                            message: ''
-                        }).then(() => {
-                        }).catch(() => {
-                        });
                         return;
                     } else {
-                        setTimeout(() => {
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }, 800);
+                        this.orderList = response.data.items;
                     }
                 }).catch(() => {
                     this.orderList = [];
                 });
             },
+            getOrderSumAmount() {
+                ajax.getTradeSumAmount({
+                    startDate: this.queryOrder.startDate,
+                    endDate: this.queryOrder.endDate,
+                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
+                    tradeOrderNo: '',
+                    payOrderType: 'xxsk',
+                }).then(response => {
+                    if (!response.success === true) {
+
+                    } else {
+
+                    }
+                }).catch(() => {
+                });
+            },
             orderStatusAction() {
 
+
+                const orderStatus = {
+                    'all': '',
+                    'success': '2',
+                    'close': '8',
+                    'wait': '0',
+                    'refund': '10'
+                };
+
+                this.queryOrder = {
+                    ...this.queryOrder,
+                    orderStatus: orderStatus[this.orderSelected],
+                    page: 1
+                };
+                this.getOrderList();
             },
             orderStatusToggleHandle() {
-               this.orderStatusShow = !this.orderStatusShow;
+                this.orderStatusShow = !this.orderStatusShow;
             },
             orderStatusChooseHandle(key) {
+                console.log(key)
                 this.orderSelected = key;
             },
             orderHistoryAction() {

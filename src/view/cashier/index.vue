@@ -174,7 +174,7 @@
                 ajax.createOrder({
                     orderId: (Math.floor(Math.random() * 900) + 100) + '' + (new Date()).valueOf(),
                     payOrderType: 'xxsk',
-                    payAmount: this.amount * 100,
+                    payAmount: parseFloat(this.amount * 100).toFixed(0),
                     remark: this.remark,
                     deadTime: 5 // 五分钟
                 }).then(response => {
@@ -207,16 +207,10 @@
                     return;
                 });
             },
-            sorry() {
-                Toast('暂无后续逻辑~');
-                this.$router.push('incomeList');
-            },
             remarkToggleHandle() {
                 this.remarkShow = true;
             },
             onInput(value) {
-                console.log(value)
-                console.log(typeof(value))
                 if (value === '.') {
                     if ((this.amount+'').indexOf('.')>-1) {
                         return;
@@ -236,16 +230,13 @@
 
 
                 if ((this.amount+'').indexOf('.') > -1) {
-                    console.log((this.amount+''))
-
-                    console.log((this.amount+'').split(".")[1])
-                    if ((this.amount+'').split(".")[1].length > 2) {
+                    if ((this.amount+'').split(".")[1].length > 1) {
                         return;
                     }
                 }
 
                 this.amount = this.amount + (value+'');
-                Toast(value);
+                // Toast(value);
             },
             onDelete() {
                 // Toast('delete');
