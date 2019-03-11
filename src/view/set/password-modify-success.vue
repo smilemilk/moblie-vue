@@ -3,9 +3,8 @@
         <van-nav-bar
                 class="bar-wrapper"
                 :title="this.$route.meta.title"
-                left-arrow
+                :left-arrow="false"
                 :z-index="999"
-                @click-left="navBackClick"
         />
         <div class="set_password-wrapper container-wrapper">
 
@@ -44,13 +43,6 @@
                     this.$router.push({
                         name: 'login',
                         query: ''
-                    });
-                }, 800);
-            },
-            navBackClick() {
-                setTimeout(() => {
-                    this.$router.push({
-                        name: 'set'
                     });
                 }, 800);
             }

@@ -63,6 +63,8 @@
 <script>
     import storeData from './store/password-modify';
     import ajax from '@/api/set';
+    import RSA from '@/libs/RSA';
+    import ajaxRSA from '@/api/login';
     import {
         Toast,
     } from 'vant';
@@ -72,11 +74,12 @@
             return Object.assign(storeData.call(this), {
                 oldShow: false,
                 newShow: false,
-                againShow: false
+                againShow: false,
+                keyPair: ''
             });
         },
         created() {
-
+            this.getTokenFetch();
         },
         watch: {
             'password.old': function (val, old) {
@@ -150,6 +153,21 @@
             showHandle(item) {
                 this[item+'Show'] = !this[item+'Show'];
             },
+            getTokenFetch() {
+                ajaxRSA.getToken({
+                    _: new Date().getTime()
+                }).then(response => {
+                    if (!response.success === true) {
+                        return;
+                    }
+                    let res = response.data;
+                    const keyPair = RSA.getKeyPair(
+                        res.exponent, '', res.modulus
+                    );
+                    this.keyPair = keyPair;
+                }).catch(() => {
+                });
+            },
             submitAction() {
                 if (this.submitRule.join() === '1,1,1') {
                     this.submitStatus = true;
@@ -167,8 +185,8 @@
                 }
 
                 ajax.modPassword({
-                    oldPwd: this.password.old,
-                    newPwd: this.password.new
+                    oldPwd: RSA.encryptedString(this.keyPair, this.password.old),
+                    newPwd: RSA.encryptedString(this.keyPair, this.password.new)
                 }).then(response => {
                     if (!response.success === true) {
                         Dialog.confirm({
@@ -187,7 +205,7 @@
                             }
                             setTimeout(() => {
                                 this.$router.push({
-                                    name: 'login'
+                                    name: 'passwordModifySuccess'
                                 });
                             }, 800);
                         } else {
