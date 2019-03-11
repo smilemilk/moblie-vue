@@ -7,22 +7,27 @@
                 :z-index="999"
                 @click-left="navBackClick"
         />
-        <div class="cashier-wrapper container-wrapper p16">
-            <div class="card">
-                <div class="flex-content flex-content-align plr16"
-                     :class="this.countDownCount ? 'flex-content-spaceBetween': 'flex-content-justify'">
-                    <div class="cashier-account">收款金额：<strong
-                            v-if="this.amount">￥{{amount|$_filters_moneyFormat_noComma}}</strong></div>
-                    <div class="countDown" v-show="this.countDownCount">倒计时：<strong
-                            class="danger">{{countDownCount}}s</strong></div>
-                </div>
-                <div class="cashier-tip mt14"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
-                <div class="cashier-code-container">
-                    <div ref="code" id="code" class="flex-content flex-content-justify"></div>
-                    <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
+        <div class="cashier-wrapper container-wrapper">
+            <div class="plr16 pt16">
+                <div class="card ">
+                    <div class="flex-content flex-content-align plr16 mb12"
+                         :class="this.countDownCount ? 'flex-content-spaceBetween': 'flex-content-justify'">
+                        <div class="cashier-account">收款金额：<strong
+                                v-if="this.amount">￥{{amount|$_filters_moneyFormat_noComma}}</strong></div>
+                        <div class="countDown" v-show="this.countDownCount">倒计时：<strong
+                                class="danger">{{countDownCount}}s</strong></div>
+                    </div>
+                    <div class="danger align-c font-n-l"
+                         v-if="!this.countDownCount">二维码已失效，支付结果查询中…</div>
+                    <div class="cashier-code-container">
+                        <div ref="code" id="code" class="flex-content flex-content-justify"></div>
+                        <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
+                    </div>
                 </div>
             </div>
+
             <div class="payType-box">
+                <div class="cashier-tip"><i class="icon-redPacket"></i>温馨提示：使用微脉APP扫码支付可使用优惠券哦</div>
                 <ul class="payType-box-container">
                     <li class="payType-item">
                         <i class="icon-payKind icon-payKind_alipay"></i>
@@ -195,15 +200,14 @@
                     confirmButtonText: '是',
                     cancelButtonText: '否'
                 }).then(() => {
-
+                    setTimeout(() => {
+                        this.$router.push({
+                            name: 'cashier',
+                            query: ''
+                        });
+                    }, 800);
                 }).catch(() => {
                 });
-
-                // setTimeout(() => {
-                //     this.$router.push({
-                //         name: 'cashierFailure'
-                //     });
-                // }, 800);
             },
             failCodeBuild() {
                 Dialog.confirm({
@@ -246,9 +250,10 @@
                 background-size: 100% auto;
             }
             .payType-box {
-                padding-top: 22px;
+                padding-top: 13px;
                 text-align: center;
                 &-container {
+                    margin-top: 14px;
                     display: inline-block;
                 }
                 .payType-item {
@@ -284,7 +289,7 @@
             padding-left: 45px;
             padding-right: 45px;
             text-align: center;
-            margin-top: 30px;
+            margin-top: 17px;
             img {
                 display: inline-block;
                 width: 100%;

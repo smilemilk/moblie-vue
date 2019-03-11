@@ -3,13 +3,19 @@
         <van-nav-bar
                 class="bar-wrapper"
                 :title="this.$route.meta.title"
-                left-arrow
+                :left-arrow="false"
                 :z-index="999"
-                @click-left="navBackClick"
         />
         <div class="cashier_failure-wrapper container-wrapper">
             <div class="prompt">
                 <div class="prompt-label">{{promptLabel}}</div>
+            </div>
+
+            <div class="prompt-label-detail mt20">
+                1.订单撤销失败，可继续进行收款，该笔订单仍然有效，若用户付款成功，会自动退还支付账户。
+            </div>
+            <div class="prompt-label-detail">
+                2.该订单5分钟后自动失效或点击查看订单去订单详情手动取消。
             </div>
 
             <button
@@ -18,7 +24,7 @@
                          btn-block
                          btn-primary
                          mt35"
-                    @click="completeAction()"
+                    @click="againAction()"
             >重新收款
             </button>
             <button
@@ -27,7 +33,7 @@
                          btn-block
                          btn-ghost
                          mt20"
-                    @click="completeAction()"
+                    @click="cancelAction()"
             >撤销订单
             </button>
         </div>
@@ -47,20 +53,16 @@
         },
         watch: {},
         methods: {
-            completeAction() {
+            againAction() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'login',
+                        name: 'cashier',
                         query: ''
                     });
                 }, 800);
             },
-            navBackClick() {
-                setTimeout(() => {
-                    this.$router.push({
-                        name: 'home'
-                    });
-                }, 800);
+            cancelAction() {
+
             }
         }
     };
