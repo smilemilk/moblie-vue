@@ -17,7 +17,7 @@ if (argument[0] === 'build') { // 测试
 }
 
 function writeServerFile() {
-  var data = 'module.exports = ' + JSON.stringify(server);
+  let data = 'module.exports = ' + JSON.stringify(server);
   fs.writeFile(path.join(__dirname, 'server.js'), data, function (err) {
     if (err) {
       throw err;

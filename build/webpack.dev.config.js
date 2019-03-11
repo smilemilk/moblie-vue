@@ -3,8 +3,10 @@ const config = require('../config');
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT && Number(process.env.PORT);
+const merge = require('webpack-merge');
+const webpackBaseConfig = require('./webpack.base.config.js');
 
-module.exports = {
+module.exports = merge(webpackBaseConfig, {
     devServer: {
         clientLogLevel: 'warning',
         historyApiFallback: true,
@@ -15,7 +17,7 @@ module.exports = {
         port: PORT || config.dev.port,
         open: config.dev.autoOpenBrowser,
         overlay: config.dev.errorOverlay
-            ? { warnings: false, errors: true }
+            ? {warnings: false, errors: true}
             : false,
         proxy: config.dev.proxyTable,
         quiet: true, // necessary for FriendlyErrorsPlugin
@@ -24,5 +26,5 @@ module.exports = {
         },
         disableHostCheck: true // 解决invalid Host header，解决hostname不是配置内的
     }
-};
+});
 

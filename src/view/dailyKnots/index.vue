@@ -161,6 +161,7 @@
     import moment from 'moment';
     import ajax from '@/api/dailyKnots';
     import ajaxUser from '@/api/user';
+    import {ChartPie} from '_c/charts/index';
 
     export default {
         components: {
@@ -176,7 +177,8 @@
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
             DatetimePicker: DatetimePicker,
             [Picker.name]: Picker,
-            Popup: Popup
+            Popup: Popup,
+            ChartPie: ChartPie
         },
 
         data() {
