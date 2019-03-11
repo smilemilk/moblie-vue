@@ -56,6 +56,12 @@
                     </div>
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
+                            <label class="span_light">微脉余额</label>
+                            <div class="cell-right">{{dailyList.wmAmount | $_filters_moneyFormat_fen}}</div>
+                        </div>
+                    </div>
+                    <div class="cell cell_small">
+                        <div class="cell-inner cell-inner-lr">
                             <label class="span_light">优惠金额</label>
                             <div class="cell-right">{{dailyList.discountAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
@@ -87,7 +93,15 @@
                 </div>
 
                 <div class="mt10 cell">
-
+                    <chart-pie v-if="pieAmount_fund.length > 0"
+                               style="min-height: 350px;"
+                               :valuePie="pieAmount_fund"
+                               :legendStatus="false"
+                               radius="50%"
+                               centerY="57%"
+                               text="资金通道收入占比(元)"
+                               class="border-dash padding-top-10"
+                    ></chart-pie>
                 </div>
             </div>
 
@@ -186,7 +200,8 @@
                 userList: [], // 用户列表,
                 userPickerShow: false,
                 userListColumns: [],
-                userShow: false
+                userShow: false,
+                pieAmount_fund: []
             });
         },
         created() {
@@ -216,7 +231,6 @@
                     this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
                     this.getDailyOrder();
                 }
-                console.log(this.dateSearch)
             },
             merchantId() {
                 return new Promise((resolve, reject) => {
@@ -283,6 +297,7 @@
                                this.dailyList = {};
                            } else {
                                this.dailyList = response.data;
+
                            }
                        }
                     }
