@@ -90,7 +90,7 @@
                 countDownCount: 0,
                 queryOrderInterval: undefined,
                 queryOrderCount: 0,
-
+                orderOverStatus: false
             });
         },
         created() {
@@ -129,13 +129,16 @@
             countDown() {
                 let self= this;
                 self.countDownCount = 180;
-                self.countDownInterval = setInterval(() => {
+                self.countDownInterval = window.setInterval(() => {
                     self.countDownCount--;
-                    if (self.countDownCount > 0) {
+                    if (self.countDownCount > 0 || self.countDownCount === -2) {
                     } else {
                         self.countDownCount = 0;
-                        self.orderOverTimeAction();
-                        clearInterval(self.countDownInterval);
+                        if (self.countDownCount === 0) {
+                            self.orderOverStatus = true;
+                        }
+                        self.orderOverTimeAction(self.orderOverStatus);
+                        window.clearInterval(self.countDownInterval);
                     }
                 }, 1000);
             },
@@ -143,12 +146,12 @@
                 let self = this;
                 let _count = self.queryOrderCount;
 
-                    self.queryOrderInterval = setInterval(() => {
+                    self.queryOrderInterval = window.setInterval(() => {
                         _count++;
 
                         if (_count > 5*30) { // 有效时间 5分钟，5分钟后 同一笔订单失效
                             _count = 0;
-                            clearInterval(self.queryOrderInterval);
+                            window.clearInterval(self.queryOrderInterval);
                         }
                         queryOrderFetch(_count);
                     }, 2000); // 2s查询一次 收款结果
@@ -192,22 +195,25 @@
                     });
                 }
             },
-            orderOverTimeAction() {
-                Dialog.confirm({
-                    title: '收款已超时',
-                    message: '是否撤销此次交易?',
-                    showCancelButton: true,
-                    confirmButtonText: '是',
-                    cancelButtonText: '否'
-                }).then(() => {
-                    setTimeout(() => {
-                        this.$router.push({
-                            name: 'cashier',
-                            query: ''
-                        });
-                    }, 800);
-                }).catch(() => {
-                });
+            orderOverTimeAction(status) {
+                if (status === true) {
+                    Dialog.confirm({
+                        title: '收款已超时',
+                        message: '是否撤销此次交易?',
+                        showCancelButton: true,
+                        confirmButtonText: '是',
+                        cancelButtonText: '否'
+                    }).then(() => {
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'cashier',
+                                query: ''
+                            });
+                        }, 800);
+                    }).catch(() => {
+                        this.countDown();
+                    });
+                }
             },
             failCodeBuild() {
                 Dialog.confirm({
@@ -220,11 +226,34 @@
                 });
             },
             navBackClick() {
-                setTimeout(() => {
-                    this.$router.push({
-                        name: 'cashier'
+                if (this.countDownCount) {
+                    this.countDownCount = -1;
+                    this.orderOverStatus = false;
+                    window.clearInterval(this.countDownInterval);
+                    window.clearInterval(this.queryOrderInterval);
+                    Dialog.confirm({
+                        title: '是否撤销此次交易',
+                        message: '',
+                        showCancelButton: true,
+                        confirmButtonText: '是',
+                        cancelButtonText: '否'
+                    }).then(() => {
+                        this.countDownCount = undefined;
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'cashier'
+                            });
+                        }, 800);
+                    }).catch(() => {
                     });
-                }, 800);
+
+                } else {
+                    setTimeout(() => {
+                        this.$router.push({
+                            name: 'cashier'
+                        });
+                    }, 800);
+                }
             }
         }
     };
