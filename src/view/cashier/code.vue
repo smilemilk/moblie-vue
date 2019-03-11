@@ -162,7 +162,7 @@
                                     if (payOrderStatus === '0' || payOrderStatus === '8') {
                                         // _count = 0;
                                         console.log(_count)
-                                        clearInterval(self.queryOrderInterval);
+                                        // clearInterval(self.queryOrderInterval);
                                     }
 
                                     // 2 表示支付成功
@@ -191,7 +191,9 @@
                 Dialog.confirm({
                     title: '收款已超时',
                     message: '是否撤销此次交易?',
-                    showCancelButton: true
+                    showCancelButton: true,
+                    confirmButtonText: '是',
+                    cancelButtonText: '否'
                 }).then(() => {
 
                 }).catch(() => {
@@ -207,7 +209,7 @@
                 Dialog.confirm({
                     title: '创建二维码订单失败',
                     message: '',
-                    showCancelButton: false
+                    showCancelButton: false,
                 }).then(() => {
 
                 }).catch(() => {

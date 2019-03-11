@@ -41,7 +41,7 @@
                     实收（元）：{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
                 </div>
 
-                <div class="set-form cell-group mt10">
+                <div class="cell-group mt10">
                     <div class="cell cell_small">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">支付宝(实收)</label>
@@ -86,6 +86,9 @@
                     </div>
                 </div>
 
+                <div class="mt10 cell">
+
+                </div>
             </div>
 
             <div v-else>
@@ -112,7 +115,6 @@
                         @confirm="dateTimeConfirmAction(dateSearch)"
                 />
             </van-popup>
-
 
             <van-popup
                     v-model="userPickerShow"

@@ -41,15 +41,14 @@
             completeAction() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'login',
-                        query: ''
+                        name: 'cashier'
                     });
                 }, 800);
             },
             navBackClick() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'home'
+                        name: 'cashier'
                     });
                 }, 800);
             }
