@@ -59,23 +59,25 @@
                 <div class="cell" v-for="(item, key) in this.orderList" :key="key">
                     <div class="cell-inner flex-content flex-content-spaceBetween">
                         <div class="flex-content flex-content-top">
-                            <i class="icon-payType icon-payType_alipay mr10"></i>
-                            {{item.payType}}
+                            <i class="icon-payType mr10"
+                               :class="item.payType === 'wx' ? 'icon-payType_wx' :
+                               item.payType === 'alipay' ? 'icon-payType_alipay' : ''"
+                            ></i>
                             <div>
                                 <div class="font-n-d">{{item.tradeOrderName}}</div>
                                 <div class="font-s-d mt10">
-                                    {{item.tradeThirdNo}}
+                                    订单号:<span v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                 </div>
                                 <div class="font-s-d">
-                                    {{item.radeOrderNo}}
+                                    支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
                                 </div>
-                                <div class="time">{{item.tradeTime}}</div>
+                                <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}</div>
                             </div>
 
                         </div>
 
                         <div class="cell-right">
-                            <div class="font-l-d">{{item.tradeAmount}}</div>
+                            <div class="font-l-d">{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
                             <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
                         </div>
                     </div>
@@ -112,6 +114,7 @@
     import storeData from './store/index';
     import ajax from '@/api/business';
     import moment from 'moment';
+    import {payFundStatus} from '@/filters/status';
 
     export default {
         components: {
@@ -162,6 +165,11 @@
                         this.orderList = [];
                         return;
                     } else {
+                        response.data.items.map(it => {
+                            if (it.payType) {
+                                return it.payType = payFundStatus(it.payType);
+                            }
+                        });
                         this.orderList = response.data.items;
                     }
                 }).catch(() => {
@@ -185,8 +193,6 @@
                 });
             },
             orderStatusAction() {
-
-
                 const orderStatus = {
                     'all': '',
                     'success': '2',

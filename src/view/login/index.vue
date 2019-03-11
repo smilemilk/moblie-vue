@@ -339,7 +339,7 @@
                     } else {
                         if (response.data && response.data) {
                             this.merchantName = response.data.merchantName || '';
-                            localStorage.setItem('merchantName', this.merchantName);
+                            localStorage.setItem('merchantName', this.merchantNickName);
                             localStorage.setItem('merchantId', this.depart);
                         }
                     }
@@ -361,7 +361,7 @@
             },
             deleteAccountAction(item, key) {
                 Dialog.confirm({
-                    title: '确认删除登录账号',
+                    title: '确认删除历史登录账号?',
                     message: item.account
                 }).then(() => {
                     if (item.account === this.account) {

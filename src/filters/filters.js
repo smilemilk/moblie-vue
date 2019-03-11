@@ -12,6 +12,9 @@ export default {
         $_filters_parseTime: (val) => {
             return parseTime(val);
         },
+        $_filters_parseTime_hour: (val) => {
+            return parseTime(val, '{h}:{i}:{s}');
+        },
         $_filters_moneyFormat_fen: (val) => {
             return moneyFormat(val/100);
         },
@@ -20,3 +23,4 @@ export default {
         }
     }
 }
+
