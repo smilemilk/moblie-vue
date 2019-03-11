@@ -145,8 +145,12 @@
             this.dateSearch = new Date();
             this.queryOrder = {
                 ...this.queryOrder,
-                startDate: moment(this.dateSearch).format("YYYYMMDD") + '000000',
-                endDate: moment(this.dateSearch).format("YYYYMMDD") + "235959"
+                page: 2,
+
+                startDate: '20190310000000',
+                // moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                endDate: '20190310235959'
+                // moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
             this.getOrderList();
             this.getOrderSumAmount();

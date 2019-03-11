@@ -3,7 +3,7 @@
         <div class="login-inner">
             <h3 class="login-title">欢迎登录!</h3>
             <div v-if="this.departList &&
-            this.departList.length > 0"
+            this.departList.length > 0 && this.departPickerShow"
                  class="sculpture-item">
                 <i src=""
                    class="sculpture-item-img"
@@ -12,19 +12,19 @@
                     <div class="sculpture-item-name"
                          @click="departPickerHandle()"
                          v-if="
-                              this.departList &&
-                              this.departList.length > 0"
+                              this.merchantName && this.departPickerShow"
                     >
-                        {{departListCurrent}}
+                        {{merchantName}}
                         <i
-                                v-if="this.departList"
                                 class="icon-select-left"
                         ></i>
                     </div>
                 </div>
             </div>
 
-            <div class="item" :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
+            <div v-if="!this.departPickerShow"
+                 class="item"
+                 :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''">
                 <div class="item-wrapper">
                     <div class="item-label">机构编码</div>
                     <input v-model="depart"
@@ -109,25 +109,25 @@
                     @click="loginAction()">登录
             </button>
         </div>
-        <van-popup
-                v-model="departPickerShow"
-                position="bottom"
-                :overlay="true"
-        >
-            <van-picker
-                    ref="departpicker"
-                    v-if="this.departPickerShow"
-                    :columns="departListColumns"
-                    @change="onChange"
-                    :item-height="34"
-                    show-toolbar
-                    :visible-item-count="5"
-                    confirm-button-text="确定"
-                    cancel-button-text="取消"
-                    @cancel="onCancel"
-                    @confirm="onConfirm">
-            </van-picker>
-        </van-popup>
+        <!--<van-popup-->
+                <!--v-model="departPickerShow"-->
+                <!--position="bottom"-->
+                <!--:overlay="true"-->
+        <!--&gt;-->
+            <!--<van-picker-->
+                    <!--ref="departpicker"-->
+                    <!--v-if="this.departPickerShow"-->
+                    <!--:columns="departListColumns"-->
+                    <!--@change="onChange"-->
+                    <!--:item-height="34"-->
+                    <!--show-toolbar-->
+                    <!--:visible-item-count="5"-->
+                    <!--confirm-button-text="确定"-->
+                    <!--cancel-button-text="取消"-->
+                    <!--@cancel="onCancel"-->
+                    <!--@confirm="onConfirm">-->
+            <!--</van-picker>-->
+        <!--</van-popup>-->
     </div>
 </template>
 
@@ -149,6 +149,7 @@
         Popup
     } from 'vant';
     import storeData from './store/index';
+    import ajaxUser from '@/api/user';
     import ajax from '@/api/login';
     import Cookies from 'js-cookie';
     import RSA from '@/libs/RSA';
@@ -173,13 +174,24 @@
         data() {
             return Object.assign(storeData.call(this), {
                 // indexPicker:  0,
-                // valuePicker: ''
+                // valuePicker: '',
+                departNameShow: false,
+                merchantName: '',
+                merchantId: ''
             });
         },
         created() {
             this.getToken();
             this.accountList = this.accountListComputed();
             this.departList = this.departListComputed();
+
+            if (localStorage.getItem('merchantName') && localStorage.getItem('merchantName').length > 0) {
+                this.merchantName = localStorage.getItem('merchantName');
+                this.merchantId = localStorage.getItem('merchantId');
+                this.departPickerShow = true;
+            } else {
+               this.departPickerShow =false;
+            }
 
             if (this.departList && this.departList.length > 0) {
                 this.departListCurrent = this.departList[0]['depart'];
@@ -312,9 +324,25 @@
                     localStorage.setItem('userName_current', this.account);
                     localStorage.setItem('accountList', JSON.stringify(this.accountListComputed()));
                     localStorage.setItem('departList', JSON.stringify(this.departListComputed()));
+                    this.merchantInfo();
+
                     this.$router.push({
                         name: 'home'
                     });
+                }).catch(() => {
+                });
+            },
+            merchantInfo() {
+                ajaxUser.merchantUser({}).then(response => {
+                    if (!response.success === true) {
+                        return;
+                    } else {
+                        if (response.data && response.data) {
+                            this.merchantName = response.data.merchantName || '';
+                            localStorage.setItem('merchantName', this.merchantName);
+                            localStorage.setItem('merchantId', this.depart);
+                        }
+                    }
                 }).catch(() => {
                 });
             },
@@ -405,6 +433,9 @@
                     this.loginInputStatus[0] = 0;
                     this.loginInputStatus[2] = 0;
                 }
+
+                this.depart = this.merchantId;
+
             },
             onChange(picker, value, index) {
                 // Toast(`当前值：${value}, 当前索引：${index}`);
