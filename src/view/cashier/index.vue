@@ -18,10 +18,11 @@
                     <div class="cashier-input">
                         <div class="flex-content flex-content-spaceBetween flex-content-align">
                             <div class="cashier-input-unit mr4">￥</div>
-                            <input v-model="amount"
+                            <input v-model="this.amount"
                                    @touchstart.native.stop="keyboardShow = true"
                                    @focus="keyFocus()"
                                    class="item-input amount-input"
+                                   maxlength="9"
                                    placeholder="0.00"/>
                         </div>
                         <p class="item-notice"
@@ -55,6 +56,7 @@
                          btn-block
                          btn-primary
                          mt14"
+                        :class="this.btnStatus ? '' :'btn-disabled'"
                         @click="loginAction()">确定
                 </button>
             </div>
@@ -110,7 +112,8 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                keyboardShow: true
+                keyboardShow: true,
+                btnStatus: false
             });
         },
         created() {
@@ -120,14 +123,22 @@
             'amount': function (val, old) {
                 if (val) {
                     this.loginRule[0] = 1;
+                    this.btnStatus = true;
                     if (this.remark) {
                         this.loginStatus = true;
                     } else {
                         this.loginStatus = false;
                     }
+
+                    if (Math.floor(val*1) > 100000) {
+                        this.btnStatus = false;
+                        Toast('可输入的最大金额为100,000');
+                        return;
+                    }
                 } else {
+                    this.btnStatus = false;
                     this.loginRule[0] = 0;
-                    this.loginStatus = false;
+                    this.btnStatus = false;
                 }
                 if (val !== old) {
                     this.loginInputStatus[0] = 1;
@@ -148,8 +159,8 @@
                 } else {
                     this.loginInputStatus[1] = 0;
                 }
-                if (getBLen(val+'') > 100) {
-                    this.remark=old;
+                if (getBLen(val + '') > 100) {
+                    this.remark = old;
                     Toast('备注在100个字符之内');
                     return;
                 }
@@ -157,6 +168,17 @@
         },
         methods: {
             loginAction() {
+                if (this.btnStatus === false) {
+
+                    if (!this.amount) {
+                        Toast('请输入收款金额');
+                    }
+
+                    if (Math.floor(this.amount) > 100000) {
+                        Toast('可输入的最大金额为100,000');
+                    }
+                    return;
+                }
                 if ((this.loginRule.join() === '1,1') || (this.loginRule.join() === '1,0')) {
                     this.loginStatus = true;
                     this.loginRuleTextStatus = false;
@@ -187,7 +209,7 @@
                             let payOrderNo = response.data.match(/payOrderNo=(\S*)/)[1];
                             let query = {
                                 amount: this.amount,
-                                payOrderNo:  payOrderNo || '',
+                                payOrderNo: payOrderNo || '',
                                 code: response.data
                             };
                             setTimeout(() => {
@@ -212,36 +234,36 @@
             },
             onInput(value) {
                 if (value === '.') {
-                    if ((this.amount+'').indexOf('.')>-1) {
+                    if ((this.amount + '').indexOf('.') > -1) {
                         return;
                     }
                 }
                 if (value === '0' || value === 0) {
-                    if (this.amount+'' === '0') {
+                    if (this.amount + '' === '0') {
                         return;
                     }
                 }
 
-                if (this.amount+'' === '0') {
+                if (this.amount + '' === '0') {
                     if (value !== '.') {
                         return;
                     }
                 }
 
 
-                if ((this.amount+'').indexOf('.') > -1) {
-                    if ((this.amount+'').split(".")[1].length > 1) {
+                if ((this.amount + '').indexOf('.') > -1) {
+                    if ((this.amount + '').split(".")[1].length > 1) {
                         return;
                     }
                 }
 
-                this.amount = this.amount + (value+'');
+                this.amount = this.amount + (value + '');
                 // Toast(value);
             },
             onDelete() {
                 // Toast('delete');
-                if ((this.amount+'').length >0) {
-                    this.amount=this.amount.substring(0,this.amount.length-1);
+                if ((this.amount + '').length > 0) {
+                    this.amount = this.amount.substring(0, this.amount.length - 1);
                 }
             },
             keyFocus() {
