@@ -12,6 +12,7 @@
             <div class="item" :class="this.submitInputStatus[0] === 1 ? 'bB1' : ''">
                 <input v-model="password.old"
                        class="item-input"
+                       maxlength="20"
                        :type="this.oldShow ? 'text': 'password'"
                        placeholder="请输入原密码"/>
                 <i class="icon-eye"
@@ -25,6 +26,7 @@
                 <input v-model="password.new"
                        class="item-input"
                        :type="this.newShow ? 'text': 'password'"
+                       maxlength="20"
                        placeholder="请输入新的登录密码"/>
                 <i class="icon-eye"
                    v-if="password.new"
@@ -37,6 +39,7 @@
             <div class="item mt16" :class="this.submitInputStatus[2] === 1 ? 'bB1' : ''">
                 <input v-model="password.again"
                        class="item-input"
+                       maxlength="20"
                        :type="this.againShow ? 'text': 'password'"
                        placeholder="请再次输入新的登录密码"/>
                 <i class="icon-eye"
@@ -53,6 +56,7 @@
                          btn-block
                          btn-primary
                          mt27"
+                    :class="this.btnStatus ? '' : 'btn-disabled'"
                     @click="submitAction()"
             >提交
             </button>
@@ -65,6 +69,7 @@
     import ajax from '@/api/set';
     import RSA from '@/libs/RSA';
     import ajaxRSA from '@/api/login';
+    import {validaNumberCharacter} from '@/libs/validate';
     import {
         Toast,
     } from 'vant';
@@ -75,7 +80,8 @@
                 oldShow: false,
                 newShow: false,
                 againShow: false,
-                keyPair: ''
+                keyPair: '',
+                btnStatus: true
             });
         },
         created() {
@@ -110,6 +116,20 @@
                     } else {
                         this.submitStatus = false;
                     }
+
+                    if (!validaNumberCharacter(val)) {
+                        Toast('新密码只能为数字和字母');
+                        this.btnStatus = false;
+                        return;
+                    }
+
+                    if (this.password.new && this.password.old &&
+                        validaNumberCharacter(this.password.new)) {
+                        this.btnStatus = true;
+                    } else {
+                        this.btnStatus = false;
+                    }
+
                 } else {
                     this.submitRule[1] = 0;
                     this.submitStatus = false;
@@ -136,6 +156,19 @@
                         Toast('请先填写新的登录密码');
                         return;
                     }
+                    if (this.password.old.length === 0) {
+                        this.password.again = '';
+                        Toast('请先填写旧的登录密码');
+                        return;
+                    }
+
+                    if (this.password.new && this.password.old &&
+                        validaNumberCharacter(this.password.new) ) {
+                        this.btnStatus = true;
+                    } else {
+                        this.btnStatus = false;
+                    }
+
                 } else {
                     this.submitRule[2] = 0;
                     this.submitStatus = false;
@@ -151,7 +184,7 @@
         },
         methods: {
             showHandle(item) {
-                this[item+'Show'] = !this[item+'Show'];
+                this[item + 'Show'] = !this[item + 'Show'];
             },
             getTokenFetch() {
                 ajaxRSA.getToken({
@@ -170,19 +203,35 @@
             },
             submitAction() {
                 if (this.submitRule.join() === '1,1,1') {
+
                     this.submitStatus = true;
                     this.submitRuleTextStatus = false;
-                    this.submitFetch();
+
+                    console.log(this.password.new.length)
+
+                    if (this.password.new.length < 8) {
+                        Toast('新密码长度为8到20位');
+                        this.btnStatus = false;
+                        return;
+                    } else if (this.password.new !== this.password.again) {
+                        Toast('新密码和确认密码不一致，请确定');
+                        this.btnStatus = false;
+                        return;
+                    } else if (!validaNumberCharacter(this.password.new)) {
+                        Toast('新密码只能为数字和字母');
+                        this.btnStatus = false;
+                        return;
+                    } else {
+                        this.btnStatus = true;
+                        this.submitFetch();
+                    }
                 } else {
                     this.submitStatus = false;
+                    this.btnStatus = false;
                     this.submitRuleTextStatus = true;
                 }
             },
             submitFetch() {
-                if (this.password.new !== this.password.again) {
-                    Toast('新密码和确认密码不一致，请确定');
-                    return;
-                }
 
                 ajax.modPassword({
                     oldPwd: RSA.encryptedString(this.keyPair, this.password.old),

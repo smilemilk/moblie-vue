@@ -204,6 +204,8 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
+                        window.clearInterval(this.countDownInterval);
+                        window.clearInterval(this.queryOrderInterval);
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier',
@@ -221,8 +223,12 @@
                     message: '',
                     showCancelButton: false,
                 }).then(() => {
+                    window.clearInterval(this.countDownInterval);
+                    window.clearInterval(this.queryOrderInterval);
 
                 }).catch(() => {
+                    window.clearInterval(this.countDownInterval);
+                    window.clearInterval(this.queryOrderInterval);
                 });
             },
             navBackClick() {
@@ -248,6 +254,8 @@
                     });
 
                 } else {
+                    window.clearInterval(this.countDownInterval);
+                    window.clearInterval(this.queryOrderInterval);
                     setTimeout(() => {
                         this.$router.push({
                             name: 'cashier'
