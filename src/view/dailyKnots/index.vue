@@ -202,7 +202,13 @@
                 userListColumns: [],
                 userShow: false,
                 pieAmount_fund: [],
-                userCurrent: '全部收银人员'
+                userCurrent: '全部收银人员',
+                queryParams: {
+                startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                    endTime: moment(this.dateSearch).format("YYYYMMDD") + "235959",
+                operId: '', // 根据条件传
+                payOrderType: 'xxsk'
+                }
             });
         },
         created() {
@@ -230,7 +236,7 @@
                     return;
                 } else {
                     this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
-                    this.getDailyOrder();
+                    this.dailyOrderFetch();
                 }
             },
             merchantId() {
@@ -280,13 +286,11 @@
                     }
                 });
             },
-            dailyOrderFetch() {
-                ajax.queryDailyList({
-                    startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
-                    endTime: moment(this.dateSearch).format("YYYYMMDD") + "235959",
-                    operId: '', // 根据条件传
-                    payOrderType: 'xxsk'
-                }).then(response => {
+            dailyOrderFetch(operId) {
+                if (operId) {
+                    this.queryParams.operId = operId;
+                }
+                ajax.queryDailyList(this.queryParams).then(response => {
                     if (!response.success === true) {
                         Toast(response.msg ? response.msg : '日结请求失败');
                         return;
@@ -340,8 +344,12 @@
                         list = [value, '全部收银人员'].concat(this.userListColumns);
                     }
                     list.splice(index + 1, 1);
-                    list.reduce();
+                    list= Array.from(new Set(list));
                     this.userListColumns = list;
+
+                    this.dailyList = {};
+                    this.queryParams.operId = value;
+                    this.dailyOrderFetch(this.queryParams.operId);
                 }
             },
             navBackClick() {

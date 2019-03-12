@@ -64,12 +64,14 @@
                         <div class="flex-content flex-content-top">
                             <i class="icon-payType mr10"
                                :class="item.payType === 'wx' ? 'icon-payType_wx' :
-                               item.payType === 'alipay' ? 'icon-payType_alipay' : ''"
+                               item.payType === 'alipay' ? 'icon-payType_alipay' :
+                                item.payType === 'wm' ? 'icon-payType_wm' :''"
                             ></i>
                             <div>
                                 <div class="font-n-d">{{item.tradeOrderName}}</div>
                                 <div class="font-s-d mt10 text-ellipsis">
-                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':''}}订单号:<span
+                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType=== 'wm'?
+                                    '微脉':''}}订单号:<span
                                         v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                 </div>
                                 <div class="font-s-d text-ellipsis">
@@ -208,9 +210,9 @@
                         if (response.data) {
                             this.orderSumAmount = {
                                 ...this.orderSumAmount,
-                                total: response.data.tradeTotalAmount+'' || '',
-                                out: response.data.tradeOutAmount+'' || '',
-                                in: response.data.tradeInAmount+'' || ''
+                                total: response.data.tradeTotalAmount + '' || '',
+                                out: response.data.tradeOutAmount + '' || '',
+                                in: response.data.tradeInAmount + '' || ''
                             }
                         }
                     }
