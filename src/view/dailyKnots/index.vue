@@ -29,7 +29,7 @@
             <div class="set-form cell-group" v-if="this.userShow && this.userList.length > 0">
                 <div class="cell cell_hover">
                     <div class="cell-inner cell-inner-lr" @click="userPickerAction()">
-                        <label>全部收银员</label>
+                        <label>{{userCurrent}}</label>
                         <i class="cell-right-arrow">
                         </i>
                     </div>
@@ -201,7 +201,8 @@
                 userPickerShow: false,
                 userListColumns: [],
                 userShow: false,
-                pieAmount_fund: []
+                pieAmount_fund: [],
+                userCurrent: '全部收银人员'
             });
         },
         created() {
@@ -264,7 +265,7 @@
                                 this.userList = results[0].merchantUsers;
 
                                 if (this.userList) {
-                                    let arr = [];
+                                    let arr = ['全部收银人员'];
                                     this.userList.forEach(it => {
                                         arr.push(it.userRealName);
                                     });
@@ -290,16 +291,16 @@
                         Toast(response.msg ? response.msg : '日结请求失败');
                         return;
                     } else {
-                       if (response.data) {
-                           if ((response.data.refundNums === 0) &&
-                               (response.data.tradeNums === 0)
-                           ) {
-                               this.dailyList = {};
-                           } else {
-                               this.dailyList = response.data;
+                        if (response.data) {
+                            if ((response.data.refundNums === 0) &&
+                                (response.data.tradeNums === 0)
+                            ) {
+                                this.dailyList = {};
+                            } else {
+                                this.dailyList = response.data;
 
-                           }
-                       }
+                            }
+                        }
                     }
                 }).catch(() => {
                     return;
@@ -328,8 +329,20 @@
             onUserCancel() {
                 this.userPickerShow = false;
             },
-            onUserConfirm() {
-                this.userPickerShow = false;
+            onUserConfirm(value, index) {
+                if (this.userCurrent !== value) {
+                    this.userPickerShow = false;
+                    this.userCurrent = value;
+                    let list;
+                    if (value === '全部收银人员') {
+                        list = [value].concat(this.userListColumns);
+                    } else {
+                        list = [value, '全部收银人员'].concat(this.userListColumns);
+                    }
+                    list.splice(index + 1, 1);
+                    list.reduce();
+                    this.userListColumns = list;
+                }
             },
             navBackClick() {
                 setTimeout(() => {

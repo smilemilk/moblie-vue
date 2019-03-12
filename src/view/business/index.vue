@@ -65,10 +65,10 @@
                             ></i>
                             <div>
                                 <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                <div class="font-s-d mt10">
-                                    订单号:<span v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
+                                <div class="font-s-d mt10 text-ellipsis">
+                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':''}}订单号:<span v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                 </div>
-                                <div class="font-s-d">
+                                <div class="font-s-d text-ellipsis">
                                     支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
                                 </div>
                                 <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}</div>
@@ -141,7 +141,13 @@
                     limit: 20,
                     page: 1
                 },
-                orderStatusShow: false
+                orderStatusShow: false,
+                orderObject: {
+                    '0': '待支付',
+                    '2': '交易成功',
+                    '8': '订单关闭',
+                    '10': '有退款'
+                }
             });
         },
         created() {
@@ -167,7 +173,9 @@
                     } else {
                         response.data.items.map(it => {
                             if (it.payType) {
-                                return it.payType = payFundStatus(it.payType);
+                                // it.tradeType = orderObject[it.tradeType];
+                                it.payType = payFundStatus(it.payType);
+                                return it;
                             }
                         });
                         this.orderList = response.data.items;
