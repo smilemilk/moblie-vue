@@ -207,8 +207,6 @@
                     this.submitStatus = true;
                     this.submitRuleTextStatus = false;
 
-                    console.log(this.password.new.length)
-
                     if (this.password.new.length < 8) {
                         Toast('新密码长度为8到20位');
                         this.btnStatus = false;
@@ -232,7 +230,6 @@
                 }
             },
             submitFetch() {
-
                 ajax.modPassword({
                     oldPwd: RSA.encryptedString(this.keyPair, this.password.old),
                     newPwd: RSA.encryptedString(this.keyPair, this.password.new)
@@ -252,13 +249,20 @@
                             } else {
                                 localStorage.setItem('userNameLast', '');
                             }
+
                             setTimeout(() => {
                                 this.$router.push({
                                     name: 'passwordModifySuccess'
                                 });
                             }, 800);
                         } else {
-                            Toast(response.msg || '修改密码失败');
+                            if (response.data.oldPwdIsTrue == false) {
+                                Toast('原密码错误');
+                                return;
+                            } else {
+                                Toast(response.msg || '修改密码失败');
+                                return;
+                            }
                         }
                     }
                 }).catch(() => {

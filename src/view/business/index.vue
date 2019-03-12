@@ -50,8 +50,11 @@
                 </div>
                 <div class=""
                      v-if="this.orderList && this.orderList.length>0">
-                    <div class="font-xs-l">实收 ￥980.80 <span class="ml20">收入 ￥19920.00</span></div>
-                    <div class="font-xs-l flex-content flex-content-end">退款 ￥2000.00</div>
+                    <div class="font-xs-l">实收 <span v-if="this.orderSumAmount.total">￥{{orderSumAmount.total|$_filters_moneyFormat_fen}}</span>
+                        <span class="ml20">收入 <span v-if="this.orderSumAmount.in">￥{{orderSumAmount.in|$_filters_moneyFormat_fen}}</span></span>
+                    </div>
+                    <div class="font-xs-l flex-content flex-content-end">退款 <span v-if="this.orderSumAmount.out">￥{{orderSumAmount.out|$_filters_moneyFormat_fen}}</span>
+                    </div>
                 </div>
             </div>
 
@@ -66,12 +69,14 @@
                             <div>
                                 <div class="font-n-d">{{item.tradeOrderName}}</div>
                                 <div class="font-s-d mt10 text-ellipsis">
-                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':''}}订单号:<span v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
+                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':''}}订单号:<span
+                                        v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                 </div>
                                 <div class="font-s-d text-ellipsis">
                                     支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
                                 </div>
-                                <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}</div>
+                                <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
+                                </div>
                             </div>
 
                         </div>
@@ -147,6 +152,11 @@
                     '2': '交易成功',
                     '8': '订单关闭',
                     '10': '有退款'
+                },
+                orderSumAmount: {
+                    total: '',
+                    in: '',
+                    out: ''
                 }
             });
         },
@@ -195,7 +205,14 @@
                     if (!response.success === true) {
 
                     } else {
-
+                        if (response.data) {
+                            this.orderSumAmount = {
+                                ...this.orderSumAmount,
+                                total: response.data.tradeTotalAmount+'' || '',
+                                out: response.data.tradeOutAmount+'' || '',
+                                in: response.data.tradeInAmount+'' || ''
+                            }
+                        }
                     }
                 }).catch(() => {
                 });

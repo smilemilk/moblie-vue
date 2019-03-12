@@ -16,7 +16,7 @@
                     <div class="item-label">输入金额（元）</div>
 
                     <div class="cashier-input">
-                        <div class="flex-content flex-content-spaceBetween flex-content-align">
+                        <div class="flex-content flex-content-align">
                             <div class="cashier-input-unit mr4">￥</div>
                             <input v-model="this.amount"
                                    @touchstart.native.stop="keyboardShow = true"
