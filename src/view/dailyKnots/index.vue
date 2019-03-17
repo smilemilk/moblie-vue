@@ -28,7 +28,8 @@
 
             <div class="set-form cell-group" v-if="this.userShow && this.userList.length > 0">
                 <div class="cell cell_hover">
-                    <div class="cell-inner cell-inner-lr" @click="userPickerAction()">
+                    <div class="cell-inner cell-inner-lr border-none"
+                         @click="userPickerAction()">
                         <label>{{userCurrent}}</label>
                         <i class="cell-right-arrow">
                         </i>
@@ -42,19 +43,22 @@
                 </div>
 
                 <div class="cell-group mt10">
-                    <div class="cell cell_small">
+                    <div class="cell cell_small"
+                         v-if="dailyList.alipayAmount*1 > 0">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">支付宝(实收)</label>
                             <div class="cell-right">{{dailyList.alipayAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
-                    <div class="cell cell_small">
+                    <div class="cell cell_small"
+                         v-if="dailyList.wxAmount*1 > 0">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">微信</label>
                             <div class="cell-right">{{dailyList.wxAmount | $_filters_moneyFormat_fen}}</div>
                         </div>
                     </div>
-                    <div class="cell cell_small">
+                    <div class="cell cell_small"
+                         v-if="dailyList.wmAmount*1 > 0">
                         <div class="cell-inner cell-inner-lr">
                             <label class="span_light">微脉余额</label>
                             <div class="cell-right">{{dailyList.wmAmount | $_filters_moneyFormat_fen}}</div>
@@ -204,10 +208,10 @@
                 pieAmount_fund: [],
                 userCurrent: '全部收银人员',
                 queryParams: {
-                startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                    startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
                     endTime: moment(this.dateSearch).format("YYYYMMDD") + "235959",
-                operId: '', // 根据条件传
-                payOrderType: 'xxsk'
+                    operId: '', // 根据条件传
+                    payOrderType: 'xxsk'
                 }
             });
         },
@@ -236,7 +240,7 @@
                     return;
                 } else {
                     this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
-                    this.dailyOrderFetch();
+                    this.dailyOrderFetch('', this.dateSearch);
                 }
             },
             merchantId() {
@@ -286,9 +290,13 @@
                     }
                 });
             },
-            dailyOrderFetch(operId) {
+            dailyOrderFetch(operId, date) {
                 if (operId) {
                     this.queryParams.operId = operId;
+                }
+                if (date) {
+                    this.queryParams.startTime = moment(this.dateSearch).format("YYYYMMDD") + '000000';
+                    this.queryParams.endTime = moment(this.dateSearch).format("YYYYMMDD") + "235959";
                 }
                 ajax.queryDailyList(this.queryParams).then(response => {
                     if (!response.success === true) {
@@ -344,12 +352,18 @@
                         list = [value, '全部收银人员'].concat(this.userListColumns);
                     }
                     list.splice(index + 1, 1);
-                    list= Array.from(new Set(list));
+                    list = Array.from(new Set(list));
                     this.userListColumns = list;
 
                     this.dailyList = {};
-                    this.queryParams.operId = value;
+                    this.queryParams.operId = value === '全部收银人员' ? '' : ((this.userList.filter(it => {
+                        if (it.userRealName === value) {
+                            return it
+                        }
+                    }))[0]['userId'] || '');
                     this.dailyOrderFetch(this.queryParams.operId);
+                } else {
+                    this.userPickerShow = false;
                 }
             },
             navBackClick() {
@@ -365,5 +379,7 @@
 
 <style lang="less" scoped>
     @import "../../style/formation.less";
-
+.prompt-item {
+    border-top: 1px solid @border-color;
+}
 </style>

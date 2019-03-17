@@ -73,6 +73,11 @@
       background-color: @border-color-dark;
       transform: scale(1, .5);
     }
+    &.border-none {
+      &:after {
+        background-color: transparent;
+      }
+    }
   }
   &-group {
     background-color: @white;

@@ -59,7 +59,11 @@
             </div>
 
             <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
-                <div class="cell" v-for="(item, key) in this.orderList" :key="key">
+                <div class="cell"
+                     v-for="(item, key) in this.orderList"
+                     :key="key"
+                     @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                >
                     <div class="cell-inner flex-content flex-content-spaceBetween">
                         <div class="flex-content flex-content-top">
                             <i class="icon-payType mr10"
@@ -168,10 +172,12 @@
                 ...this.queryOrder,
                 page: 2,
 
-                startDate: '20190310000000',
-                // moment(this.dateSearch).format("YYYYMMDD") + '000000',
-                endDate: '20190310235959'
-                // moment(this.dateSearch).format("YYYYMMDD") + "235959"
+                startDate:
+                    // '20190310000000',
+                moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                endDate:
+            // '20190310235959'
+                moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
             this.getOrderList();
             this.getOrderSumAmount();
@@ -239,13 +245,22 @@
                 this.orderStatusShow = !this.orderStatusShow;
             },
             orderStatusChooseHandle(key) {
-                console.log(key)
                 this.orderSelected = key;
             },
             orderHistoryAction() {
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessSearch'
+                    });
+                }, 800);
+            },
+            orderDetailAction(no, tradeType) {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'businessDetail',
+                        query: {tradeOrderNo: no,
+                            tradeType: tradeType
+                        }
                     });
                 }, 800);
             },

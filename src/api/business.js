@@ -19,7 +19,25 @@ export function getTrade (params) {
     });
 }
 
+export function getOrderDetail (params) {
+    return request({
+        url: util.ajaxFront + 'merchant/tradeJour/orderDetail',
+        method: 'get',
+        params: params
+    });
+}
+
+export function refund (params) {
+    return request({
+        url: util.ajaxFront + 'XiMai/refund',
+        method: 'get',
+        params: params
+    });
+}
+
 export default {
     getTradeSumAmount,
-    getTrade
+    getTrade,
+    getOrderDetail,
+    refund
 };
