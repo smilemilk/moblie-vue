@@ -386,7 +386,7 @@
             }
         }
 
-        .home-header .user-info-sub {
+        .home-header .c-info-sub {
             top: -18px;
         }
     }

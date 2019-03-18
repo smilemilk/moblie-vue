@@ -12,7 +12,8 @@ import {
     Dialog,
     DatetimePicker,
     Popup,
-    NumberKeyboard
+    NumberKeyboard,
+    PullRefresh
 } from 'vant';
 
 Vue.use(NavBar);
@@ -20,6 +21,7 @@ Vue.use(Dialog);
 Vue.use(DatetimePicker);
 Vue.use(Popup);
 Vue.use(NumberKeyboard);
+Vue.use(PullRefresh);
 
 Vue.mixin(filter);
 new Vue({

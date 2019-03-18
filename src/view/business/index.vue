@@ -49,7 +49,7 @@
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
                 <div class=""
-                     v-if="this.orderList && this.orderList.length>0">
+                     v-if="this.orderList && this.orderList.length>0 && this.queryOrder.orderStatus.length == 0">
                     <div class="font-xs-l">实收 <span v-if="this.orderSumAmount.total">￥{{orderSumAmount.total|$_filters_moneyFormat_fen}}</span>
                         <span class="ml20">收入 <span v-if="this.orderSumAmount.in">￥{{orderSumAmount.in|$_filters_moneyFormat_fen}}</span></span>
                     </div>
@@ -58,41 +58,45 @@
                 </div>
             </div>
 
-            <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
-                <div class="cell"
-                     v-for="(item, key) in this.orderList"
-                     :key="key"
-                     @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
-                >
-                    <div class="cell-inner flex-content flex-content-spaceBetween">
-                        <div class="flex-content flex-content-top">
-                            <i class="icon-payType mr10"
-                               :class="item.payType === 'wx' ? 'icon-payType_wx' :
+            <div class="set-form cell-group"
+                 v-if="this.orderList && this.orderList.length>0">
+                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+                    <div class="cell"
+                         v-for="(item, key) in this.orderList"
+                         :key="key"
+                         @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                    >
+                        <div class="cell-inner flex-content flex-content-spaceBetween">
+                            <div class="flex-content flex-content-top">
+                                <i class="icon-payType mr10"
+                                   :class="item.payType === 'wx' ? 'icon-payType_wx' :
                                item.payType === 'alipay' ? 'icon-payType_alipay' :
                                 item.payType === 'wm' ? 'icon-payType_wm' :''"
-                            ></i>
-                            <div>
-                                <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                <div class="font-s-d mt10 text-ellipsis">
-                                    {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType=== 'wm'?
-                                    '微脉':''}}订单号:<span
-                                        v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
+                                ></i>
+                                <div>
+                                    <div class="font-n-d">{{item.tradeOrderName}}</div>
+                                    <div class="font-s-d mt10 text-ellipsis">
+                                        {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType===
+                                        'wm'?
+                                        '微脉':''}}订单号:<span
+                                            v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
+                                    </div>
+                                    <div class="font-s-d text-ellipsis">
+                                        支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
+                                    </div>
+                                    <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
+                                    </div>
                                 </div>
-                                <div class="font-s-d text-ellipsis">
-                                    支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
-                                </div>
-                                <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
-                                </div>
+
                             </div>
 
-                        </div>
-
-                        <div class="cell-right">
-                            <div class="font-l-d">{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
-                            <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
+                            <div class="cell-right">
+                                <div class="font-l-d">{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
+                                <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </van-pull-refresh>
             </div>
 
             <div
@@ -163,7 +167,8 @@
                     total: '',
                     in: '',
                     out: ''
-                }
+                },
+                isLoading: false
             });
         },
         created() {
@@ -173,16 +178,24 @@
                 page: 2,
 
                 startDate:
-                    // '20190310000000',
+                // '20190310000000',
                 moment(this.dateSearch).format("YYYYMMDD") + '000000',
                 endDate:
-            // '20190310235959'
+                // '20190310235959'
                 moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
             this.getOrderList();
             this.getOrderSumAmount();
         },
         methods: {
+            onRefresh() {
+                setTimeout(() => {
+                    this.queryOrder.page++;
+                    this.getOrderList();
+                    this.$toast('刷新成功');
+                    this.isLoading = false;
+                }, 500);
+            },
             getOrderList() {
                 ajax.getTrade(this.queryOrder).then(response => {
                     if (!response.success === true) {
@@ -239,6 +252,7 @@
                     orderStatus: orderStatus[this.orderSelected],
                     page: 1
                 };
+                this.orderStatusShow = false;
                 this.getOrderList();
             },
             orderStatusToggleHandle() {
@@ -258,7 +272,8 @@
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessDetail',
-                        query: {tradeOrderNo: no,
+                        query: {
+                            tradeOrderNo: no,
                             tradeType: tradeType
                         }
                     });
@@ -288,4 +303,5 @@
     .icon-search {
         vertical-align: middle;
     }
+
 </style>

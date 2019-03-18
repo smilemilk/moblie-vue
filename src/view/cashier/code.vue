@@ -186,6 +186,7 @@
                                     if (payOrderStatus === '2') {
                                         _count = 0;
                                         clearInterval(self.queryOrderInterval);
+                                        window.clearInterval(self.countDownInterval);
                                         setTimeout(() => {
                                             self.$router.push({
                                                 name: 'cashierSuccess'
@@ -207,9 +208,7 @@
             orderOverTimeAction(status) {
                 if (status === true) {
                     this.orderOverStatus = true;
-                    this.queryOrderCount = undefined;
-                    window.clearInterval(this.countDownInterval);
-                    window.clearInterval(this.queryOrderInterval);
+
                     Dialog.confirm({
                         title: '收款已超时',
                         message: '是否撤销此次交易?',
@@ -217,6 +216,9 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
+                        this.queryOrderCount = undefined;
+                        window.clearInterval(this.countDownInterval);
+                        window.clearInterval(this.queryOrderInterval);
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier',
@@ -224,7 +226,7 @@
                             });
                         }, 800);
                     }).catch(() => {
-                        // this.countDown();
+                        this.countDown();
                     });
                 }
             },
@@ -251,16 +253,36 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
-                        this.orderOverStatus = false;
-                        this.countDownCount = undefined;
+                        Promise.all([this.cancelFetch()]).then((results) => {
+                            if (results && results.length > 0) {
+                                if (results[0]) {
+                                    this.orderOverStatus = false;
+                                    this.countDownCount = undefined;
 
-                        window.clearInterval(this.countDownInterval);
-                        window.clearInterval(this.queryOrderInterval);
-                        setTimeout(() => {
-                            this.$router.push({
-                                name: 'cashier'
-                            });
-                        }, 800);
+                                    window.clearInterval(this.countDownInterval);
+                                    window.clearInterval(this.queryOrderInterval);
+
+                                    // setTimeout(() => {
+                                    //     this.$router.push({
+                                    //         name: 'cashier'
+                                    //     });
+                                    // }, 800);
+
+
+                                    let query = {
+                                        amount: this.$route.query.amount,
+                                        payOrderNo: this.$route.query.payOrderNo || '',
+                                        code: this.$route.query.payOrderNo || ''
+                                    };
+                                    setTimeout(() => {
+                                        this.$router.push({
+                                            name: 'cashierFailure',
+                                            query: query
+                                        });
+                                    }, 800);
+                                }
+                            }
+                        });
                     }).catch(() => {
                     });
 
@@ -276,6 +298,29 @@
                         });
                     }, 800);
                 }
+            },
+            cancelFetch() {
+                return new Promise((resolve, reject) => {
+                    ajax.cancelOrder({
+                        payOrderNo: this.payOrderNo
+                    }).then(response => {
+                        if (!response.success === true) {
+                            Toast(response.msg || '撤销订单提交失败');
+                            return;
+                        } else {
+                            if (response.data) {
+                              return resolve(response.data);
+                            } else {
+                                Toast(response.msg || '撤销订单提交失败');
+                                return reject({});
+                            }
+                        }
+                    }).catch(() => {
+                        Toast('撤销订单提交失败');
+                        return reject({});
+                    });
+                })
+
             }
         }
     };

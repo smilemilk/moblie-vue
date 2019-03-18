@@ -147,9 +147,9 @@
                         :min-date="minDate"
                         :max-date="maxDate"
                         :item-height="34"
-                        @change="dateTimeChangeAction()"
-                        @cancel="dateTimeCancelAction()"
-                        @confirm="dateTimeConfirmAction(dateSearch)"
+                        @change="dateTimeChangeAction"
+                        @cancel="dateTimeCancelAction"
+                        @confirm="dateTimeConfirmAction"
                 />
             </van-popup>
 
@@ -259,7 +259,7 @@
                     Toast('不能选择今天之后的日期');
                     return;
                 } else {
-                    this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
+                    this.dateSearch = new Date(moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD"));
                     this.pieAmount_fund = [];
                     this.pieCount_fund = [];
                     this.dailyList={};
@@ -358,7 +358,7 @@
                 this.dateTimePickerStatus = true;
             },
             dateTimeChangeAction(picker) {
-                console.log(this)
+
             },
             dateTimeCancelAction() {
                 this.dateTimePickerStatus = false;

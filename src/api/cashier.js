@@ -19,7 +19,16 @@ export function queryOrder (params) {
     });
 }
 
+export function cancelOrder (params) {
+    return request({
+        url: util.ajaxFront + 'XiMai/cancelOrder',
+        method: 'get',
+        params: params
+    });
+}
+
 export default {
     createOrder,
-    queryOrder
+    queryOrder,
+    cancelOrder
 };
