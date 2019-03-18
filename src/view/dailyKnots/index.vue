@@ -104,10 +104,10 @@
                 <div class="chart-wrapper mt10 ">
                     <div class="cell">
                         <chart-pie v-if="pieAmount_fund.length > 0"
-                                   style="min-height: 300px;"
+                                   style="min-height: 250px;"
                                    :valuePie="pieAmount_fund"
                                    :legendStatus="false"
-                                   radius="34%"
+                                   radius="45%"
                                    centerY="35%"
                                    text=""
                                    class="border-dash padding-top-10"
@@ -115,10 +115,10 @@
                     </div>
                     <div class="cell">
                         <chart-pie v-if="pieCount_fund.length > 0"
-                                   style="min-height: 300px;"
+                                   style="min-height: 250px;"
                                    :valuePie="pieCount_fund"
                                    :legendStatus="false"
-                                   radius="34%"
+                                   radius="45%"
                                    centerY="35%"
                                    text=""
                                    class="border-dash padding-top-10"
@@ -260,6 +260,9 @@
                     return;
                 } else {
                     this.dateSearch = moment(dateLast).subtract(filter[status], 'days').format("YYYY-MM-DD");
+                    this.pieAmount_fund = [];
+                    this.pieCount_fund = [];
+                    this.dailyList={};
                     this.dailyOrderFetch('', this.dateSearch);
                 }
             },
@@ -331,11 +334,13 @@
                             } else {
                                 this.dailyList = response.data;
                                 if (response.data.alipayAmount*1 > 0) {
-                                    this.pieAmount_fund.push({value: response.data.alipayAmount, name: '支付宝'});
-                                } else if (response.data.wxAmount*1 > 0) {
-                                    this.pieAmount_fund.push({value: response.data.wxAmount, name: '微信'});
-                                } else if (response.data.wmAmount*1 > 0) {
-                                    this.pieAmount_fund.push({value: response.data.wmAmount, name: '微脉余额'});
+                                    this.pieAmount_fund.push({value: response.data.alipayAmount/100, name: '支付宝'});
+                                }
+                                if (response.data.wxAmount*1 > 0) {
+                                    this.pieAmount_fund.push({value: response.data.wxAmount/100, name: '微信'});
+                                }
+                                if (response.data.wmAmount*1 > 0) {
+                                    this.pieAmount_fund.push({value: response.data.wmAmount/100, name: '微脉余额'});
                                 }
 
                                 this.pieCount_fund = [
@@ -361,6 +366,9 @@
             dateTimeConfirmAction(values) {
                 this.dateSearch = values;
                 this.dateTimePickerStatus = false;
+                this.dailyList = {};
+                this.pieAmount_fund = [];
+                this.pieCount_fund = [];
                 this.getDailyOrder();
             },
             userPickerAction() {
@@ -387,6 +395,8 @@
                     this.userListColumns = list;
 
                     this.dailyList = {};
+                    this.pieAmount_fund = [];
+                    this.pieCount_fund = [];
                     this.queryParams.operId = value === '全部收银人员' ? '' : ((this.userList.filter(it => {
                         if (it.userRealName === value) {
                             return it
