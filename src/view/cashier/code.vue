@@ -166,6 +166,15 @@
                         } else {
                             if (response.data) {
                                 if (response.data.payOrderStatus) {
+
+                                    // 0", "待支付",
+                                    // "2", "支付成功",
+                                    // "3", "支付失败",
+                                    // "4", "支付部分成功",
+                                    // "5", "转入退款",
+                                    // "8", "手动取消",
+                                    // "9", "废单，重复调用等方式导致废单"
+
                                     let payOrderStatus = response.data.payOrderStatus;
                                     if (payOrderStatus === '0' || payOrderStatus === '8') {
                                         // _count = 0;
@@ -197,6 +206,10 @@
             },
             orderOverTimeAction(status) {
                 if (status === true) {
+                    this.orderOverStatus = true;
+                    this.queryOrderCount = undefined;
+                    window.clearInterval(this.countDownInterval);
+                    window.clearInterval(this.queryOrderInterval);
                     Dialog.confirm({
                         title: '收款已超时',
                         message: '是否撤销此次交易?',
@@ -204,8 +217,6 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
-                        window.clearInterval(this.countDownInterval);
-                        window.clearInterval(this.queryOrderInterval);
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier',
@@ -240,11 +251,11 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
-                        // this.countDownCount = -1;
                         this.orderOverStatus = false;
+                        this.countDownCount = undefined;
+
                         window.clearInterval(this.countDownInterval);
                         window.clearInterval(this.queryOrderInterval);
-                        this.countDownCount = undefined;
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier'
@@ -254,6 +265,9 @@
                     });
 
                 } else {
+                    this.countDownCount = undefined;
+                    this.queryOrderCount = 0;
+
                     window.clearInterval(this.countDownInterval);
                     window.clearInterval(this.queryOrderInterval);
                     setTimeout(() => {
