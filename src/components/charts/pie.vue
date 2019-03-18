@@ -3,8 +3,8 @@
 </template>
 
 <script>
-    import echarts from 'echarts'
-    import tdTheme from './theme.json'
+    import echarts from 'echarts';
+    import tdTheme from './theme.json';
 
     export default {
         name: 'ChartPie',

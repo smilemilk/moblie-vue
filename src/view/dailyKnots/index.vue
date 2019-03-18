@@ -7,7 +7,7 @@
                 :z-index="999"
                 @click-left="navBackClick"
         />
-        <div :class="dailyList && dailyList.length > 0 ? '' : 'white'"
+        <div
              class="dailyKnots-wrapper container-wrapper">
 
             <div class="date-choose-box">
@@ -37,76 +37,95 @@
                 </div>
             </div>
 
-            <div v-if="dailyList && Object.keys(dailyList).length > 0">
-                <div class="interval-item">
-                    实收（元）：{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
+            <div
+                    v-if="dailyList && Object.keys(dailyList).length > 0"
+                    class="detail-wrapper"
+            >
+
+                <div>
+                    <div class="interval-item">
+                        实收（元）：{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
+                    </div>
+                    <div class="cell-group">
+                        <div class="cell cell_small"
+                             v-if="dailyList.alipayAmount*1 > 0">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">支付宝(实收)</label>
+                                <div class="cell-right">{{dailyList.alipayAmount | $_filters_moneyFormat_fen}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small"
+                             v-if="dailyList.wxAmount*1 > 0">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">微信</label>
+                                <div class="cell-right">{{dailyList.wxAmount | $_filters_moneyFormat_fen}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small"
+                             v-if="dailyList.wmAmount*1 > 0">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">微脉余额</label>
+                                <div class="cell-right">{{dailyList.wmAmount | $_filters_moneyFormat_fen}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">优惠金额</label>
+                                <div class="cell-right">{{dailyList.discountAmount | $_filters_moneyFormat_fen}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">退款</label>
+                                <div class="cell-right">{{dailyList.refundAmount | $_filters_moneyFormat_fen}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">交易笔数</label>
+                                <div class="cell-right">{{dailyList.tradeNums}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small">
+                            <div class="cell-inner cell-inner-lr">
+                                <label class="span_light">支付笔数</label>
+                                <div class="cell-right">{{dailyList.payNums}}</div>
+                            </div>
+                        </div>
+                        <div class="cell cell_small">
+                            <div class="cell-inner cell-inner-lr border-none">
+                                <label class="span_light">退款笔数</label>
+                                <div class="cell-right">{{dailyList.refundNums}}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="cell-group mt10">
-                    <div class="cell cell_small"
-                         v-if="dailyList.alipayAmount*1 > 0">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">支付宝(实收)</label>
-                            <div class="cell-right">{{dailyList.alipayAmount | $_filters_moneyFormat_fen}}</div>
-                        </div>
+                <div class="chart-wrapper mt10 ">
+                    <div class="cell">
+                        <chart-pie v-if="pieAmount_fund.length > 0"
+                                   style="min-height: 300px;"
+                                   :valuePie="pieAmount_fund"
+                                   :legendStatus="false"
+                                   radius="34%"
+                                   centerY="35%"
+                                   text=""
+                                   class="border-dash padding-top-10"
+                        ></chart-pie>
                     </div>
-                    <div class="cell cell_small"
-                         v-if="dailyList.wxAmount*1 > 0">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">微信</label>
-                            <div class="cell-right">{{dailyList.wxAmount | $_filters_moneyFormat_fen}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small"
-                         v-if="dailyList.wmAmount*1 > 0">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">微脉余额</label>
-                            <div class="cell-right">{{dailyList.wmAmount | $_filters_moneyFormat_fen}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">优惠金额</label>
-                            <div class="cell-right">{{dailyList.discountAmount | $_filters_moneyFormat_fen}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">退款</label>
-                            <div class="cell-right">{{dailyList.refundAmount | $_filters_moneyFormat_fen}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">交易笔数</label>
-                            <div class="cell-right">{{dailyList.tradeNums}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">支付笔数</label>
-                            <div class="cell-right">{{dailyList.payNums}}</div>
-                        </div>
-                    </div>
-                    <div class="cell cell_small">
-                        <div class="cell-inner cell-inner-lr">
-                            <label class="span_light">退款笔数</label>
-                            <div class="cell-right">{{dailyList.refundNums}}</div>
-                        </div>
+                    <div class="cell">
+                        <chart-pie v-if="pieCount_fund.length > 0"
+                                   style="min-height: 300px;"
+                                   :valuePie="pieCount_fund"
+                                   :legendStatus="false"
+                                   radius="34%"
+                                   centerY="35%"
+                                   text=""
+                                   class="border-dash padding-top-10"
+                        ></chart-pie>
                     </div>
                 </div>
 
-                <div class="mt10 cell">
-                    <chart-pie v-if="pieAmount_fund.length > 0"
-                               style="min-height: 350px;"
-                               :valuePie="pieAmount_fund"
-                               :legendStatus="false"
-                               radius="50%"
-                               centerY="57%"
-                               text="资金通道收入占比(元)"
-                               class="border-dash padding-top-10"
-                    ></chart-pie>
-                </div>
             </div>
 
             <div v-else>
@@ -206,6 +225,7 @@
                 userListColumns: [],
                 userShow: false,
                 pieAmount_fund: [],
+                pieCount_fund: [],
                 userCurrent: '全部收银人员',
                 queryParams: {
                     startTime: moment(this.dateSearch).format("YYYYMMDD") + '000000',
@@ -310,7 +330,18 @@
                                 this.dailyList = {};
                             } else {
                                 this.dailyList = response.data;
+                                if (response.data.alipayAmount*1 > 0) {
+                                    this.pieAmount_fund.push({value: response.data.alipayAmount, name: '支付宝'});
+                                } else if (response.data.wxAmount*1 > 0) {
+                                    this.pieAmount_fund.push({value: response.data.wxAmount, name: '微信'});
+                                } else if (response.data.wmAmount*1 > 0) {
+                                    this.pieAmount_fund.push({value: response.data.wmAmount, name: '微脉余额'});
+                                }
 
+                                this.pieCount_fund = [
+                                    {value: response.data.payNums, name: '支付笔数'},
+                                    {value: response.data.refundNums, name: '退款笔数'}
+                                ]
                             }
                         }
                     }
@@ -379,7 +410,17 @@
 
 <style lang="less" scoped>
     @import "../../style/formation.less";
-.prompt-item {
-    border-top: 1px solid @border-color;
-}
+
+    .detail-wrapper {
+        height: 100%;
+        overflow-y: scroll;
+    }
+
+    .chart-wrapper {
+        padding-bottom: 120px;
+    }
+
+    .prompt-item {
+        border-top: 1px solid @border-color;
+    }
 </style>
