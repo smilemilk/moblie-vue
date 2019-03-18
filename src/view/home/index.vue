@@ -366,6 +366,16 @@
         }
     }
 
+    @media screen and (max-width: 374px) {
+        .home-entrance .recharge-item-img {
+            width: 3rem;
+            height: 3rem;
+        }
+        .home-entrance .recharge-item-container p{
+            font-size: 15px;
+        }
+    }
+
     @media screen and (max-width: 352px) {
         .home-entrance .recharge-btn {
             width: 300px;

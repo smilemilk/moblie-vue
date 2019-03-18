@@ -213,7 +213,7 @@
                             });
                         }, 800);
                     }).catch(() => {
-                        this.countDown();
+                        // this.countDown();
                     });
                 }
             },
@@ -233,10 +233,6 @@
             },
             navBackClick() {
                 if (this.countDownCount) {
-                    this.countDownCount = -1;
-                    this.orderOverStatus = false;
-                    window.clearInterval(this.countDownInterval);
-                    window.clearInterval(this.queryOrderInterval);
                     Dialog.confirm({
                         title: '是否撤销此次交易',
                         message: '',
@@ -244,6 +240,10 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
+                        // this.countDownCount = -1;
+                        this.orderOverStatus = false;
+                        window.clearInterval(this.countDownInterval);
+                        window.clearInterval(this.queryOrderInterval);
                         this.countDownCount = undefined;
                         setTimeout(() => {
                             this.$router.push({
@@ -344,4 +344,11 @@
         }
     }
 
+    @media screen and (max-width: 374px) {
+        .cashier-tip[data-v-6b7a064c] {
+            font-size: 10px;
+            padding-left:0;
+            padding-right:0;
+        }
+    }
 </style>

@@ -44,7 +44,7 @@
 
                 <div>
                     <div class="interval-item">
-                        实收（元）：{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
+                        实收（元）：￥{{dailyList.buyerAmount | $_filters_moneyFormat_fen}}
                     </div>
                     <div class="cell-group">
                         <div class="cell cell_small"
