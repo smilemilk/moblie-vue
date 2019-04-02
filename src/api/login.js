@@ -7,7 +7,9 @@ export function getToken (params) {
     return request({
         url: util.ajaxFront + 'sec/rsa',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -15,8 +17,12 @@ export function login (params) {
     return request({
         url: util.ajaxFront + 'user/mechantlogin',
         method: 'post',
-        data: params,
-        params: params
+        data:  Object.assign({},params,{
+            'XiMai': true
+        }),
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -24,7 +30,9 @@ export function getUser (params) {
     return request({
         url: util.ajaxFront + 'merchantuser',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     })
 }
 
@@ -32,8 +40,12 @@ export function loginOut (params) {
     return request({
         url: util.ajaxFront + 'user/mechantlogout',
         method: 'post',
-        data: params,
-        params: params
+        data:  Object.assign({},params,{
+            'XiMai': true
+        }),
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     })
 }
 

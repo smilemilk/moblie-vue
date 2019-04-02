@@ -84,7 +84,7 @@
         data() {
             return Object.assign(storeData.call(this), {
                 amount: undefined,
-                buildingTime: 0,
+                buildingTime: 60,
                 payOrderNo: '',
                 countDownInterval: undefined,
                 countDownCount: 0,
@@ -101,30 +101,33 @@
                 if (Object.keys(this.codeUrl).length === 0) {
                     this.failCodeBuild();
                 } else {
+                    this.codeBuilding();
                     this.countDown();
                     this.queryOrder();
                 }
             }
-            this.codeBuilding();
             this.$nextTick(function () {
                 this.codeCanvas();
             });
         },
         methods: {
             codeBuilding() {
-                // Toast.loading({
-                //     mask: true,
-                //     message: '正在创建二维码订单…',
-                //     duration: this.buildingTime,
-                //     className: 'buildingToast'
-                // });
+                Toast.loading({
+                    mask: true,
+                    message: '正在创建二维码订单…',
+                    duration: 0,
+                    className: 'buildingToast'
+                });
             },
             codeCanvas() {
                 let code = new QRCode('code', {
                     width: 235,  // 设置宽度
                     height: 235, // 设置高度
                     text: this.codeUrl.code || ''
-                })
+                });
+                if (this.codeUrl.code) {
+                    Toast.clear();
+                }
             },
             countDown() {
                 let self= this;
@@ -136,6 +139,9 @@
                         self.countDownCount = 0;
                         if (self.countDownCount === 0) {
                             self.orderOverStatus = true;
+                            if (self.codeUrl.code) {
+                                Toast.clear();
+                            }
                         }
                         self.orderOverTimeAction(self.orderOverStatus);
                         window.clearInterval(self.countDownInterval);
@@ -216,17 +222,19 @@
                         confirmButtonText: '是',
                         cancelButtonText: '否'
                     }).then(() => {
-                        this.queryOrderCount = undefined;
-                        window.clearInterval(this.countDownInterval);
-                        window.clearInterval(this.queryOrderInterval);
+                        Toast.clear();
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier',
                                 query: ''
                             });
                         }, 800);
+                        this.queryOrderCount = undefined;
+                        window.clearInterval(this.countDownInterval);
+                        window.clearInterval(this.queryOrderInterval);
                     }).catch(() => {
-                        this.countDown();
+                        Toast.clear();
+                        // this.countDown();
                     });
                 }
             },
@@ -256,30 +264,27 @@
                         Promise.all([this.cancelFetch()]).then((results) => {
                             if (results && results.length > 0) {
                                 if (results[0]) {
-                                    this.orderOverStatus = false;
-                                    this.countDownCount = undefined;
+                                    // 0", "待支付",
+                                    // "2", "支付成功",
+                                    // "3", "支付失败",
+                                    // "4", "支付部分成功",
+                                    // "5", "转入退款",
+                                    // "8", "手动取消",
+                                    // "9", "废单，重复调用等方式导致废单"
 
-                                    window.clearInterval(this.countDownInterval);
-                                    window.clearInterval(this.queryOrderInterval);
+                                    if (results[0].success) {
+                                        this.orderOverStatus = false;
+                                        this.countDownCount = undefined;
 
-                                    // setTimeout(() => {
-                                    //     this.$router.push({
-                                    //         name: 'cashier'
-                                    //     });
-                                    // }, 800);
+                                        window.clearInterval(this.countDownInterval);
+                                        window.clearInterval(this.queryOrderInterval);
 
-
-                                    let query = {
-                                        amount: this.$route.query.amount,
-                                        payOrderNo: this.$route.query.payOrderNo || '',
-                                        code: this.$route.query.payOrderNo || ''
-                                    };
-                                    setTimeout(() => {
-                                        this.$router.push({
-                                            name: 'cashierFailure',
-                                            query: query
-                                        });
-                                    }, 800);
+                                        setTimeout(() => {
+                                            this.$router.push({
+                                                name: 'cashier'
+                                            });
+                                        }, 800);
+                                    }
                                 }
                             }
                         });
@@ -305,11 +310,42 @@
                         payOrderNo: this.payOrderNo
                     }).then(response => {
                         if (!response.success === true) {
-                            Toast(response.msg || '撤销订单提交失败');
-                            return;
+                            if (response.errorNo == '103039') {
+                                this.countDownCount = undefined;
+                                this.queryOrderCount = 0;
+
+                                window.clearInterval(this.countDownInterval);
+                                window.clearInterval(this.queryOrderInterval);
+                                setTimeout(() => {
+                                    this.$router.push({
+                                        name: 'cashier'
+                                    });
+                                }, 800);
+                            } else {
+                                Dialog.confirm({
+                                    title: '撤销订单提交失败,是否返回收款页',
+                                    message: '',
+                                    showCancelButton: true,
+                                    confirmButtonText: '是',
+                                    cancelButtonText: '否'
+                                }).then(() => {
+                                    this.countDownCount = undefined;
+                                    this.queryOrderCount = 0;
+
+                                    window.clearInterval(this.countDownInterval);
+                                    window.clearInterval(this.queryOrderInterval);
+                                    setTimeout(() => {
+                                        this.$router.push({
+                                            name: 'cashier'
+                                        });
+                                    }, 800);
+                                }).catch(() => {
+                                });
+                                return;
+                            }
                         } else {
                             if (response.data) {
-                              return resolve(response.data);
+                              return resolve(response);
                             } else {
                                 Toast(response.msg || '撤销订单提交失败');
                                 return reject({});
@@ -322,6 +358,11 @@
                 })
 
             }
+        },
+        beforeDestroy() {
+            window.clearInterval(this.countDownInterval);
+            window.clearInterval(this.queryOrderInterval);
+            Toast.clear();
         }
     };
 </script>

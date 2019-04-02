@@ -92,11 +92,11 @@ export function moneyFormat_noComma(value) {
     if (number < 0) {
         return (
             '-' +
-            outputDollars(Math.floor(Math.abs(number) - 0) + '') +
-            outputCents(Math.abs(number) - 0)
+            (outputDollars(Math.floor(Math.abs(number) - 0) + '') +
+            outputCents(Math.abs(number) - 0)).replace(/\,/g, '')
         );
     } else {
-        return outputDollars(Math.floor(number - 0) + '') + outputCents(number - 0);
+        return (outputDollars(Math.floor(number - 0) + '') + outputCents(number - 0)).replace(/\,/g, '');
     }
 
     // 格式化金额
@@ -109,6 +109,8 @@ export function moneyFormat_noComma(value) {
             for (let i = 0; i < Math.floor(number.length / 3); i++) {
                 if (mod === 0 && i === 0) {
                     output += number.substring(mod + 3 * i, mod + 3 * i + 3);
+                } else {
+                    output += ',' + number.substring(mod + 3 * i, mod + 3 * i + 3);
                 }
             }
             return output;

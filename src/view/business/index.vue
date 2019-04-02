@@ -44,7 +44,8 @@
                 </button>
             </div>
             <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
-                <div class="date-select-box">
+                <div class="date-select-box"
+                     @click="dateChangeAction()">
                     <span>{{this.dateSearch|$_filters_parseDate}}</span>
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
@@ -87,7 +88,6 @@
                                     <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="cell-right">
@@ -108,6 +108,24 @@
                     <div class="font-l-d align-c mt14">还没有交易记录哦！</div>
                 </div>
             </div>
+
+            <van-popup
+                    v-model="dateTimePickerStatus"
+                    position="bottom"
+                    :overlay="true"
+            >
+                <van-datetime-picker
+                        v-model="dateSearch"
+                        v-if="dateTimePickerStatus"
+                        type="date"
+                        :min-date="minDate"
+                        :max-date="maxDate"
+                        :item-height="34"
+                        @change="dateTimeChangeAction"
+                        @cancel="dateTimeCancelAction"
+                        @confirm="dateTimeConfirmAction"
+                />
+            </van-popup>
         </div>
     </div>
 </template>
@@ -124,7 +142,9 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        DatetimePicker,
+        Popup
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/business';
@@ -142,7 +162,9 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            DatetimePicker: DatetimePicker,
+            Popup: Popup,
         },
 
         data() {
@@ -168,14 +190,19 @@
                     in: '',
                     out: ''
                 },
+                dateTimePickerStatus: false,
+                minDate: '',
+                maxDate: '',
                 isLoading: false
             });
         },
         created() {
             this.dateSearch = new Date();
+            this.minDate = new Date(2019, 0, 1);
+            this.maxDate = new Date();
             this.queryOrder = {
                 ...this.queryOrder,
-                page: 2,
+                page: 1,
 
                 startDate:
                 // '20190310000000',
@@ -278,6 +305,27 @@
                         }
                     });
                 }, 800);
+            },
+            dateChangeAction() {
+                this.dateTimePickerStatus = true;
+            },
+            dateTimeChangeAction(picker) {
+
+            },
+            dateTimeCancelAction() {
+                this.dateTimePickerStatus = false;
+            },
+            dateTimeConfirmAction(values) {
+                this.dateSearch = values;
+                this.dateTimePickerStatus = false;
+                // this.dailyList = {};
+                // this.pieAmount_fund = [];
+                // this.pieCount_fund = [];
+                this.queryOrder.page = 1;
+                this.getOrderList();
+                if (this.queryOrder.orderStatus.length == 0) {
+                    this.getOrderSumAmount();
+                }
             },
             navBackClick() {
                 setTimeout(() => {

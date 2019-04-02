@@ -91,7 +91,7 @@
       &-right-arrow {
         position: absolute;
         top: 10px;
-        right: -12px;
+        right: -10px;
         display: inline-block;
         width: 28px;
         height: 28px;
@@ -231,21 +231,26 @@
 
 //---------------------- 业务组件  start
 .date-choose-box {
-  position: relative;
-  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  //position: relative;
+  padding: 20px 7px;
   height: 60px;
   background-color: @main-theme-color;
   overflow: hidden;
   [class*='date-choose-'] {
-    position: absolute;
-    top: 20px;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    //position: absolute;
+    //top: 20px;
+    //display: inline-block;
     color: @white;
     font-size: 14px;
     line-height: 1.5;
   }
   [class*='icon-'] {
-    padding-top: 0;
+    //padding-top: 0;
     vertical-align: middle;
   }
   .icon-calendar {
@@ -253,18 +258,21 @@
     margin-right: 3px;
   }
   .date-choose-pre {
-    left: 10px;
+    //left: 10px;
     > [class*='icon'] {
-      margin-right: 5px;
+      //margin-right: 5px;
     }
   }
   .date-choose-current {
-    top: 22px;
+    display: inline-block;
     left: 50%;
+    position: absolute;
+    //top: 22px;
+    //left: 50%;
     transform: translateX(-50%);
   }
   .date-choose-next {
-    right: 5px;
+    //right: 5px;
     > [class*='icon'] {
       margin-left: 5px;
     }

@@ -9,7 +9,7 @@ function mockOffsetParent(el) {
   });
 }
 
-test('load event', async() => {
+test('load event', async () => {
   const wrapper = mount(List);
 
   wrapper.vm.$on('input', value => {
@@ -29,7 +29,36 @@ test('load event', async() => {
   wrapper.destroy();
 });
 
-test('finished', async() => {
+test('error loaded, click error-text and reload', async () => {
+  const wrapper = mount(List, {
+    propsData: {
+      errorText: 'Request failed. Click to reload...',
+      error: true
+    }
+  });
+
+  mockOffsetParent(wrapper.vm.$el);
+
+  await later();
+
+  expect(wrapper.emitted('load')).toBeFalsy();
+  expect(wrapper.emitted('input')).toBeFalsy();
+
+  // 模拟点击error-text的行为
+  wrapper.setProps({
+    error: false
+  });
+  wrapper.vm.$emit('input', true);
+  wrapper.vm.$emit('load');
+
+  expect(wrapper.vm.$props.error).toBeFalsy();
+  expect(wrapper.emitted('load')).toBeTruthy();
+  expect(wrapper.emitted('input')).toBeTruthy();
+
+  wrapper.destroy();
+});
+
+test('finished', async () => {
   const wrapper = mount(List, {
     propsData: {
       finished: true
@@ -48,7 +77,7 @@ test('finished', async() => {
   expect(wrapper.emitted('input')).toBeTruthy();
 });
 
-test('immediate check false', async() => {
+test('immediate check false', async () => {
   const wrapper = mount(List, {
     propsData: {
       immediateCheck: false

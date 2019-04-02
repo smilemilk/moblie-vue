@@ -10,18 +10,34 @@ const contactInfo = {
 
 describe('ContactCard', () => {
   test('click event', () => {
+    const click = jest.fn();
     const wrapper = mount(ContactCard, {
-      propsData: {
-        editable: false
+      context: {
+        on: {
+          click
+        }
       }
     });
 
     wrapper.trigger('click');
-    expect(wrapper.emitted('click')).toBeFalsy();
+    expect(click).toHaveBeenCalledTimes(1);
+  });
 
-    wrapper.setProps({ editable: true });
+  test('not editable', () => {
+    const click = jest.fn();
+    const wrapper = mount(ContactCard, {
+      propsData: {
+        editable: false
+      },
+      context: {
+        on: {
+          click
+        }
+      }
+    });
+
     wrapper.trigger('click');
-    expect(wrapper.emitted('click')).toBeTruthy();
+    expect(click).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -82,11 +98,11 @@ describe('ContactEdit', () => {
 
   test('watch contact info', () => {
     const wrapper = mount(ContactEdit);
-    wrapper.setProps({ contactInfo: { name: '123' }});
+    wrapper.setProps({ contactInfo: { name: '123' } });
     expect(wrapper.vm.data.name).toEqual('123');
   });
 
-  test('delete contact', async() => {
+  test('delete contact', async () => {
     const wrapper = mount(ContactEdit, {
       propsData: {
         isEdit: true
@@ -95,6 +111,8 @@ describe('ContactEdit', () => {
 
     const deleteButton = wrapper.findAll('.van-button').at(1);
     deleteButton.trigger('click');
+
+    await later();
     document.querySelector('.van-dialog__confirm').click();
 
     await later();

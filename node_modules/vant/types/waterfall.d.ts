@@ -1,8 +1,8 @@
-import Vue, { DirectiveFunction, PluginFunction } from 'vue';
+import { DirectiveFunction, PluginFunction } from 'vue';
 
 export interface Waterfall {
   (type: string): DirectiveFunction;
-  install: PluginFunction<void>
+  install: PluginFunction<void>;
 }
 
 export const Waterfall: Waterfall;

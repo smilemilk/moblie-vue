@@ -24,7 +24,6 @@
 export default {
   i18n: {
     'zh-CN': {
-      loading: '加载中',
       title1: '文字提示',
       title2: '加载提示',
       title3: '成功/失败提示',
@@ -54,7 +53,7 @@ export default {
 
   methods: {
     showLoadingToast() {
-      this.$toast.loading({ mask: true, message: this.$t('loading') + '...' });
+      this.$toast.loading({ mask: true, message: this.$t('loading') });
     },
 
     showSuccessToast() {
@@ -65,7 +64,7 @@ export default {
       this.$toast.fail(this.$t('text3'));
     },
 
-    showCustomizedToast(duration) {
+    showCustomizedToast() {
       const toast = this.$toast.loading({
         duration: 0,
         forbidClick: true,

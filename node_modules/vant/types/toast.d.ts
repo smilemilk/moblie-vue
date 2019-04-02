@@ -8,10 +8,13 @@ export type ToastOptions = {
   mask?: boolean;
   position?: string;
   duration?: number;
+  className?: any;
+  onClose?(): void;
   forbidClick?: boolean;
   loadingType?: string;
   message?: ToastMessage;
-}
+  getContainer?: string | (() => HTMLElement);
+};
 
 export interface VanToast extends Vue, VanPopupMixin {
   type: string;
@@ -19,6 +22,7 @@ export interface VanToast extends Vue, VanPopupMixin {
   loadingType: string;
   forbidClick: boolean;
   message: ToastMessage;
+  clear(): void;
 }
 
 export interface Toast {
@@ -30,12 +34,12 @@ export interface Toast {
   install(): void;
   setDefaultOptions(options: ToastOptions): void;
   resetDefaultOptions(): void;
-  allowMultiple(allow: boolean): void
+  allowMultiple(allow: boolean): void;
 }
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $toast: Toast
+    $toast: Toast;
   }
 }
 

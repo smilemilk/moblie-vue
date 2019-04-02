@@ -7,7 +7,9 @@ export function queryDailyList (params) {
     return request({
         url: util.ajaxFront + 'XiMai/queryDailySettlement',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 

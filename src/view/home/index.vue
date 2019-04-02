@@ -104,7 +104,6 @@
                             }
                         }
                     }).catch(() => {
-                        Toast('请求异常');
                         return reject({});
                     });
                 });
@@ -244,7 +243,7 @@
                     background-color: @background-blue-dark;
                     padding: 2px 6px;
                     border-radius: 15px;
-                    line-height: 1.5;
+                    line-height: 1.75;
                     color: @text-color-grayBlue;
                     font-size: @font-smallest;
                 }
@@ -256,7 +255,7 @@
                     height: 46px;
                     background-image: url("../../images/icon_large_headSculpture@2x.png");
                     background-repeat: no-repeat;
-                    background-position: top center;
+                    background-position: center center;
                     background-size: 100% auto;
                 }
             }
@@ -272,7 +271,7 @@
                 height: 96px;
                 background-image: url("../../images/recharge_btn@2x.png");
                 background-repeat: no-repeat;
-                background-position: top center;
+                background-position: center center;
                 background-size: 100% auto;
                 z-index: 1000;
                 &:before {
@@ -282,8 +281,9 @@
                     font-weight: bolder;
                     color: @white;
                     position: absolute;
-                    left: 174px;
-                    top: 24px;
+                    left: 57%;
+                    top: 49%;
+                    transform: translate(-50%, -50%);
                 }
             }
             .recharge {
@@ -380,10 +380,6 @@
         .home-entrance .recharge-btn {
             width: 300px;
             height: 96px;
-            &:before {
-                left: 146px;
-                top: 16px;
-            }
         }
 
         .home-header .c-info-sub {

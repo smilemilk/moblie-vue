@@ -107,7 +107,7 @@
                                    style="min-height: 250px;"
                                    :valuePie="pieAmount_fund"
                                    :legendStatus="false"
-                                   radius="45%"
+                                   radius="43%"
                                    centerY="35%"
                                    text=""
                                    class="border-dash padding-top-10"
@@ -118,7 +118,7 @@
                                    style="min-height: 250px;"
                                    :valuePie="pieCount_fund"
                                    :legendStatus="false"
-                                   radius="45%"
+                                   radius="43%"
                                    centerY="35%"
                                    text=""
                                    class="border-dash padding-top-10"
@@ -163,6 +163,7 @@
                         v-if="this.userPickerShow"
                         :columns="userListColumns"
                         @change="onUserChange"
+                        :default-index="userActive"
                         :item-height="34"
                         show-toolbar
                         :visible-item-count="5"
@@ -232,7 +233,8 @@
                     endTime: moment(this.dateSearch).format("YYYYMMDD") + "235959",
                     operId: '', // 根据条件传
                     payOrderType: 'xxsk'
-                }
+                },
+                userActive: 0
             });
         },
         created() {
@@ -281,7 +283,11 @@
                                     response.data
                                 );
                             } else {
-                                return reject({});
+                                if (response.data.isMerchant == false) {
+                                    return resolve(response.data);
+                                } else {
+                                    return reject({});
+                                }
                             }
                         }
                     }).catch(() => {
@@ -305,12 +311,15 @@
                                     this.userListColumns = arr;
                                 }
                             } else {
+                                this.queryParams.operId = results[0].userId || '';
                                 this.userShow = false;
                             }
                         }
 
                         this.dailyOrderFetch();
                     }
+                }).catch((err)=>{
+                    console.log(err)
                 });
             },
             dailyOrderFetch(operId, date) {
@@ -384,15 +393,16 @@
                 if (this.userCurrent !== value) {
                     this.userPickerShow = false;
                     this.userCurrent = value;
-                    let list;
-                    if (value === '全部收银人员') {
-                        list = [value].concat(this.userListColumns);
-                    } else {
-                        list = [value, '全部收银人员'].concat(this.userListColumns);
-                    }
-                    list.splice(index + 1, 1);
-                    list = Array.from(new Set(list));
-                    this.userListColumns = list;
+                    this.userActive = index;
+                    // let list;
+                    // if (value === '全部收银人员') {
+                    //     list = [value].concat(this.userListColumns);
+                    // } else {
+                    //     list = [value, '全部收银人员'].concat(this.userListColumns);
+                    // }
+                    // list.splice(index + 1, 1);
+                    // list = Array.from(new Set(list));
+                    // this.userListColumns = list;
 
                     this.dailyList = {};
                     this.pieAmount_fund = [];

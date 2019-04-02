@@ -1,8 +1,55 @@
-import Utils from '../utils/scroll';
+/* eslint-disable no-underscore-dangle */
 import { on, off } from '../utils/event';
+import {
+  getScrollTop,
+  getElementTop,
+  getVisibleHeight,
+  getScrollEventTarget
+} from '../utils/scroll';
 
 const CONTEXT = '@@Waterfall';
 const OFFSET = 300;
+
+// 处理滚动函数
+function handleScrollEvent() {
+  const element = this.el;
+  const { scrollEventTarget } = this;
+  // 已被禁止的滚动处理
+  if (this.disabled) return;
+
+  const targetScrollTop = getScrollTop(scrollEventTarget);
+  const targetVisibleHeight = getVisibleHeight(scrollEventTarget);
+  // 滚动元素可视区域下边沿到滚动元素元素最顶上 距离
+  const targetBottom = targetScrollTop + targetVisibleHeight;
+
+  // 如果无元素高度，考虑为元素隐藏，直接返回
+  if (!targetVisibleHeight) return;
+
+  // 判断是否到了底
+  let needLoadMoreToLower = false;
+  if (element === scrollEventTarget) {
+    needLoadMoreToLower = scrollEventTarget.scrollHeight - targetBottom < this.offset;
+  } else {
+    const elementBottom =
+      getElementTop(element) - getElementTop(scrollEventTarget) + getVisibleHeight(element);
+    needLoadMoreToLower = elementBottom - targetVisibleHeight < this.offset;
+  }
+  if (needLoadMoreToLower) {
+    this.cb.lower && this.cb.lower({ target: scrollEventTarget, top: targetScrollTop });
+  }
+
+  // 判断是否到了顶
+  let needLoadMoreToUpper = false;
+  if (element === scrollEventTarget) {
+    needLoadMoreToUpper = targetScrollTop < this.offset;
+  } else {
+    const elementTop = getElementTop(element) - getElementTop(scrollEventTarget);
+    needLoadMoreToUpper = elementTop + this.offset > 0;
+  }
+  if (needLoadMoreToUpper) {
+    this.cb.upper && this.cb.upper({ target: scrollEventTarget, top: targetScrollTop });
+  }
+}
 
 // 绑定事件到元素上
 // 读取基本的控制变量
@@ -13,12 +60,12 @@ function doBindEvent() {
   this.el[CONTEXT].binded = true;
 
   this.scrollEventListener = handleScrollEvent.bind(this);
-  this.scrollEventTarget = Utils.getScrollEventTarget(this.el);
+  this.scrollEventTarget = getScrollEventTarget(this.el);
 
   const disabledExpr = this.el.getAttribute('waterfall-disabled');
   let disabled = false;
   if (disabledExpr) {
-    this.vm.$watch(disabledExpr, (value) => {
+    this.vm.$watch(disabledExpr, value => {
       this.disabled = value;
       this.scrollEventListener();
     });
@@ -32,46 +79,6 @@ function doBindEvent() {
   on(this.scrollEventTarget, 'scroll', this.scrollEventListener, true);
 
   this.scrollEventListener();
-}
-
-// 处理滚动函数
-function handleScrollEvent() {
-  const element = this.el;
-  const scrollEventTarget = this.scrollEventTarget;
-  // 已被禁止的滚动处理
-  if (this.disabled) return;
-
-  const targetScrollTop = Utils.getScrollTop(scrollEventTarget);
-  const targetVisibleHeight = Utils.getVisibleHeight(scrollEventTarget);
-  // 滚动元素可视区域下边沿到滚动元素元素最顶上 距离
-  const targetBottom = targetScrollTop + targetVisibleHeight;
-
-  // 如果无元素高度，考虑为元素隐藏，直接返回
-  if (!targetVisibleHeight) return;
-
-  // 判断是否到了底
-  let needLoadMoreToLower = false;
-  if (element === scrollEventTarget) {
-    needLoadMoreToLower = scrollEventTarget.scrollHeight - targetBottom < this.offset;
-  } else {
-    const elementBottom = Utils.getElementTop(element) - Utils.getElementTop(scrollEventTarget) + Utils.getVisibleHeight(element);
-    needLoadMoreToLower = elementBottom - targetVisibleHeight < this.offset;
-  }
-  if (needLoadMoreToLower) {
-    this.cb.lower && this.cb.lower({ target: scrollEventTarget, top: targetScrollTop });
-  }
-
-  // 判断是否到了顶
-  let needLoadMoreToUpper = false;
-  if (element === scrollEventTarget) {
-    needLoadMoreToUpper = targetScrollTop < this.offset;
-  } else {
-    const elementTop = Utils.getElementTop(element) - Utils.getElementTop(scrollEventTarget);
-    needLoadMoreToUpper = elementTop + this.offset > 0;
-  }
-  if (needLoadMoreToUpper) {
-    this.cb.upper && this.cb.upper({ target: scrollEventTarget, top: targetScrollTop });
-  }
 }
 
 // 绑定事件
@@ -90,13 +97,13 @@ function doCheckStartBind(el) {
   if (context.vm._isMounted) {
     startBind(el);
   } else {
-    context.vm.$on('hook:mounted', function() {
+    context.vm.$on('hook:mounted', () => {
       startBind(el);
     });
   }
 }
 
-export default function(type) {
+export default function (type) {
   return {
     bind(el, binding, vnode) {
       if (!el[CONTEXT]) {
@@ -123,4 +130,4 @@ export default function(type) {
       }
     }
   };
-};
+}

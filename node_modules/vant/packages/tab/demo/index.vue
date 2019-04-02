@@ -92,7 +92,6 @@
 
     <demo-block :title="$t('title8')">
       <van-tabs
-        :active="active"
         animated
       >
         <van-tab

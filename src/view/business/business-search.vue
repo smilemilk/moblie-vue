@@ -13,6 +13,7 @@
                     <i class="icon-search"></i>
                     <input v-model="keySearch"
                            class="searchInput"
+                           maxlength="30"
                            placeholder="请输入相关信息"/>
                 </div>
                 <div
@@ -22,13 +23,15 @@
                 </div>
             </div>
             <div class="interval-item flex-content flex-content-align flex-content-spaceBetween">
-                <div class="date-select-box">
+                <div class="date-select-box"
+                     @click="dateChangeAction()"
+                >
                     <span>{{this.dateSearch|$_filters_parseDate}}</span>
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
             </div>
 
-            <div ><samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp></div>
+            <div v-if="this.orderList && this.orderList.length>0"><samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp></div>
 
             <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
                 <div class="cell">
@@ -71,6 +74,25 @@
                     <div class="font-l-d align-c mt14">未查询到本月该订单</div>
                 </div>
             </div>
+
+            <van-popup
+                    v-model="dateTimePickerStatus"
+                    position="bottom"
+                    :overlay="true"
+            >
+                <van-datetime-picker
+                        v-model="dateSearch"
+                        v-if="dateTimePickerStatus"
+                        type="date"
+                        :min-date="minDate"
+                        :max-date="maxDate"
+                        :item-height="34"
+                        @change="dateTimeChangeAction"
+                        @cancel="dateTimeCancelAction"
+                        @confirm="dateTimeConfirmAction"
+                />
+            </van-popup>
+
         </div>
     </div>
 </template>
@@ -87,7 +109,9 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        DatetimePicker,
+        Popup,
     } from 'vant';
     import storeData from './store/business-search';
     import ajax from '@/api/business';
@@ -104,56 +128,87 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            DatetimePicker: DatetimePicker,
+            Popup: Popup,
         },
 
         data() {
             return Object.assign(storeData.call(this), {
-                keySearch: ''
+                keySearch: '',
+                dateTimePickerStatus: false,
+                minDate: '',
+                maxDate: '',
             });
         },
         created() {
             this.dateSearch = new Date();
+            this.minDate = new Date(2019, 0, 1);
+            this.maxDate = new Date();
             this.getOrderList();
         },
         methods: {
             getOrderList() {
-                ajax.getTradeList({
-                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
-                    startDate: moment(this.dateSearch).format("YYYYMMDD") + '000000',
-                    endDate: moment(this.dateSearch).format("YYYYMMDD") + "235959",
-                    tradeOrderNo: '',
-                    payOrderType: 'xxsk'
-                }).then(response => {
-                    if (!response.success === true) {
-                        this.orderList = [];
-                        Dialog.confirm({
-                            title: response.msg || '退出失败',
-                            message: ''
-                        }).then(() => {
-                        }).catch(() => {
-                        });
-                        return;
-                    } else {
-                        setTimeout(() => {
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }, 800);
-                    }
-                }).catch(() => {
-                    this.orderList = [];
-                });
+                // ajax.getTradeList({
+                //     orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
+                //     startDate: moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                //     endDate: moment(this.dateSearch).format("YYYYMMDD") + "235959",
+                //     tradeOrderNo: '',
+                //     payOrderType: 'xxsk'
+                // }).then(response => {
+                //     if (!response.success === true) {
+                //         this.orderList = [];
+                //         Dialog.confirm({
+                //             title: response.msg || '退出失败',
+                //             message: ''
+                //         }).then(() => {
+                //         }).catch(() => {
+                //         });
+                //         return;
+                //     } else {
+                //         setTimeout(() => {
+                //             this.$router.push({
+                //                 name: 'login'
+                //             });
+                //         }, 800);
+                //     }
+                // }).catch(() => {
+                //     this.orderList = [];
+                // });
             },
             orderStatusAction() {
 
             },
             orderRecordAction() {
                 if (this.keySearch.trim().length > 4) {
+                    var toast = Toast.loading({
+                        duration: 0,       // 持续展示 toast
+                        forbidClick: true, // 禁用背景点击
+                        loadingType: 'spinner',
+                        message: '加载中...'
+                    });
+
+                    setTimeout(function(){
+                        toast = '';
+                    }, 4000)
 
                 } else {
                     Toast("至少5位的查询条件");
                 }
+            },
+            dateChangeAction() {
+                this.dateTimePickerStatus = true;
+            },
+            dateTimeChangeAction(picker) {
+
+            },
+            dateTimeCancelAction() {
+                this.dateTimePickerStatus = false;
+            },
+            dateTimeConfirmAction(values) {
+                this.dateSearch = values;
+                this.dateTimePickerStatus = false;
+                // this.queryOrder.page = 1;
             },
             navBackClick() {
                 setTimeout(() => {
@@ -181,7 +236,12 @@
     }
 
     .panel-item_search {
+        &Input {
+            width: 100%;
+        }
         .searchInput {
+            width: 100%;
+            border: none;
             font-size: @font-normal;
             color: @text-color;
             &::-webkit-input-placeholder {
@@ -192,6 +252,7 @@
             padding: 5px 16px;
             color: @main-theme-color;
             cursor: pointer;
+            min-width: 60px;
         }
     }
 

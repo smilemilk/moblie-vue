@@ -7,7 +7,9 @@ export function getTradeSumAmount (params) {
     return request({
         url: util.ajaxFront + 'XiMai/queryTradeOrderSum',
         method: 'get',
-        params: params
+        params: Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -15,7 +17,9 @@ export function getTrade (params) {
     return request({
         url: util.ajaxFront + 'XiMai/queryTradeOrder',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -23,7 +27,9 @@ export function getOrderDetail (params) {
     return request({
         url: util.ajaxFront + 'merchant/tradeJour/orderDetail',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -31,7 +37,9 @@ export function refund (params) {
     return request({
         url: util.ajaxFront + 'XiMai/refund',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 

@@ -57,7 +57,7 @@
                          btn-primary
                          mt14"
                         :class="this.btnStatus ? '' :'btn-disabled'"
-                        @click="loginAction()">确定
+                        @click="submitAction()">确定
                 </button>
             </div>
             <van-number-keyboard
@@ -123,7 +123,11 @@
             'amount': function (val, old) {
                 if (val) {
                     this.loginRule[0] = 1;
-                    this.btnStatus = true;
+                    if (val*1 > 0) {
+                        this.btnStatus = true;
+                    } else {
+                        this.btnStatus = false;
+                    }
                     if (this.remark) {
                         this.loginStatus = true;
                     } else {
@@ -133,6 +137,7 @@
                     if (Math.floor(val*1) > 100000) {
                         this.btnStatus = false;
                         Toast('可输入的最大金额为100,000');
+                        this.amount=old;
                         return;
                     }
                 } else {
@@ -167,7 +172,7 @@
             },
         },
         methods: {
-            loginAction() {
+            submitAction() {
                 if (this.btnStatus === false) {
 
                     if (!this.amount) {
@@ -258,17 +263,15 @@
                 }
 
                 this.amount = this.amount + (value + '');
-                // Toast(value);
             },
             onDelete() {
-                // Toast('delete');
                 if ((this.amount + '').length > 0) {
                     this.amount = this.amount.substring(0, this.amount.length - 1);
                 }
             },
             keyFocus() {
                 this.keyboardShow = true;
-                document.activeElement.blur();
+                // document.activeElement.blur();
             },
             navBackClick() {
                 setTimeout(() => {

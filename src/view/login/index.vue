@@ -338,8 +338,8 @@
                         return;
                     } else {
                         if (response.data && response.data) {
-                            this.merchantName = response.data.merchantName || '';
-                            localStorage.setItem('merchantName', this.merchantNickName);
+                            this.merchantName = response.data.merchantNickName || '';
+                            localStorage.setItem('merchantName', this.merchantName);
                             localStorage.setItem('merchantId', this.depart);
                         }
                     }
@@ -420,7 +420,7 @@
                             }
                         }));
                     } else {
-                        departList = [{depart: localStorage.getItem('departName_current') || this.depart}]
+                        departList = [{depart: localStorage.getItem('departName_current') || this.depart}];
                     }
                 } else {
                     departList = departListOld;

@@ -13,7 +13,8 @@ import {
     DatetimePicker,
     Popup,
     NumberKeyboard,
-    PullRefresh
+    PullRefresh,
+    Loading
 } from 'vant';
 
 Vue.use(NavBar);
@@ -22,6 +23,7 @@ Vue.use(DatetimePicker);
 Vue.use(Popup);
 Vue.use(NumberKeyboard);
 Vue.use(PullRefresh);
+Vue.use(Loading);
 
 Vue.mixin(filter);
 new Vue({

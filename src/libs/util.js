@@ -13,7 +13,8 @@ util.title = function (title) {
 if (process.env.NODE_ENV === "development") {
     util.ajaxFront = "";
 } else if (process.env.NODE_ENV === "production") {
-    util.ajaxFront = "http://test2.weimaipay.com:7070/";
+    // util.ajaxFront = "https://test.weimaipay.com/";
+    util.ajaxFront = "http://test2.weimaipay.com/";
 }
 
 util.ajax = axios.create({

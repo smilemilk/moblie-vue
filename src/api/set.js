@@ -7,8 +7,12 @@ export function modPassword (params) {
     return request({
         url: util.ajaxFront + 'user/loginpwd/reset',
         method: 'post',
-        params: params,
-        data: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        }),
+        data:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 

@@ -12,6 +12,7 @@ const service = axios.create({
     responseType: 'json',
     withCredentials: false // 是否允许带cookie这些
 });
+
 //service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
 // respone拦截器

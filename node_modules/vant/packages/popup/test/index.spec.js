@@ -1,4 +1,4 @@
-import Popup from '../';
+import Popup from '..';
 import { mount, triggerDrag, transitionStub } from '../../../test/utils';
 
 transitionStub();
@@ -114,7 +114,36 @@ test('render overlay', () => {
     }
   });
 
-  expect(div.querySelector('.van-modal')).toBeTruthy();
+  expect(div.querySelector('.van-overlay')).toBeTruthy();
+});
+
+test('watch overlay prop', () => {
+  const div = document.createElement('div');
+  wrapper = mount({
+    template: `
+      <div>
+        <popup :value="show" :overlay="overlay" :get-container="getContainer" />
+      </div>
+    `,
+    components: {
+      Popup
+    },
+    data() {
+      return {
+        show: false,
+        overlay: false,
+        getContainer: () => div
+      };
+    }
+  });
+
+  expect(div.querySelector('.van-overlay')).toBeFalsy();
+
+  wrapper.setData({ overlay: true });
+  expect(div.querySelector('.van-overlay')).toBeFalsy();
+
+  wrapper.setData({ show: true });
+  expect(div.querySelector('.van-overlay')).toBeTruthy();
 });
 
 test('close on click modal', () => {
@@ -136,8 +165,16 @@ test('close on click modal', () => {
     }
   });
 
-  const modal = div.querySelector('.van-modal');
+  const modal = div.querySelector('.van-overlay');
   triggerDrag(modal, 0, -30);
   modal.click();
   expect(wrapper.vm.value).toBeFalsy();
+});
+
+test('oepn & close event', () => {
+  wrapper = mount(Popup);
+  wrapper.vm.value = true;
+  expect(wrapper.emitted('open')).toBeTruthy();
+  wrapper.vm.value = false;
+  expect(wrapper.emitted('close')).toBeTruthy();
 });

@@ -8,10 +8,16 @@ const firstOption = [
   { code: '110101', name: '东城区' }
 ];
 
-test('confirm & cancel event', async() => {
+test('confirm & cancel event', async () => {
+  const onConfirm = jest.fn();
+  const onCancel = jest.fn();
   const wrapper = mount(Area, {
     propsData: {
       areaList
+    },
+    listeners: {
+      confirm: onConfirm,
+      cancel: onCancel
     }
   });
 
@@ -20,11 +26,11 @@ test('confirm & cancel event', async() => {
   wrapper.find('.van-picker__confirm').trigger('click');
   wrapper.find('.van-picker__cancel').trigger('click');
 
-  expect(wrapper.emitted('confirm')[0][0]).toEqual(firstOption);
-  expect(wrapper.emitted('cancel')[0][0]).toEqual(firstOption);
+  expect(onConfirm).toHaveBeenCalledWith(firstOption, [0, 0, 0]);
+  expect(onCancel).toHaveBeenCalledWith(firstOption, [0, 0, 0]);
 });
 
-test('watch areaList & code', async() => {
+test('watch areaList & code', async () => {
   const wrapper = mount(Area, {
     propsData: {
       areaList
@@ -71,7 +77,7 @@ test('getValues method', () => {
   expect(wrapper.vm.getValues()).toEqual(firstOption);
 });
 
-test('reset method', async() => {
+test('reset method', async () => {
   const wrapper = mount(Area, {
     propsData: {
       areaList,

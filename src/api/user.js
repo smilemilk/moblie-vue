@@ -7,7 +7,9 @@ export function userDetail (params) {
     return request({
         url: util.ajaxFront + 'authority/merchantuser/getuser',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -15,7 +17,9 @@ export function merchantId (params) {
     return request({
         url: util.ajaxFront + 'authority/merchantuser/queryUserByMerchantId',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
@@ -23,7 +27,9 @@ export function merchantUser (params) {
     return request({
         url: util.ajaxFront + 'merchantuser',
         method: 'get',
-        params: params
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
     });
 }
 
