@@ -108,7 +108,7 @@
                                    :valuePie="pieAmount_fund"
                                    :legendStatus="false"
                                    radius="43%"
-                                   centerY="35%"
+                                   centerY="60%"
                                    text=""
                                    class="border-dash padding-top-10"
                         ></chart-pie>
@@ -119,7 +119,7 @@
                                    :valuePie="pieCount_fund"
                                    :legendStatus="false"
                                    radius="43%"
-                                   centerY="35%"
+                                   centerY="40%"
                                    text=""
                                    class="border-dash padding-top-10"
                         ></chart-pie>

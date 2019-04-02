@@ -276,6 +276,11 @@
             onDelete() {
                 if ((this.amount + '').length > 0) {
                     this.amount = this.amount.substring(0, this.amount.length - 1);
+                    if (this.amount) {
+                        this.cursorStatus = false;
+                    } else {
+                        this.cursorStatus = true;
+                    }
                 }
             },
             keyFocus() {
