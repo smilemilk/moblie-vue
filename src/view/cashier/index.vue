@@ -22,6 +22,7 @@
                                    @touchstart.native.stop="keyboardShow = true"
                                    @focus="keyFocus()"
                                    class="item-input amount-input"
+                                   :class="cursorStatus ? 'cursor' : ''"
                                    maxlength="9"
                                    placeholder="0.00"/>
                         </div>
@@ -113,15 +114,23 @@
         data() {
             return Object.assign(storeData.call(this), {
                 keyboardShow: true,
-                btnStatus: false
+                btnStatus: false,
+                cursorStatus: false
             });
         },
         created() {
-
+           if (this.keyboardShow == true && this.amount.length == 0) {
+               this.cursorStatus = true;
+           }
         },
         watch: {
             'amount': function (val, old) {
                 if (val) {
+                    if (val) {
+                        this.cursorStatus = false;
+                    } else {
+                        this.cursorStatus = true;
+                    }
                     this.loginRule[0] = 1;
                     if (val*1 > 0) {
                         this.btnStatus = true;
@@ -169,7 +178,7 @@
                     Toast('备注在100个字符之内');
                     return;
                 }
-            },
+            }
         },
         methods: {
             submitAction() {
@@ -271,7 +280,7 @@
             },
             keyFocus() {
                 this.keyboardShow = true;
-                // document.activeElement.blur();
+                document.activeElement.blur();
             },
             navBackClick() {
                 setTimeout(() => {
@@ -328,6 +337,10 @@
             }
             .amount-input {
                 position: relative;
+                border-left: none;
+                &.cursor {
+                 border-left: 1px solid @main-theme-color;
+                }
                 &:before {
                     position: absolute;
                     top: 0;
