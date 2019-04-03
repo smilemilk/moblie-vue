@@ -1,15 +1,12 @@
 export default function () {
     return {
-        loginRule: [0, 0],
-        loginRuleText: [
+        refundRule: [0, 0],
+        refundRuleText: [
             '请输入金额'
         ],
-        loginInputStatus: [0, 0],
-        loginStatus: true,
-        loginRuleTextStatus: false,
-        departName: '',
-        departList: '',
-        accountList: [],
+        refundInputStatus: [0, 0],
+        refundStatus: true,
+        refundRuleTextStatus: undefined,
         remarkShow: false,
         amount: '',
         remark: '',

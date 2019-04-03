@@ -79,6 +79,11 @@
                 >
                     已超过30天可退款时间，不可退款
                 </div>
+                <div class="overdraw-item plr16 ptb10"
+                     v-if="resultForm && resultStatus==='0'"
+                >
+                    <span class="info cursor" @click="primaryOrderAction()">查看原订单</span>
+                </div>
             </div>
 
             <div class="mt30 plr16">
@@ -169,13 +174,21 @@
                 // orderStatus: '',
                 refundShow: false,
                 cancelShow: false,
-                overdrawStatus: false, // 是否超时30天
+                overdrawStatus: false, // 是否超时30天,
+                resultForm: false, // 是否从退款状态页 来的
+                resultStatus: undefined, // 从退款状态页来的， 退款的成败状态
+                primaryNo: '', // resultForm,resultStatus基础上下个操作
             });
         },
         created() {
             this.queryOrder.orderNo = this.$route.query.tradeOrderNo;
             this.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' : this.$route.query.tradeType === '0' ? 'refund' : '';
             this.getOrderDetail();
+
+            this.resultForm = this.$route.query.resultForm || false;
+            if (this.$route.query.resultForm) {
+                this.resultStatus = this.$route.query.resultStatus
+            }
         },
         methods: {
             getOrderDetail() {
@@ -189,8 +202,8 @@
                 }
             },
 
-            getPayDetail() {
-                ajax.getPay({payOrderNo: this.queryOrder.orderNo}).then(response => {
+            getPayDetail(no) {
+                ajax.getPay({payOrderNo: no ? no : this.queryOrder.orderNo}).then(response => {
                     if (!response.success === true) {
                         this.businessInfo = {};
                         return;
@@ -245,6 +258,10 @@
                             createTime: response.data.createTime || '',
                             remark: response.data.paySubmitRemark || ''
                         };
+
+                        if (this.resultForm && this.resultStatus === '0') {
+                            this.primaryNo = response.data.payOrderNo;
+                        }
                     }
                 }).catch(() => {
                     this.businessInfo = {};
@@ -264,7 +281,6 @@
             // },
 
             refundAction() {
-                console.log(this.businessInfo)
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessRefund',
@@ -289,7 +305,10 @@
                 });
             },
             ensureAction() {
-
+                this.navBackClick();
+            },
+            primaryOrderAction() {
+                this.getPayDetail(this.primaryNo);
             },
             navBackClick() {
                 setTimeout(() => {

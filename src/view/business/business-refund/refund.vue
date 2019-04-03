@@ -4,7 +4,7 @@
             <div class="refund-inner">
 
                 <div class="item pb3"
-                     :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
+                     :class="this.refundInputStatus[0] === 1 ? 'bB1' : ''"
                 >
                     <div class="item-label">退款金额（元）</div>
 
@@ -20,8 +20,8 @@
                                    placeholder="0.00"/>
                         </div>
                         <p class="item-notice"
-                           v-show="this.loginRule[0] === 0 &&
-                               this.loginRuleTextStatus === true">不能为空</p>
+                           v-show="refundRule[0] === 0 &&
+                               refundRuleTextStatus === true">不能为空</p>
                     </div>
                 </div>
                 <div class="mt10">
@@ -32,7 +32,7 @@
                     >添加退款备注</span>
                     </div>
                     <div class="item pt0"
-                         :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''"
+                         :class="this.refundInputStatus[1] === 1 ? 'bB1' : ''"
                          v-else
                     >
                         <input v-model="remark"
@@ -41,17 +41,6 @@
                                placeholder="请输入退款备注"/>
                     </div>
                 </div>
-            </div>
-            <div class="plr16">
-                <button
-                        class="
-                         btn
-                         btn-block
-                         btn-primary
-                         mt10"
-                        :class="this.btnStatus ? '' :'btn-disabled'"
-                        @click="submitAction()">确定
-                </button>
             </div>
             <van-number-keyboard
                     :show="keyboardShow"
@@ -110,8 +99,8 @@
         },
         data() {
             return Object.assign(storeData.call(this), {
-                keyboardShow: false,
-                btnStatus: false,
+                keyboardShow: true,
+                // btnStatus: false, // 符不符合提交标准
                 cursorStatus: false,
             });
         },
@@ -126,23 +115,21 @@ console.log(this.limitAmount)
                     } else {
                         this.cursorStatus = true;
                     }
-                    this.loginRule[0] = 1;
+                    this.refundRule[0] = 1;
                     if (val * 1 > 0) {
                         this.btnStatus = true;
                     } else {
                         this.btnStatus = false;
                     }
                     if (this.remark) {
-                        this.loginStatus = true;
+                        this.refundStatus = true;
                     } else {
-                        this.loginStatus = false;
+                        this.refundStatus = false;
                     }
-                    console.log('00000')
-                    console.log(this.limitAmount)
 
                     if (val*100 > this.limitAmount*1) {
                         this.btnStatus = false;
-                        Toast('可退金额最大为'+(this.limitAmount*1)/100);
+                        Toast('输入的金额大于最大退款额');
                         this.amount = old;
                         return;
                     }
@@ -155,27 +142,27 @@ console.log(this.limitAmount)
                     }
                 } else {
                     this.btnStatus = false;
-                    this.loginRule[0] = 0;
+                    this.refundRule[0] = 0;
                     this.btnStatus = false;
                 }
                 if (val !== old) {
-                    this.loginInputStatus[0] = 1;
-                    this.loginInputStatus[1] = 0;
+                    this.refundInputStatus[0] = 1;
+                    this.refundInputStatus[1] = 0;
                 } else {
-                    this.loginInputStatus[0] = 0;
+                    this.refundInputStatus[0] = 0;
                 }
             },
             'remark': function (val, old) {
                 if (val) {
-                    this.loginRule[1] = 1;
+                    this.refundRule[1] = 1;
                 } else {
-                    this.loginRule[1] = 0;
+                    this.refundRule[1] = 0;
                 }
                 if (val !== old) {
-                    this.loginInputStatus[0] = 0;
-                    this.loginInputStatus[1] = 1;
+                    this.refundInputStatus[0] = 0;
+                    this.refundInputStatus[1] = 1;
                 } else {
-                    this.loginInputStatus[1] = 0;
+                    this.refundInputStatus[1] = 0;
                 }
                 if (getBLen(val + '') > 100) {
                     this.remark = old;
@@ -183,6 +170,11 @@ console.log(this.limitAmount)
                     return;
                 }
             }
+        },
+        mounted() {
+          this.$on('getValue', ()=>{
+              this.submitAction();
+          })
         },
         methods: {
             submitAction() {
@@ -197,21 +189,21 @@ console.log(this.limitAmount)
                     }
                     return;
                 }
-                if ((this.loginRule.join() === '1,1') || (this.loginRule.join() === '1,0')) {
-                    this.loginStatus = true;
-                    this.loginRuleTextStatus = false;
-                    let fetchLoading = Toast.loading({
-                        mask: true,
-                        message: '请等待...'
+                if ((this.refundRule.join() === '1,1') || (this.refundRule.join() === '1,0')) {
+                    this.refundStatus = true;
+                    this.refundRuleTextStatus = false;
+                    // let fetchLoading = Toast.loading({
+                    //     mask: true,
+                    //     message: '请等待...'
+                    // });
+                    // this.createOrderFetch(fetchLoading);
+                    this.$emit('submit', {
+                        amount: this.amount
                     });
-                    this.createOrderFetch(fetchLoading);
                 } else {
-                    this.loginStatus = false;
-                    this.loginRuleTextStatus = true;
+                    this.refundStatus = false;
+                    this.refundRuleTextStatus = true;
                 }
-            },
-            createOrderFetch(fetchLoading) {
-
             },
             remarkToggleHandle() {
                 this.remarkShow = true;
@@ -270,7 +262,6 @@ console.log(this.limitAmount)
             background-color: @white;
             .item {
                 position: relative;
-                /*padding: 16px 0 8px;*/
                 border-bottom: 1px solid @border-color-dark;
                 &.bB1 {
                     border-bottom-color: @main-theme-color;

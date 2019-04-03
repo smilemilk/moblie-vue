@@ -12,6 +12,8 @@
 
                 <refund-opera
                         :limitAmount="limitAmount"
+                        ref="refund"
+                        @submit="submitFetch"
                 ></refund-opera>
 
                 <div class="detail-cells">
@@ -55,8 +57,9 @@
                     <button
                             class="
                             refund-btn-cancel
-                         btn
+                            btn
                          "
+                            @click="navBackClick()"
                           >取消
                     </button>
                     <button
@@ -84,7 +87,8 @@
         SwipeItem,
         GoodsAction,
         GoodsActionBigBtn,
-        GoodsActionMiniBtn
+        GoodsActionMiniBtn,
+        Dialog
     } from 'vant';
     import storeData from './store/business-detail';
     import ajax from '@/api/business';
@@ -102,7 +106,8 @@
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
-            RefundOpera
+            RefundOpera,
+            Dialog
         },
 
         data() {
@@ -119,13 +124,10 @@
                 businessInfo: {
 
                 },
-                limitAmount: this.$route.query.amount || ''
+                limitAmount: this.$route.query.amount+'' || ''
             });
         },
         created() {
-            console.log('-----')
-            console.log(this.$route.query.amount)
-            console.log('-----')
             this.queryOrder.tradeOrderNo = this.$route.query.tradeOrderNo;
             this.queryOrder.startDate = this.$route.query.date+'000000';
             this.queryOrder.endDate = this.$route.query.date+'235959';
@@ -144,20 +146,54 @@
                 });
             },
             refundSubmit() {
+                Dialog.confirm({
+                    title: '确认对该笔交易进行退款?',
+                    message: ''
+                }).then(() => {
+                    this.$refs.refund.$emit('getValue'); // 触发退款组件事件
+                }).catch(() => {
+                });
+            },
+
+            submitFetch(res) {
+                let fetchLoading = Toast.loading({
+                    mask: true,
+                    message: '退款请求中...'
+                });
                 ajax.refund({
                     payOrderNo: this.queryOrder.tradeOrderNo,
-                    refundAmount: 1,
+                    refundAmount: res.amount*100,
                     refundId: (Math.floor(Math.random()*10000000000000000+1))+'',
                     remark: '3'
                 }).then(response => {
+                    fetchLoading.clear();
+                    let refundStatus;
+                    let msg;
                     if (!response.success === true) {
-                        this.businessInfo = {};
-                        return;
+                        refundStatus ='0';
+                        msg='请求失败';
                     } else {
-                        this.businessInfo = response.data.items[0];
+                        if (response.data.refundOrderStatus === '3' || response.data.refundOrderStatus === 3) {
+                            refundStatus ='0';
+                            msg=response.data.errorMessage;
+                        }
                     }
+
+                    setTimeout(() => {
+                        this.$router.push({
+                            name: 'businessRefundResult',
+                            query: {
+                                tradeOrderNo: this.$route.query.tradeOrderNo,
+                                refundOrderNo: response.data.refundOrderNo,
+                                resultStatus: refundStatus,
+                                msg: msg
+                            }
+                        });
+                    }, 800);
+
                 }).catch(() => {
-                    this.businessInfo = {};
+                    Toast('退款失败');
+                    fetchLoading.clear();
                 });
             },
             ensureAction() {

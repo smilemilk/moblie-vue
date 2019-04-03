@@ -96,7 +96,11 @@
 
                             <div class="cell-right">
                                 <div class="font-l-d">
-                                    {{item.tradeType|$_filters_moneyMark}}{{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                    <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
+                                     ((item.tradeAmount+'').indexOf('-') <= -1)">
+                                        {{item.tradeType|$_filters_moneyMark}}
+                                    </span>
+                                    {{item.tradeAmount|$_filters_moneyFormat_fen}}
                                 </div>
                                 <div class="font-s-b mt4 align-r">{{item.status}}</div>
                             </div>

@@ -114,6 +114,13 @@ const routes = [
         }
     },
     {
+        name: 'businessRefundResult',
+        component: () => import('./view/business/business-refundResult'),
+        meta: {
+            title: '退款'
+        }
+    },
+    {
         name: 'daily',
         component: () => import('./view/dailyKnots/index'),
         meta: {
