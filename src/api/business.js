@@ -52,6 +52,16 @@ export function getPay (params) {
 //     });
 // }
 
+export function cancel(params) {
+    return request({
+        url: util.ajaxFront + 'XiMai/refund',
+        method: 'get',
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
+    });
+}
+
 export function refund (params) {
     return request({
         url: util.ajaxFront + 'XiMai/refund',

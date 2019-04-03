@@ -101,7 +101,7 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
         },
 
         data() {
@@ -190,7 +190,6 @@
             //         this.businessInfo = {};
             //     });
             // },
-
 
             refundAction() {
                 setTimeout(() => {

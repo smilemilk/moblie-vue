@@ -9,11 +9,6 @@
         />
         <div class="business_detail-wrapper container-wrapper">
             <div class="business_detail-container">
-                <div class="detail-item">
-                    <div class="detail-item-name">{{businessInfo.tradeOrderName}}</div>
-                    <div class="detail-item-title mt10">{{businessInfo.tradeAmount | $_filters_moneyFormat_fen}}</div>
-                    <div class="detail-item-tip mt2">{{businessInfo.tradeType+''}}</div>
-                </div>
                 <div class="detail-cells plr16">
                     <div class="detail-cell">
                         <label class="detail-cell-label">交易类型</label>
@@ -114,13 +109,16 @@
                     limit: 1,
                     page: 1
                 },
+                businessInfo: {
+
+                }
             });
         },
         created() {
             this.queryOrder.tradeOrderNo = this.$route.query.tradeOrderNo;
             this.queryOrder.startDate = this.$route.query.date+'000000';
             this.queryOrder.endDate = this.$route.query.date+'235959';
-            this.getOrderDetail();
+            // this.getOrderDetail();
         },
         methods: {
             getOrderDetail() {
