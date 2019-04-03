@@ -54,7 +54,7 @@ export function getPay (params) {
 
 export function cancel(params) {
     return request({
-        url: util.ajaxFront + 'XiMai/refund',
+        url: util.ajaxFront + 'XiMai/cancelOrder',
         method: 'get',
         params:  Object.assign({},params,{
             'XiMai': true
@@ -78,5 +78,6 @@ export default {
     getRefund,
     getPay,
     // getOrderDetail,
+    cancel,
     refund
 };

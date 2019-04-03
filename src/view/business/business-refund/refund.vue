@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="cashier-wrapper container-wrapper">
+        <div class="">
             <div class="cashier-inner">
 
                 <div class="item pb3"
@@ -24,7 +24,6 @@
                                this.loginRuleTextStatus === true">不能为空</p>
                     </div>
                 </div>
-                <div class="font-n-l mt10">请仔细确认输入金额是否与商品价格一致</div>
                 <div class="mt20">
                     <div v-if="!remarkShow">
                     <span
@@ -107,15 +106,15 @@
 
         data() {
             return Object.assign(storeData.call(this), {
-                keyboardShow: true,
+                keyboardShow: false,
                 btnStatus: false,
                 cursorStatus: false
             });
         },
         created() {
-            if (this.keyboardShow == true && this.amount.length == 0) {
-                this.cursorStatus = true;
-            }
+            // if (this.keyboardShow == true && this.amount.length == 0) {
+            //     this.cursorStatus = true;
+            // }
         },
         watch: {
             'amount': function (val, old) {

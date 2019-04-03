@@ -9,7 +9,10 @@
         />
         <div class="business_detail-wrapper container-wrapper">
             <div class="business_detail-container">
-                <div class="detail-cells plr16">
+
+                <refund-opera></refund-opera>
+
+                <div class="detail-cells">
                     <div class="detail-cell">
                         <label class="detail-cell-label">交易类型</label>
                         <span class="detail-cell-span">{{businessInfo.tradeType}}</span>
@@ -83,6 +86,7 @@
     } from 'vant';
     import storeData from './store/business-detail';
     import ajax from '@/api/business';
+    import RefundOpera from './business-refund/refund';
 
     export default {
         components: {
@@ -95,7 +99,8 @@
             [SwipeItem.name]: SwipeItem,
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
-            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn
+            [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            RefundOpera
         },
 
         data() {
@@ -135,9 +140,9 @@
             },
             refundSubmit() {
                 ajax.refund({
-                    payOrderNo: 'test22019031191860393927901185881',
+                    payOrderNo: this.queryOrder.tradeOrderNo,
                     refundAmount: 1,
-                    refundId: Math.floor(Math.random()*10000000000000000+1),
+                    refundId: (Math.floor(Math.random()*10000000000000000+1))+'',
                     remark: '3'
                 }).then(response => {
                     if (!response.success === true) {

@@ -47,6 +47,12 @@
                         <label class="detail-cell-label">备注</label>
                         <span class="detail-cell-span">{{businessInfo.remark}}</span>
                     </div>
+
+                    <div class="overdraw-item"
+                            v-if="queryOrderType === '1'"
+                    >
+                        已超过30天可退款时间，不可退款
+                    </div>
                 </div>
             </div>
 
@@ -59,6 +65,15 @@
                          mb16
                          "
                         @click="refundAction()">退款
+                </button>
+                <button
+                        class="
+                         btn
+                         btn-block
+                         btn-ghost
+                         mb16
+                         "
+                        @click="cancelAction()">撤销订单
                 </button>
                 <button
                         class="
@@ -102,6 +117,7 @@
             [GoodsAction.name]: GoodsAction,
             [GoodsActionBigBtn.name]: GoodsActionBigBtn,
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
+            Toast
         },
 
         data() {
@@ -118,7 +134,8 @@
                     operatorName: '',
                     createTime: '',
                     remark: ''
-                }
+                },
+                orderStatus: ''
             });
         },
         created() {
@@ -201,6 +218,18 @@
                     });
                 }, 800);
             },
+            cancelAction() {
+                ajax.cancel({payOrderNo: this.queryOrder.orderNo}).then(response => {
+                    if (!response.success === true) {
+                        this.$toast(response.data.msg || '撤销订单失败');
+                        return;
+                    } else {
+
+                    }
+                }).catch(() => {
+                    this.$toast('撤销订单失败');
+                });
+            },
             ensureAction() {
 
             },
@@ -271,5 +300,11 @@
                 right: 0;
             }
         }
+    }
+
+    .overdraw-item {
+        font-size: @font-normal;
+        color: @text-color;
+        border-top: 1px solid @border-color;
     }
 </style>
