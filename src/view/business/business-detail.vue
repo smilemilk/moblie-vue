@@ -114,7 +114,7 @@
         },
         created() {
             this.queryOrder.orderNo = this.$route.query.tradeOrderNo;
-            this.queryOrder.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' :this.$route.query.tradeType === '0' ? 'refund' : '';
+            this.queryOrder.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' : this.$route.query.tradeType === '0' ? 'refund' : '';
             this.getOrderDetail();
         },
         methods: {
@@ -146,7 +146,11 @@
             navBackClick() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'business'
+                        name: 'business',
+                        query: {
+                            date: this.$route.query.date,
+                            orderStatusStr: this.$route.query.orderStatusStr
+                        }
                     });
                 }, 800);
             },

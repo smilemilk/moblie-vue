@@ -51,10 +51,10 @@
                 </div>
                 <div class=""
                      v-if="this.orderList && this.orderList.length>0 && this.queryOrder.orderStatus.length == 0">
-                    <div class="font-xs-l">实收 <span v-if="this.orderSumAmount.total">￥{{orderSumAmount.total|$_filters_moneyFormat_fen}}</span>
-                        <span class="ml20">收入 <span v-if="this.orderSumAmount.in">￥{{orderSumAmount.in|$_filters_moneyFormat_fen}}</span></span>
+                    <div class="font-xs-l">实收&nbsp;<span v-if="this.orderSumAmount.total">￥{{orderSumAmount.total|$_filters_moneyFormat_fen}}</span>
+                        <span class="ml20">收入&nbsp;<span v-if="this.orderSumAmount.in">￥{{orderSumAmount.in|$_filters_moneyFormat_fen}}</span></span>
                     </div>
-                    <div class="font-xs-l flex-content flex-content-end">退款 <span v-if="this.orderSumAmount.out">￥{{orderSumAmount.out|$_filters_moneyFormat_fen}}</span>
+                    <div class="font-xs-l flex-content flex-content-end">退款&nbsp;<span v-if="this.orderSumAmount.out">￥{{orderSumAmount.out|$_filters_moneyFormat_fen}}</span>
                     </div>
                 </div>
             </div>
@@ -197,7 +197,18 @@
             });
         },
         created() {
-            this.dateSearch = new Date();
+
+            // 详情退回到首页 按日期查询
+            if(this.$route.query && this.$route.query.date) {
+                this.dateSearch = new Date(this.$route.query.date.slice(0,4), this.$route.query.date.slice(4,6)*1-1, this.$route.query.date.slice(6,8));
+            } else {
+                this.dateSearch = new Date();
+            }
+
+            if (this.$route.query && this.$route.query.orderStatusStr) {
+                this.orderSelected = this.$route.query.orderStatusStr;
+            }
+
             this.minDate = new Date(2019, 0, 1);
             this.maxDate = new Date();
             this.queryOrder = {
@@ -297,11 +308,20 @@
             },
             orderDetailAction(no, tradeType) {
                 setTimeout(() => {
+                    const orderStatus = {
+                        'all': '',
+                        'success': '2',
+                        'close': '8',
+                        'wait': '0',
+                        'refund': '10'
+                    };
                     this.$router.push({
                         name: 'businessDetail',
                         query: {
                             tradeOrderNo: no,
-                            tradeType: tradeType
+                            tradeType: tradeType,
+                            date: moment(this.dateSearch).format("YYYYMMDD"),
+                            orderStatusStr: this.orderSelected
                         }
                     });
                 }, 800);
@@ -321,7 +341,15 @@
                 // this.dailyList = {};
                 // this.pieAmount_fund = [];
                 // this.pieCount_fund = [];
-                this.queryOrder.page = 1;
+
+                this.queryOrder = {
+                    ...this.queryOrder,
+                    page: 1,
+                    startDate:
+                    moment(this.dateSearch).format("YYYYMMDD") + '000000',
+                    endDate:
+                    moment(this.dateSearch).format("YYYYMMDD") + "235959"
+                };
                 this.getOrderList();
                 if (this.queryOrder.orderStatus.length == 0) {
                     this.getOrderSumAmount();
