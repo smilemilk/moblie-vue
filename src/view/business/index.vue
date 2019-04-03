@@ -11,8 +11,10 @@
             <div class="panel-item flex-content flex-content-align flex-content-spaceBetween">
                 <div class="panel-item-select"
                      @click="orderStatusToggleHandle()"
-                     :class="orderStatusShow ? 'panel-item-select_down':''"
-                >筛选
+                     :class="[orderStatusShow ? 'panel-item-select_down':'',
+                     orderStatusActive ? 'active' : ''
+                     ]"
+                >{{orderStatusText}}
                 </div>
                 <div @click="orderHistoryAction()"
                      class=""
@@ -193,14 +195,16 @@
                 dateTimePickerStatus: false,
                 minDate: '',
                 maxDate: '',
+                orderStatusText: '全部',
+                orderStatusActive: false,
                 isLoading: false
             });
         },
         created() {
 
             // 详情退回到首页 按日期查询
-            if(this.$route.query && this.$route.query.date) {
-                this.dateSearch = new Date(this.$route.query.date.slice(0,4), this.$route.query.date.slice(4,6)*1-1, this.$route.query.date.slice(6,8));
+            if (this.$route.query && this.$route.query.date) {
+                this.dateSearch = new Date(this.$route.query.date.slice(0, 4), this.$route.query.date.slice(4, 6) * 1 - 1, this.$route.query.date.slice(6, 8));
             } else {
                 this.dateSearch = new Date();
             }
@@ -283,6 +287,16 @@
                     'refund': '10'
                 };
 
+                const orderText = {
+                    'all': '全部',
+                    'success': '交易成功',
+                    'close': '订单关闭',
+                    'wait': '待支付',
+                    'refund': '退款'
+                };
+
+                this.orderStatusText = orderText[this.orderSelected];
+                this.orderStatusActive = true;
                 this.queryOrder = {
                     ...this.queryOrder,
                     orderStatus: orderStatus[this.orderSelected],

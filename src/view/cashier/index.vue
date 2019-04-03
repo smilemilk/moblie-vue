@@ -224,7 +224,7 @@
                             let query = {
                                 amount: this.amount,
                                 payOrderNo: payOrderNo || '',
-                                code: response.data
+                                code: response.data || ''
                             };
                             setTimeout(() => {
                                 this.$router.push({

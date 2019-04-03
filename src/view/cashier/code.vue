@@ -18,7 +18,7 @@
                                 class="danger">{{countDownCount}}s</strong></div>
                     </div>
                     <div class="danger align-c font-n-l"
-                         v-if="!this.countDownCount">二维码已失效，支付结果查询中…</div>
+                         v-if="!this.countDownCount && (this.breakOffStatus !== false)">二维码已失效，支付结果查询中…</div>
                     <div class="cashier-code-container">
                         <div ref="code" id="code" class="flex-content flex-content-justify"></div>
                         <div class="mt10 font-s-l">收款成功以POS收银机实际到账为准</div>
@@ -90,7 +90,8 @@
                 countDownCount: 0,
                 queryOrderInterval: undefined,
                 queryOrderCount: 0,
-                orderOverStatus: false
+                orderOverStatus: false,
+                breakOffStatus: false
             });
         },
         created() {
@@ -223,6 +224,7 @@
                         cancelButtonText: '否'
                     }).then(() => {
                         Toast.clear();
+                        this.breakOffStatus = true;
                         setTimeout(() => {
                             this.$router.push({
                                 name: 'cashier',

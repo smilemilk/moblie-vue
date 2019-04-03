@@ -293,7 +293,7 @@
 
 .panel {
   &-item {
-    padding: 8px 16px 11px;
+    padding: 10px 16px 9px;
     color: @text-color-light;
     font-size: @font-normal;
     line-height: 1.5;
@@ -313,6 +313,12 @@
       }
       &:hover {
         color: @main-theme-color;
+      }
+      &.active {
+        color: @main-theme-color;
+        &:after {
+          border-top-color: @main-theme-color;
+        }
       }
       &_down {
         color: @main-theme-color;

@@ -301,6 +301,7 @@
             border: none;
             font-size: @font-normal;
             color: @text-color;
+            caret-color: @main-theme-color;
             &::-webkit-input-placeholder {
                 color: @text-color-grayer;
             }
