@@ -216,10 +216,8 @@
                 page: 1,
 
                 startDate:
-                // '20190310000000',
                 moment(this.dateSearch).format("YYYYMMDD") + '000000',
                 endDate:
-                // '20190310235959'
                 moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
             this.getOrderList();

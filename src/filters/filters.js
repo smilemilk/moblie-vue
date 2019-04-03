@@ -9,6 +9,9 @@ export default {
         $_filters_parseDate: (val) => {
             return parseTime(val, '{y}-{m}-{d}');
         },
+        $_filters_parseMonth: (val) => {
+            return parseTime(val, '{y}-{m}');
+        },
         $_filters_parseTime: (val) => {
             return parseTime(val);
         },
