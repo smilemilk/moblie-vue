@@ -11,48 +11,70 @@
             <div class="business_detail-container">
                 <div class="detail-item">
                     <div class="detail-item-name">{{businessInfo.tradeOrderName}}</div>
-                    <div class="detail-item-title mt10">{{businessInfo.tradeAmount | $_filters_moneyFormat_fen}}</div>
-                    <div class="detail-item-tip mt2">{{businessInfo.tradeType+''}}</div>
+                    <div class="detail-item-title mt10">{{businessInfo.tradeType|$_filters_moneyMark}}{{businessInfo.tradeAmount | $_filters_moneyFormat_fen}}</div>
+                    <div class="detail-item-tip mt2">{{businessInfo.tradeStatusText}}</div>
                 </div>
                 <div class="detail-cells plr16">
                     <div class="detail-cell">
                         <label class="detail-cell-label">交易类型</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeType==='1' ? '消费' : businessInfo.tradeType==='0' ? '退款' : ''}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.tradeType==='1' ? '消费' : businessInfo.tradeType==='0' ? '退款' : ''}}</span>
+                        </div>
                     </div>
-                    <div class="detail-cell">
+                    <div class="detail-cell" v-if="businessInfo.discountAmount">
                         <label class="detail-cell-label">优惠金额（元）</label>
-                        <span class="detail-cell-span">{{businessInfo.discountAmount | $_filters_moneyFormat_fen}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.discountAmount | $_filters_moneyFormat_fen}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
-                        <span class="detail-cell-span">{{businessInfo.payType}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.payType || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">微信订单号</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeThirdNo}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.tradeThirdNo || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付流水号</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeOrderNo}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.tradeOrderNo || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">操作人</label>
-                        <span class="detail-cell-span">{{businessInfo.operatorName}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.operatorName || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">创建时间</label>
-                        <span class="detail-cell-span">{{businessInfo.createTime}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span" v-if="businessInfo.createTime">{{businessInfo.createTime|$_filters_parseTime}}</span>
+                            <span class="detail-cell-span" v-else>'-'</span>
+                        </div>
                     </div>
-                    <div class="detail-cell">
+                    <div class="detail-cell" v-if="businessInfo.remark">
                         <label class="detail-cell-label">备注</label>
-                        <span class="detail-cell-span">{{businessInfo.remark}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">
+                                <span
+                                        style="text-align: justify;
+                                               display: inline-block;
+                                               overflow-wrap: break-word;"
+                                >{{businessInfo.remark}}</span>
+                            </span>
+                        </div>
                     </div>
-
-                    <div class="overdraw-item"
-                            v-if="queryOrderType === '1'"
-                    >
-                        已超过30天可退款时间，不可退款
-                    </div>
+                </div>
+                <div class="overdraw-item plr16 ptb10"
+                     v-if="queryOrderType === 'pay' && overdrawStatus"
+                >
+                    已超过30天可退款时间，不可退款
                 </div>
             </div>
 
@@ -64,6 +86,7 @@
                          btn-ghost
                          mb16
                          "
+                        v-if="refundShow"
                         @click="refundAction()">退款
                 </button>
                 <button
@@ -73,6 +96,7 @@
                          btn-ghost
                          mb16
                          "
+                        v-if="cancelShow"
                         @click="cancelAction()">撤销订单
                 </button>
                 <button
@@ -104,6 +128,8 @@
     } from 'vant';
     import storeData from './store/business-detail';
     import ajax from '@/api/business';
+    import moment from 'moment';
+    import {orderStatus, refundStatus} from '@/filters/status';
 
     export default {
         components: {
@@ -127,15 +153,20 @@
                 },
                 queryOrderType: '',
                 businessInfo: {
+                    tradeStatusText: '', // 展示状态
                     tradeOrderName: '',
                     tradeAmount: '',
                     tradeType: this.$route.query.tradeType,
                     discountAmount: '',
+                    tradeOrderNo: '',
                     operatorName: '',
                     createTime: '',
                     remark: ''
                 },
-                orderStatus: ''
+                // orderStatus: '',
+                refundShow: false,
+                cancelShow: false,
+                overdrawStatus: false, // 是否超时30天
             });
         },
         created() {
@@ -166,10 +197,24 @@
                             tradeOrderName: response.data.payOrderName || '',
                             tradeAmount: response.data.buyerPayAmount || '',
                             discountAmount: response.data.discountAmount || '',
+                            tradeOrderNo: response.data.payOrderNo || '',
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
-                            remark: response.data.paySubmitRemark || ''
+                            remark: response.data.paySubmitRemark || '',
+                            tradeStatusText: orderStatus(response.data.payOrderStatus)
                         };
+
+                        // 是否超过30天的逻辑
+                        if (response.data.createTime) {
+                            const thirtydaystime = moment(response.data.createTime).valueOf() + 30 * 24 * 60 * 60 * 1000;
+                            const currentTime = moment(new Date()).valueOf();
+
+                            if (thirtydaystime < currentTime) {
+                                this.overdrawStatus = true;
+                            } else {
+                                this.overdrawStatus = false;
+                            }
+                        }
                     }
                 }).catch(() => {
                     this.businessInfo = {};
@@ -274,31 +319,6 @@
         &-tip {
             color: @text-color-light;
             font-size: @font-normal;
-        }
-    }
-
-    .detail {
-        &-cells {
-
-        }
-        &-cell {
-            position: relative;
-            padding-bottom: 8px;
-            box-sizing: border-box;
-            &-label,
-            &-span {
-                display: inline-block;
-                font-size: @font-normal;
-                line-height: 1.25;
-            }
-            &-label {
-                color: @text-color-normal;
-            }
-            &-span {
-                color: @text-color;
-                position: absolute;
-                right: 0;
-            }
         }
     }
 

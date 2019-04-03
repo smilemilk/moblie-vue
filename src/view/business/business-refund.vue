@@ -198,31 +198,6 @@
         }
     }
 
-    .detail {
-        &-cells {
-
-        }
-        &-cell {
-            position: relative;
-            padding-bottom: 8px;
-            box-sizing: border-box;
-            &-label,
-            &-span {
-                display: inline-block;
-                font-size: @font-normal;
-                line-height: 1.25;
-            }
-            &-label {
-                color: @text-color-normal;
-            }
-            &-span {
-                color: @text-color;
-                position: absolute;
-                right: 0;
-            }
-        }
-    }
-
     .refund-btn{
         &-wrapper {
             width: 100%;

@@ -468,4 +468,36 @@
   text-align: center;
 }
 
+.detail {
+  &-cells {
+     padding-bottom: 8px;
+  }
+  &-cell {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+    &-label,
+    &-span {
+      display: inline-block;
+      font-size: @font-normal;
+      line-height: 1.25;
+    }
+    &-label {
+      color: @text-color-normal;
+    }
+    &-right {
+      width: 70%;
+      display: flex;
+      justify-content: flex-end;
+    }
+    &-span {
+      display: flex;
+      color: @text-color;
+      text-align: right;
+      overflow-wrap: break-word;
+    }
+  }
+}
+
 //---------------------- 业务组件  end
