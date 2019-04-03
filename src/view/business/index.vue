@@ -78,13 +78,15 @@
                                 ></i>
                                 <div>
                                     <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                    <div class="font-s-d mt10 text-ellipsis">
+                                    <div class="font-s-d mt10 text-ellipsis" v-if="item.payType">
                                         {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType===
                                         'wm'?
                                         '微脉':''}}订单号:<span
                                             v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                     </div>
-                                    <div class="font-s-d text-ellipsis">
+                                    <div class="font-s-d text-ellipsis"
+                                         :class="!item.payType || (item.payType!== 'alipay' && item.payType!== 'wx') ? 'mt10' : ''"
+                                    >
                                         支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
                                     </div>
                                     <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}

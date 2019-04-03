@@ -10,7 +10,9 @@
         <div class="business_detail-wrapper container-wrapper">
             <div class="business_detail-container">
 
-                <refund-opera></refund-opera>
+                <refund-opera
+                        :limitAmount="limitAmount"
+                ></refund-opera>
 
                 <div class="detail-cells">
                     <div class="detail-cell">
@@ -116,14 +118,17 @@
                 },
                 businessInfo: {
 
-                }
+                },
+                limitAmount: this.$route.query.amount || ''
             });
         },
         created() {
+            console.log('-----')
+            console.log(this.$route.query.amount)
+            console.log('-----')
             this.queryOrder.tradeOrderNo = this.$route.query.tradeOrderNo;
             this.queryOrder.startDate = this.$route.query.date+'000000';
             this.queryOrder.endDate = this.$route.query.date+'235959';
-            // this.getOrderDetail();
         },
         methods: {
             getOrderDetail() {
@@ -161,7 +166,11 @@
             navBackClick() {
                 setTimeout(() => {
                     this.$router.push({
-                        name: 'home'
+                        name: 'businessDetail',
+                        query: {
+                            tradeOrderNo: this.$route.query.tradeOrderNo,
+                            tradeType: this.$route.query.tradeType
+                        }
                     });
                 }, 800);
             },

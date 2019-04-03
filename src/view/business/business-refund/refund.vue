@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="">
-            <div class="cashier-inner">
+            <div class="refund-inner">
 
                 <div class="item pb3"
                      :class="this.loginInputStatus[0] === 1 ? 'bB1' : ''"
                 >
-                    <div class="item-label">输入金额（元）</div>
+                    <div class="item-label">退款金额（元）</div>
 
                     <div class="cashier-input">
                         <div class="flex-content flex-content-align">
@@ -24,12 +24,12 @@
                                this.loginRuleTextStatus === true">不能为空</p>
                     </div>
                 </div>
-                <div class="mt20">
+                <div class="mt10">
                     <div v-if="!remarkShow">
                     <span
                             @click="remarkToggleHandle()"
                             class="font-n-b"
-                    >添加备注</span>
+                    >添加退款备注</span>
                     </div>
                     <div class="item pt0"
                          :class="this.loginInputStatus[1] === 1 ? 'bB1' : ''"
@@ -38,7 +38,7 @@
                         <input v-model="remark"
                                class="item-input"
                                style="width: 100%;"
-                               placeholder="请输入收款备注"/>
+                               placeholder="请输入退款备注"/>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                          btn
                          btn-block
                          btn-primary
-                         mt14"
+                         mt10"
                         :class="this.btnStatus ? '' :'btn-disabled'"
                         @click="submitAction()">确定
                 </button>
@@ -84,7 +84,6 @@
         NavBar
     } from 'vant';
     import storeData from './store/index';
-    import ajax from '@/api/cashier';
     import {getBLen} from '@/validate/common';
 
     export default {
@@ -103,18 +102,21 @@
             NumberKeyboard: NumberKeyboard,
             NavBar: NavBar
         },
-
+        props: {
+            limitAmount: {
+                type: String,
+                default: ''
+            }
+        },
         data() {
             return Object.assign(storeData.call(this), {
                 keyboardShow: false,
                 btnStatus: false,
-                cursorStatus: false
+                cursorStatus: false,
             });
         },
         created() {
-            // if (this.keyboardShow == true && this.amount.length == 0) {
-            //     this.cursorStatus = true;
-            // }
+console.log(this.limitAmount)
         },
         watch: {
             'amount': function (val, old) {
@@ -125,7 +127,7 @@
                         this.cursorStatus = true;
                     }
                     this.loginRule[0] = 1;
-                    if (val*1 > 0) {
+                    if (val * 1 > 0) {
                         this.btnStatus = true;
                     } else {
                         this.btnStatus = false;
@@ -135,11 +137,20 @@
                     } else {
                         this.loginStatus = false;
                     }
+                    console.log('00000')
+                    console.log(this.limitAmount)
 
-                    if (Math.floor(val*1) > 100000) {
+                    if (val*100 > this.limitAmount*1) {
+                        this.btnStatus = false;
+                        Toast('可退金额最大为'+(this.limitAmount*1)/100);
+                        this.amount = old;
+                        return;
+                    }
+
+                    if (Math.floor(val * 1) > 100000) {
                         this.btnStatus = false;
                         Toast('可输入的最大金额为100,000');
-                        this.amount=old;
+                        this.amount = old;
                         return;
                     }
                 } else {
@@ -200,41 +211,7 @@
                 }
             },
             createOrderFetch(fetchLoading) {
-                ajax.createOrder({
-                    orderId: (Math.floor(Math.random() * 900) + 100) + '' + (new Date()).valueOf(),
-                    payOrderType: 'xxsk',
-                    payAmount: parseFloat(this.amount * 100).toFixed(0),
-                    remark: this.remark,
-                    deadTime: 5 // 五分钟
-                }).then(response => {
-                    fetchLoading.clear();
-                    if (!response.success === true) {
-                        Toast(response.msg || '收款创建失败');
-                        return;
-                    } else {
-                        if (response.data) {
-                            let payOrderNo = response.data.match(/payOrderNo=(\S*)/)[1];
-                            let query = {
-                                amount: this.amount,
-                                payOrderNo: payOrderNo || '',
-                                code: response.data || ''
-                            };
-                            setTimeout(() => {
-                                this.$router.push({
-                                    name: 'cashierCode',
-                                    query: query
-                                });
-                            }, 800);
-                        } else {
-                            Toast(response.msg || '收款创建失败');
-                            return;
-                        }
-                    }
-                }).catch(() => {
-                    fetchLoading.clear();
-                    Toast('收款创建失败');
-                    return;
-                });
+
             },
             remarkToggleHandle() {
                 this.remarkShow = true;
@@ -287,22 +264,20 @@
 <style lang="less" scoped>
     @import "../../../style/formation.less";
 
-    .cashier {
+    .refund {
         &-inner {
-            padding: 0 16px 14px 18px;
+            padding: 10px 16px 0;
             background-color: @white;
-        }
-        &-wrapper {
             .item {
                 position: relative;
-                padding: 16px 0 8px;
+                /*padding: 16px 0 8px;*/
                 border-bottom: 1px solid @border-color-dark;
                 &.bB1 {
                     border-bottom-color: @main-theme-color;
                 }
                 &-label {
-                    font-size: 12px;
-                    line-height: 1.75;
+                    font-size: @font-normal;
+                    line-height: 1.25;
                     color: @text-color-normal;
                     margin-bottom: 4px;
                 }
@@ -339,10 +314,11 @@
                     content: '￥';
                     display: inline-block;
                     color: @text-color;
-                    font-size: @font-hugeMore;
+                    font-size: @font-hugest;
                 }
             }
         }
+
         &-title {
             color: #fff;
             font-weight: 400;

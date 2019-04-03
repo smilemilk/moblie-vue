@@ -11,7 +11,10 @@
             <div class="business_detail-container">
                 <div class="detail-item">
                     <div class="detail-item-name">{{businessInfo.tradeOrderName}}</div>
-                    <div class="detail-item-title mt10">{{businessInfo.tradeType|$_filters_moneyMark}}{{businessInfo.tradeAmount | $_filters_moneyFormat_fen}}</div>
+                    <div class="detail-item-title mt10">
+                        {{businessInfo.tradeType|$_filters_moneyMark}}{{businessInfo.tradeAmount |
+                        $_filters_moneyFormat_fen}}
+                    </div>
                     <div class="detail-item-tip mt2">{{businessInfo.tradeStatusText}}</div>
                 </div>
                 <div class="detail-cells plr16">
@@ -204,6 +207,13 @@
                             tradeStatusText: orderStatus(response.data.payOrderStatus)
                         };
 
+                        if (response.data.payOrderStatus === '2' ||
+                            response.data.payOrderStatus === 2) { //支付成功
+                            this.refundShow = true;
+                        } else {
+                            this.refundShow = false;
+                        }
+
                         // 是否超过30天的逻辑
                         if (response.data.createTime) {
                             const thirtydaystime = moment(response.data.createTime).valueOf() + 30 * 24 * 60 * 60 * 1000;
@@ -254,11 +264,14 @@
             // },
 
             refundAction() {
+                console.log(this.businessInfo)
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessRefund',
                         query: {
-                            tradeOrderNo: this.$route.query.tradeOrderNo
+                            tradeOrderNo: this.$route.query.tradeOrderNo,
+                            amount: this.businessInfo.tradeAmount,
+                            tradeType: this.$route.query.tradeType
                         }
                     });
                 }, 800);
