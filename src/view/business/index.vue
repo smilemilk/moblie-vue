@@ -93,8 +93,10 @@
                             </div>
 
                             <div class="cell-right">
-                                <div class="font-l-d">{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
-                                <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
+                                <div class="font-l-d">
+                                    {{item.tradeType|$_filters_moneyMark}}{{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                </div>
+                                <div class="font-s-b mt4 align-r">{{item.status}}</div>
                             </div>
                         </div>
                     </div>
@@ -151,7 +153,7 @@
     import storeData from './store/index';
     import ajax from '@/api/business';
     import moment from 'moment';
-    import {payFundStatus} from '@/filters/status';
+    import {payFundStatus, orderStatus, refundStatus} from '@/filters/status';
 
     export default {
         components: {
@@ -242,14 +244,17 @@
                         this.orderList = [];
                         return;
                     } else {
-                        response.data.items.map(it => {
-                            if (it.payType) {
-                                // it.tradeType = orderObject[it.tradeType];
-                                it.payType = payFundStatus(it.payType);
-                                return it;
-                            }
+                        let lists = [];
+                        response.data.items.forEach(it => {
+                            let item = {
+                                ...it,
+                                payType: payFundStatus(it.payType),
+                                status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                    it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : ''
+                            };
+                            lists.push(item);
                         });
-                        this.orderList = response.data.items;
+                        this.orderList = lists;
                     }
                 }).catch(() => {
                     this.orderList = [];
@@ -320,20 +325,13 @@
             },
             orderDetailAction(no, tradeType) {
                 setTimeout(() => {
-                    const orderStatus = {
-                        'all': '',
-                        'success': '2',
-                        'close': '8',
-                        'wait': '0',
-                        'refund': '10'
-                    };
                     this.$router.push({
                         name: 'businessDetail',
                         query: {
                             tradeOrderNo: no,
                             tradeType: tradeType,
-                            date: moment(this.dateSearch).format("YYYYMMDD"),
-                            orderStatusStr: this.orderSelected
+                            // date: moment(this.dateSearch).format("YYYYMMDD"),
+                            // orderStatusStr: this.orderSelected
                         }
                     });
                 }, 800);
@@ -350,9 +348,6 @@
             dateTimeConfirmAction(values) {
                 this.dateSearch = values;
                 this.dateTimePickerStatus = false;
-                // this.dailyList = {};
-                // this.pieAmount_fund = [];
-                // this.pieCount_fund = [];
 
                 this.queryOrder = {
                     ...this.queryOrder,

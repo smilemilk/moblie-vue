@@ -26,6 +26,43 @@ export function orderStatus(value) {
     return item;
 }
 
+export function refundStatus(value) {
+    let item = '';
+    if (arguments.length === 0) {
+        return null;
+    }
+    if (value === undefined || value === null) {
+        return '';
+    }
+    if (value === '0' || value === 0) {
+        item = '待退款';
+    } else if (value === '1' || value === 1) {
+        item = '全额退款';
+    } else if (value === '2' || value === 2) {
+        item = '部分金额退款';
+    } else if (value === '3' || value === 4) {
+        item = '冲正退款';
+    } else {
+        item = '';
+    }
+    return item;
+}
+
+export function moneyMark(value) {
+    let item = '';
+    if (arguments.length === 0) {
+        return null;
+    }
+    if (value === '0' || value === 0) { // 退款
+        item = '-';
+    } else if (value === '1' || value === 1) {
+        item = '+';
+    } else {
+        item = '';
+    }
+    return item;
+}
+
 
 export function payFundStatus(value) {
     let item = '';

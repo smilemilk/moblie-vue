@@ -17,11 +17,11 @@
                 <div class="detail-cells plr16">
                     <div class="detail-cell">
                         <label class="detail-cell-label">交易类型</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeType}}</span>
+                        <span class="detail-cell-span">{{businessInfo.tradeType==='1' ? '消费' : businessInfo.tradeType==='0' ? '退款' : ''}}</span>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">优惠金额（元）</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeType}}x</span>
+                        <span class="detail-cell-span">{{businessInfo.discountAmount | $_filters_moneyFormat_fen}}</span>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
@@ -37,15 +37,15 @@
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">操作人</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeOrderNo}}x</span>
+                        <span class="detail-cell-span">{{businessInfo.operatorName}}</span>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">创建时间</label>
-                        <span class="detail-cell-span">0000</span>
+                        <span class="detail-cell-span">{{businessInfo.createTime}}</span>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">备注</label>
-                        <span class="detail-cell-span">0000</span>
+                        <span class="detail-cell-span">{{businessInfo.remark}}</span>
                     </div>
                 </div>
             </div>
@@ -107,29 +107,91 @@
         data() {
             return Object.assign(storeData.call(this), {
                 queryOrder: {
-                    orderNo: '',
-                    queryOrderType: '',
+                    orderNo: ''
                 },
+                queryOrderType: '',
+                businessInfo: {
+                    tradeOrderName: '',
+                    tradeAmount: '',
+                    tradeType: this.$route.query.tradeType,
+                    discountAmount: '',
+                    operatorName: '',
+                    createTime: '',
+                    remark: ''
+                }
             });
         },
         created() {
             this.queryOrder.orderNo = this.$route.query.tradeOrderNo;
-            this.queryOrder.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' : this.$route.query.tradeType === '0' ? 'refund' : '';
+            this.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' : this.$route.query.tradeType === '0' ? 'refund' : '';
             this.getOrderDetail();
         },
         methods: {
             getOrderDetail() {
-                ajax.getOrderDetail(this.queryOrder).then(response => {
+
+                if (this.queryOrderType === 'pay') {
+                    this.getPayDetail();
+                }
+
+                if (this.queryOrderType === 'refund') {
+                    this.getRefundDetail();
+                }
+            },
+
+            getPayDetail() {
+                ajax.getPay({payOrderNo: this.queryOrder.orderNo}).then(response => {
                     if (!response.success === true) {
                         this.businessInfo = {};
                         return;
                     } else {
-                        this.businessInfo = response.data.items;
+                        this.businessInfo = {
+                            ...this.businessInfo,
+                            tradeOrderName: response.data.payOrderName || '',
+                            tradeAmount: response.data.buyerPayAmount || '',
+                            discountAmount: response.data.discountAmount || '',
+                            operatorName: response.data.operName || '',
+                            createTime: response.data.createTime || '',
+                            remark: response.data.paySubmitRemark || ''
+                        };
                     }
                 }).catch(() => {
                     this.businessInfo = {};
                 });
             },
+            getRefundDetail() {
+                ajax.getRefund({refundOrderNo: this.queryOrder.orderNo}).then(response => {
+                    if (!response.success === true) {
+                        this.businessInfo = {};
+                        return;
+                    } else {
+                        this.businessInfo = {
+                            ...this.businessInfo,
+                            tradeOrderName: response.data.payOrderName || '',
+                            tradeAmount: response.data.buyerPayAmount || '',
+                            discountAmount: response.data.discountAmount || '',
+                            operatorName: response.data.operName || '',
+                            createTime: response.data.createTime || '',
+                            remark: response.data.paySubmitRemark || ''
+                        };
+                    }
+                }).catch(() => {
+                    this.businessInfo = {};
+                });
+            },
+            // getOrderDetail() {
+            //     ajax.getOrderDetail(this.queryOrder).then(response => {
+            //         if (!response.success === true) {
+            //             this.businessInfo = {};
+            //             return;
+            //         } else {
+            //             this.businessInfo = response.data.items;
+            //         }
+            //     }).catch(() => {
+            //         this.businessInfo = {};
+            //     });
+            // },
+
+
             refundAction() {
                 setTimeout(() => {
                     this.$router.push({

@@ -3,6 +3,7 @@ import {
     moneyFormat
 } from '@/filters/index';
 import {moneyFormat_noComma} from "./index";
+import {moneyMark} from './status';
 
 export default {
     filters: {
@@ -23,6 +24,9 @@ export default {
         },
         $_filters_moneyFormat_noComma: (val) => {
             return moneyFormat_noComma(val)
+        },
+        $_filters_moneyMark: (val) => {
+            return moneyMark(val)
         }
     }
 }

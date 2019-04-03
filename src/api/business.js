@@ -23,15 +23,34 @@ export function getTrade (params) {
     });
 }
 
-export function getOrderDetail (params) {
+export function getRefund (params) {
     return request({
-        url: util.ajaxFront + 'merchant/tradeJour/orderDetail',
+        url: util.ajaxFront + 'XiMai/queryRefundOrder',
         method: 'get',
         params:  Object.assign({},params,{
             'XiMai': true
         })
     });
 }
+export function getPay (params) {
+    return request({
+        url: util.ajaxFront + 'XiMai/queryPayOrder',
+        method: 'get',
+        params:  Object.assign({},params,{
+            'XiMai': true
+        })
+    });
+}
+
+// export function getOrderDetail (params) {
+//     return request({
+//         url: util.ajaxFront + 'merchant/tradeJour/orderDetail',
+//         method: 'get',
+//         params:  Object.assign({},params,{
+//             'XiMai': true
+//         })
+//     });
+// }
 
 export function refund (params) {
     return request({
@@ -46,6 +65,8 @@ export function refund (params) {
 export default {
     getTradeSumAmount,
     getTrade,
-    getOrderDetail,
+    getRefund,
+    getPay,
+    // getOrderDetail,
     refund
 };

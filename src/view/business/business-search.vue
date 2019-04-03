@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="cell-right">
-                                <div class="font-l-d">{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
+                                <div class="font-l-d">{{item.tradeType|$_filters_moneyMark}}{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
                                 <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
                             </div>
                         </div>
