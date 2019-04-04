@@ -183,11 +183,12 @@
         created() {
             this.queryOrder.orderNo = this.$route.query.tradeOrderNo;
             this.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' : this.$route.query.tradeType === '0' ? 'refund' : '';
+
             this.getOrderDetail();
 
             this.resultForm = this.$route.query.resultForm || false;
             if (this.$route.query.resultForm) {
-                this.resultStatus = this.$route.query.resultStatus
+                this.resultStatus = this.$route.query.resultStatus;
             }
         },
         methods: {
@@ -202,8 +203,8 @@
                 }
             },
 
-            getPayDetail(no) {
-                ajax.getPay({payOrderNo: no ? no : this.queryOrder.orderNo}).then(response => {
+            getPayDetail() {
+                ajax.getPay({payOrderNo: this.queryOrder.orderNo}).then(response => {
                     if (!response.success === true) {
                         this.businessInfo = {};
                         return;
@@ -267,19 +268,6 @@
                     this.businessInfo = {};
                 });
             },
-            // getOrderDetail() {
-            //     ajax.getOrderDetail(this.queryOrder).then(response => {
-            //         if (!response.success === true) {
-            //             this.businessInfo = {};
-            //             return;
-            //         } else {
-            //             this.businessInfo = response.data.items;
-            //         }
-            //     }).catch(() => {
-            //         this.businessInfo = {};
-            //     });
-            // },
-
             refundAction() {
                 setTimeout(() => {
                     this.$router.push({
@@ -308,7 +296,15 @@
                 this.navBackClick();
             },
             primaryOrderAction() {
-                this.getPayDetail(this.primaryNo);
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'businessDetail',
+                        query: {
+                            tradeOrderNo: this.primaryNo,
+                            tradeType: '1',
+                        }
+                    });
+                }, 800);
             },
             navBackClick() {
                 setTimeout(() => {
