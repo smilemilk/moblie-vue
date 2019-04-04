@@ -470,12 +470,12 @@
 
 .detail {
   &-cells {
-     padding-bottom: 8px;
+     padding-bottom: 10px;
   }
   &-cell {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     box-sizing: border-box;
     &-label,
     &-span {
@@ -487,17 +487,42 @@
       color: @text-color-normal;
     }
     &-right {
-      width: 70%;
+      width: 75%;
       display: flex;
       justify-content: flex-end;
     }
     &-span {
+      width: 100%;
       display: flex;
+      justify-content: flex-end;
       color: @text-color;
-      text-align: right;
       overflow-wrap: break-word;
+      &-text {
+        display: inline-block;
+        width:100%;
+        text-align: justify;
+        overflow-wrap: break-word;
+      }
     }
   }
 }
+
+@media screen and (max-width: 350px) {
+  .detail {
+    &-cell {
+      &.media {
+        display: block;
+        .detail-cell-label,
+        .detail-cell-span {
+          display: block;
+        }
+        .detail-cell-right {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
 
 //---------------------- 业务组件  end

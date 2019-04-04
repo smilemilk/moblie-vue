@@ -36,7 +36,7 @@
                          v-else
                     >
                         <input v-model="remark"
-                               class="item-input"
+                               class="item-input remark"
                                style="width: 100%;"
                                placeholder="请输入退款备注"/>
                     </div>
@@ -258,7 +258,7 @@ console.log(this.limitAmount)
 
     .refund {
         &-inner {
-            padding: 10px 16px 0;
+            padding: 10px 16px;
             background-color: @white;
             .item {
                 position: relative;
@@ -280,6 +280,9 @@ console.log(this.limitAmount)
                     font-size: @font-normal;
                     caret-color: @main-theme-color;
                     padding-left: 0;
+                    &.remark {
+                        line-height: 1.75;
+                    }
                     &::-webkit-input-placeholder {
                         color: @border-color-dark;
                     }

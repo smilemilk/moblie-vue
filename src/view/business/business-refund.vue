@@ -16,6 +16,7 @@
                         @submit="submitFetch"
                 ></refund-opera>
 
+                <div class="title-division">订单信息</div>
                 <div class="detail-cells">
                     <div class="detail-cell">
                         <label class="detail-cell-label">交易类型</label>
@@ -52,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="mt30">
+            <div class="">
                 <div class="refund-btn-wrapper">
                     <button
                             class="
@@ -221,8 +222,23 @@
         background-color: @white;
     }
 
-    .detail-item {
-        padding: 16px 0;
+    .title-division {
+        display:flex;
+        align-items: center;
+        font-size: @font-normal;
+        color: @text-color;
+        height: 36px;
+        padding-left: 16px;
+        box-sizing: border-box;
+        background-color: @background-grayer-color;
+    }
+    .detail-cells {
+        border-bottom: 1px solid @border-color;
+        padding-bottom: 0;
+    }
+    .detail-cell {
+        padding: 16px;
+        border-bottom: 1px solid @border-color;
         &-name,
         &-title,
         &-tip {
