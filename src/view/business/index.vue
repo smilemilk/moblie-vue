@@ -74,7 +74,7 @@
                                 <i class="icon-payType mr10"
                                    :class="item.payType === 'wx' ? 'icon-payType_wx' :
                                item.payType === 'alipay' ? 'icon-payType_alipay' :
-                                item.payType === 'wm' ? 'icon-payType_wm' :''"
+                                item.payType === 'wm' ? 'icon-payType_wm' :'icon-payType_wm'"
                                 ></i>
                                 <div>
                                     <div class="font-n-d">{{item.tradeOrderName}}</div>

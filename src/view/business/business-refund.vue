@@ -7,7 +7,7 @@
                 :z-index="999"
                 @click-left="navBackClick"
         />
-        <div class="business_detail-wrapper container-wrapper">
+        <div class="business_detail-wrapper container-wrapper" style="overflow-y: auto;">
             <div class="business_detail-container">
 
                 <refund-opera
@@ -18,13 +18,11 @@
 
                 <div class="title-division">订单信息</div>
                 <div class="detail-cells">
-                    <div class="detail-cell">
-                        <label class="detail-cell-label">交易类型</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeType}}</span>
-                    </div>
-                    <div class="detail-cell">
+                    <div class="detail-cell" v-if="businessInfo.discountAmount">
                         <label class="detail-cell-label">优惠金额（元）</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeType}}x</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.discountAmount | $_filters_moneyFormat_fen}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
@@ -34,21 +32,41 @@
                         <label class="detail-cell-label">微信订单号</label>
                         <span class="detail-cell-span">{{businessInfo.tradeThirdNo}}</span>
                     </div>
-                    <div class="detail-cell">
+                    <div class="detail-cell media">
                         <label class="detail-cell-label">支付流水号</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeOrderNo}}</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span" v-if="businessInfo.tradeOrderNo &&
+                                  businessInfo.tradeOrderNo.length > 30">
+                                <span class="detail-cell-span-text"
+                                >{{businessInfo.tradeOrderNo}}</span>
+                            </span>
+                            <span class="detail-cell-span" v-else>
+                                {{businessInfo.tradeOrderNo || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">操作人</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeOrderNo}}x</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span">{{businessInfo.operatorName || '-'}}</span>
+                        </div>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">创建时间</label>
-                        <span class="detail-cell-span">0000</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span" v-if="businessInfo.createTime">{{businessInfo.createTime|$_filters_parseTime}}</span>
+                            <span class="detail-cell-span" v-else>-</span>
+                        </div>
                     </div>
-                    <div class="detail-cell">
+                    <div class="detail-cell media" v-if="businessInfo.remark">
                         <label class="detail-cell-label">备注</label>
-                        <span class="detail-cell-span">0000</span>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span" v-if="businessInfo.remark.length > 30">
+                                <span class="detail-cell-span-text"
+                                >{{businessInfo.remark}}</span>
+                            </span>
+                            <span class="detail-cell-span" v-else>
+                                {{businessInfo.remark}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,7 +141,14 @@
                     page: 1
                 },
                 businessInfo: {
-
+                    discountAmount: '',
+                    payType: '', // 支付方式
+                    tradeOrderName: '',
+                    tradeAmount: '',
+                    tradeOrderNo: '',
+                    operatorName: '',
+                    createTime: '',
+                    remark: ''
                 },
                 limitAmount: this.$route.query.amount+'' || ''
             });
@@ -140,7 +165,16 @@
                         this.businessInfo = {};
                         return;
                     } else {
-                        this.businessInfo = response.data.items[0];
+                        this.businessInfo = {
+                            ...this.businessInfo,
+                            discountAmount: response.data.discountAmount || '',
+                            tradeAmount: response.data.buyerPayAmount || '',
+                            tradeOrderNo: response.data.payOrderNo || '',
+                            operatorName: response.data.operName || '',
+                            createTime: response.data.createTime || '',
+                            remark: response.data.paySubmitRemark || '',
+                        };
+
                     }
                 }).catch(() => {
                     this.businessInfo = {};
@@ -172,9 +206,10 @@
                     let msg;
                     if (!response.success === true) {
                         refundStatus ='0';
-                        msg='请求失败';
+                        msg='退款请求失败';
                     } else {
-                        if (response.data.refundOrderStatus === '3' || response.data.refundOrderStatus === 3) {
+                        if (response.data.refundOrderStatus === '3' ||
+                            response.data.refundOrderStatus === 3) {
                             refundStatus ='0';
                             msg=response.data.errorMessage;
                         }

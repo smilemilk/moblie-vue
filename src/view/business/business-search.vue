@@ -14,7 +14,7 @@
                     <input v-model="keySearch"
                            class="searchInput"
                            maxlength="30"
-                           placeholder="请输入相关信息"/>
+                           placeholder="请输入订单号或支付流水号查询"/>
                 </div>
                 <div
                         @click="orderRecordAction()"
@@ -202,9 +202,9 @@
                                     refundStatus: it.refundStatus,
                                     tradeAmount: it.tradeAmount,
                                     tradeOrderName: it.tradeOrderName,
-                                    tradeOrderNo: it.tradeOrderNo,
+                                    tradeOrderNo: it.tradeOrderNo.replace(/'+this.keySearch+'/g, '<span class="danger">'+this.keySearch+'</span>'),
                                     tradeOrderStatus: it.tradeOrderStatus,
-                                    tradeThirdNo: it.tradeThirdNo,
+                                    tradeThirdNo: it.tradeThirdNo.replace(/'+this.keySearch+'/g, '<span class="danger">'+this.keySearch+'</span>'),
                                     tradeTime: it.tradeTime,
                                     tradeType: it.tradeType
                                 };

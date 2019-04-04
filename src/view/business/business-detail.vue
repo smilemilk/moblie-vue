@@ -45,7 +45,8 @@
                     <div class="detail-cell media">
                         <label class="detail-cell-label">支付流水号</label>
                         <div class="detail-cell-right">
-                            <span class="detail-cell-span" v-if="businessInfo.tradeOrderNo.length > 30">
+                            <span class="detail-cell-span" v-if="businessInfo.tradeOrderNo &&
+                                  businessInfo.tradeOrderNo.length > 30">
                                 <span class="detail-cell-span-text"
                                 >{{businessInfo.tradeOrderNo}}</span>
                             </span>
@@ -83,7 +84,7 @@
                 >
                     已超过30天可退款时间，不可退款
                 </div>
-                <div class="overdraw-item plr16 ptb10"
+                <div class="overdraw-item plr16 ptb10 align-c"
                      v-if="resultForm && resultStatus==='0'"
                 >
                     <span class="info cursor" @click="primaryOrderAction()">查看原订单</span>
@@ -175,7 +176,6 @@
                     createTime: '',
                     remark: ''
                 },
-                // orderStatus: '',
                 refundShow: false,
                 cancelShow: false,
                 overdrawStatus: false, // 是否超时30天,
@@ -259,9 +259,11 @@
                             tradeOrderName: response.data.payOrderName || '',
                             tradeAmount: response.data.buyerPayAmount || '',
                             discountAmount: response.data.discountAmount || '',
+                            tradeOrderNo: response.data.payOrderNo || '',
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
-                            remark: response.data.paySubmitRemark || ''
+                            remark: response.data.paySubmitRemark || '',
+                            tradeStatusText: orderStatus(response.data.payOrderStatus)
                         };
 
                         if (this.resultForm && this.resultStatus === '0') {
