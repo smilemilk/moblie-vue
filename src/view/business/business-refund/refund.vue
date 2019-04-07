@@ -105,7 +105,10 @@
             });
         },
         created() {
-console.log(this.limitAmount)
+            console.log(this.limitAmount);
+            if (this.keyboardShow == true && this.amount.length == 0) {
+                this.cursorStatus = true;
+            }
         },
         watch: {
             'amount': function (val, old) {
@@ -127,7 +130,7 @@ console.log(this.limitAmount)
                         this.refundStatus = false;
                     }
 
-                    if (val*100 > this.limitAmount*1) {
+                    if (val * 100 > this.limitAmount * 1) {
                         this.btnStatus = false;
                         Toast('输入的金额大于最大退款额');
                         this.amount = old;
@@ -172,9 +175,9 @@ console.log(this.limitAmount)
             }
         },
         mounted() {
-          this.$on('getValue', ()=>{
-              this.submitAction();
-          })
+            this.$on('getValue', () => {
+                this.submitAction();
+            })
         },
         methods: {
             submitAction() {

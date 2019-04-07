@@ -37,7 +37,9 @@
                         </div>
                     </div>
                     <div class="detail-cell">
-                        <label class="detail-cell-label">微信订单号</label>
+                        <label class="detail-cell-label">{{businessInfo.payType=== 'alipay'? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
+                            'wm'?
+                            '微脉':''}}订单号</label>
                         <div class="detail-cell-right">
                             <span class="detail-cell-span">{{businessInfo.tradeThirdNo || '-'}}</span>
                         </div>
@@ -178,6 +180,8 @@
                 },
                 refundShow: false,
                 cancelShow: false,
+
+                operLimitStatus: false, // 判断是管理员还是非，并且是不是本人操作， oneDay i can not code，i want eat， 改变为了活着去工作
                 overdrawStatus: false, // 是否超时30天,
                 resultForm: false, // 是否从退款状态页 来的
                 resultStatus: undefined, // 从退款状态页来的， 退款的成败状态

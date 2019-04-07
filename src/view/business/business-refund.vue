@@ -150,7 +150,7 @@
                     createTime: '',
                     remark: ''
                 },
-                limitAmount: this.$route.query.amount+'' || ''
+                limitAmount: this.$route.query.amount+'' || '',
             });
         },
         created() {
