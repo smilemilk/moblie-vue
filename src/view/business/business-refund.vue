@@ -26,11 +26,13 @@
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
-                        <span class="detail-cell-span">{{businessInfo.payType}}</span>
+                        <span class="detail-cell-span">{{businessInfo.payType || '-'}}</span>
                     </div>
                     <div class="detail-cell">
-                        <label class="detail-cell-label">微信订单号</label>
-                        <span class="detail-cell-span">{{businessInfo.tradeThirdNo}}</span>
+                        <label class="detail-cell-label">{{businessInfo.payType=== 'alipay'? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
+                            'wm'?
+                            '微脉':''}}订单号</label>
+                        <span class="detail-cell-span">{{businessInfo.tradeThirdNo || '-'}}</span>
                     </div>
                     <div class="detail-cell media">
                         <label class="detail-cell-label">支付流水号</label>
