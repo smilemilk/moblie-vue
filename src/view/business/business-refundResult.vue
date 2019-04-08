@@ -10,7 +10,10 @@
                  :class="resultStatus ? 'prompt_'+resultStatus : ''"
             >
                 <i class="icon"></i>
-                <div class="prompt-label">{{promptLabel[resultStatus]}}</div>
+
+                <div v-if="isChecking">等待结果...</div>
+                <div class="prompt-label" v-else>{{promptLabel[resultStatus]}}</div>
+
                 <div class="prompt-tip" v-if="resultStatus==='0'">{{msg}}</div>
             </div>
 
@@ -20,7 +23,10 @@
                          btn-block
                          btn-primary
                          "
-                    :class="resultStatus==='0' ? 'mt10' : 'mt35'"
+                    :class="[
+                    resultStatus==='0' ? 'mt10' : 'mt35',
+                    isChecking==true ? 'disabled' : ''
+                    ]"
                     @click="completeAction(resultStatus)"
             >完成
             </button>
@@ -42,13 +48,12 @@
                 },
                 refundOrderNo: '',
                 msg: '',
-                // refundInterval: undefined,
-                queryCount: 0
+                queryCount: 0,
+                isChecking: true
             }
         },
         created() {
             this.refundOrderNo = this.$route.query.refundOrderNo;
-            console.log(this.refundOrderNo)
             this.resultStatus = this.$route.query.resultStatus || '';
             if (this.resultStatus === '0') {
                 this.msg = this.$route.query.msg || '';
@@ -75,6 +80,7 @@
                             response.data.payOrderStatus === '4') {
                             _count = 0;
                             self.queryCount = 0;
+                            self.isChecking =false;
 
                             if (response.data.payOrderStatus === '2' ||
                                 response.data.payOrderStatus === '4') {

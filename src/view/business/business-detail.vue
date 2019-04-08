@@ -33,11 +33,14 @@
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
                         <div class="detail-cell-right">
-                            <span class="detail-cell-span">{{businessInfo.payType || '-'}}</span>
+                            <span class="detail-cell-span">{{businessInfo.payType=== 'alipay' ? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
+                            'wm'?
+                            '微脉':'-'}}</span>
                         </div>
                     </div>
                     <div class="detail-cell">
-                        <label class="detail-cell-label">{{businessInfo.payType=== 'alipay'? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
+                        <label class="detail-cell-label">
+                            {{businessInfo.payType=== 'alipay' ? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
                             'wm'?
                             '微脉':''}}订单号</label>
                         <div class="detail-cell-right">
@@ -145,6 +148,7 @@
     import storeData from './store/business-detail';
     import ajax from '@/api/business';
     import moment from 'moment';
+    import {payFundStatus} from '@/filters/status';
     import {orderStatus, refundStatus} from '@/filters/status';
 
     export default {
@@ -177,7 +181,8 @@
                     tradeOrderNo: '',
                     operatorName: '',
                     createTime: '',
-                    remark: ''
+                    remark: '',
+                    tradeThirdNo: ''
                 },
                 refundShow: false,
                 isRefundStatus: false, // 是否具有退款 可以属性
@@ -228,8 +233,18 @@
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
                             remark: response.data.paySubmitRemark || '',
-                            tradeStatusText: orderStatus(response.data.payOrderStatus)
+                            tradeStatusText: orderStatus(response.data.payOrderStatus),
                         };
+
+                        if (response.data.items) {
+                            for (let i in response.data.items) {
+                                if (response.data.items[i].payType) {
+                                    this.businessInfo.payType = payFundStatus(response.data.items[i].payType);
+                                    this.businessInfo.tradeThirdNo = response.data.items[i].settleNo;
+                                    break;
+                                }
+                            }
+                        }
 
                         if (response.data.payOrderStatus === '2' ||
                             response.data.payOrderStatus === 2) { //支付成功
@@ -277,8 +292,19 @@
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
                             remark: response.data.paySubmitRemark || '',
-                            tradeStatusText: orderStatus(response.data.payOrderStatus)
+                            tradeStatusText: orderStatus(response.data.payOrderStatus),
+                            payType: payFundStatus(response.data.payType),
                         };
+
+                        if (response.data.items) {
+                            for (let i in response.data.items) {
+                                if (response.data.items[i].payType) {
+                                    this.businessInfo.payType = payFundStatus(response.data.items[i].payType);
+                                    this.businessInfo.tradeThirdNo = response.data.items[i].settleNo;
+                                    break;
+                                }
+                            }
+                        }
 
                         if (this.resultForm && this.resultStatus === '0') {
                             this.primaryNo = response.data.payOrderNo;

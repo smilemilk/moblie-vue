@@ -80,6 +80,7 @@
                                 </div>
                                 <div class="font-s-b mt4 align-r"
                                      style="position: absolute; bottom: 16px; right: 0;"
+                                     :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
                                 >{{item.status}}</div>
                             </div>
                         </div>
@@ -138,7 +139,8 @@
     import storeData from './store/business-search';
     import ajax from '@/api/business';
     import moment from 'moment';
-    import {payFundStatus, orderStatus, refundStatus} from '@/filters/status';
+    import {payFundStatus} from '@/filters/status';
+    import {orderStatus, refundStatus} from './filters';
 
     export default {
         components: {

@@ -26,7 +26,9 @@
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">支付方式</label>
-                        <span class="detail-cell-span">{{businessInfo.payType || '-'}}</span>
+                        <span class="detail-cell-span">{{businessInfo.payType=== 'alipay'? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
+                            'wm'?
+                            '微脉':'-'}}</span>
                     </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">{{businessInfo.payType=== 'alipay'? '支付宝': businessInfo.payType=== 'wx'? '微信': businessInfo.payType===
@@ -73,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="">
+            <div class="refund-btn-fixed">
                 <div class="refund-btn-wrapper">
                     <button
                             class="
@@ -114,6 +116,7 @@
     import storeData from './store/business-detail';
     import ajax from '@/api/business';
     import RefundOpera from './business-refund/refund';
+    import {payFundStatus} from '@/filters/status';
 
     export default {
         components: {
@@ -134,13 +137,7 @@
         data() {
             return Object.assign(storeData.call(this), {
                 queryOrder: {
-                    orderStatus: '', // 0 待支付，2 成功，8 订单关闭， 10 退款
-                    startDate: '',
-                    endDate: '',
-                    tradeOrderNo: '',
-                    payOrderType: 'xxsk',
-                    limit: 1,
-                    page: 1
+                    payOrderNo: ''
                 },
                 businessInfo: {
                     discountAmount: '',
@@ -156,13 +153,12 @@
             });
         },
         created() {
-            this.queryOrder.tradeOrderNo = this.$route.query.tradeOrderNo;
-            this.queryOrder.startDate = this.$route.query.date+'000000';
-            this.queryOrder.endDate = this.$route.query.date+'235959';
+            this.queryOrder.payOrderNo = this.$route.query.tradeOrderNo;
+            this.getOrderDetail();
         },
         methods: {
             getOrderDetail() {
-                ajax.getTrade(this.queryOrder).then(response => {
+                ajax.getPay(this.queryOrder).then(response => {
                     if (!response.success === true) {
                         this.businessInfo = {};
                         return;
@@ -176,6 +172,16 @@
                             createTime: response.data.createTime || '',
                             remark: response.data.paySubmitRemark || '',
                         };
+
+                        if (response.data.items) {
+                            for (let i in response.data.items) {
+                                if (response.data.items[i].payType) {
+                                    this.businessInfo.payType = payFundStatus(response.data.items[i].payType);
+                                    this.businessInfo.tradeThirdNo = response.data.items[i].settleNo;
+                                    break;
+                                }
+                            }
+                        }
 
                     }
                 }).catch(() => {
@@ -279,6 +285,9 @@
     .detail-cell {
         padding: 16px;
         border-bottom: 1px solid @border-color;
+        &-label {
+            min-width: 86px;
+        }
         &-name,
         &-title,
         &-tip {
@@ -300,6 +309,12 @@
     }
 
     .refund-btn{
+        &-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
         &-wrapper {
             width: 100%;
             height: 44px;

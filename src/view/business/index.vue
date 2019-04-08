@@ -116,6 +116,7 @@
                                     </div>
                                     <div class="font-s-b mt4 align-r"
                                          style="position: absolute; bottom: 16px; right: 0;"
+                                         :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
                                     >{{item.status}}
                                     </div>
                                 </div>
@@ -177,7 +178,8 @@
     import storeData from './store/index';
     import ajax from '@/api/business';
     import moment from 'moment';
-    import {payFundStatus, orderStatus, refundStatus} from '@/filters/status';
+    import {payFundStatus} from '@/filters/status';
+    import {orderStatus, refundStatus} from './filters';
 
     export default {
         components: {
@@ -319,6 +321,10 @@
                             } else {
                                 let lists = [];
                                 response.data.items.forEach(it => {
+                                    if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                        it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
+                                    }
+
                                     let item = {
                                         ...it,
                                         payType: payFundStatus(it.payType),
@@ -350,6 +356,10 @@
                             } else {
                                 let lists = [];
                                 response.data.items.forEach(it => {
+                                    if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                        it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
+                                    }
+
                                     let item = {
                                         ...it,
                                         payType: payFundStatus(it.payType),
