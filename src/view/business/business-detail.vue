@@ -101,6 +101,7 @@
                          btn-ghost
                          mb16
                          "
+                        :class="isRefundStatus ? '' : 'disabled'"
                         v-if="refundShow"
                         @click="refundAction()">退款
                 </button>
@@ -179,6 +180,7 @@
                     remark: ''
                 },
                 refundShow: false,
+                isRefundStatus: false, // 是否具有退款 可以属性
                 cancelShow: false,
 
                 operLimitStatus: false, // 判断是管理员还是非，并且是不是本人操作， oneDay i can not code，i want eat， 改变为了活着去工作
@@ -232,6 +234,14 @@
                         if (response.data.payOrderStatus === '2' ||
                             response.data.payOrderStatus === 2) { //支付成功
                             this.refundShow = true;
+
+                            if (response.data.refundStatus === '0' || response.data.refundStatus === 0 ||
+                                response.data.refundStatus ===  ""   || response.data.refundStatus === null
+                            ) {
+                                this.isRefundStatus = false;
+                            } else {
+                                this.isRefundStatus = true;
+                            }
                         } else {
                             this.refundShow = false;
                         }

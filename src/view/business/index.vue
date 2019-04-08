@@ -62,50 +62,66 @@
             </div>
 
             <div class="set-form cell-group"
-                 v-if="this.orderList && this.orderList.length>0">
+                 v-if="this.orderList && this.orderList.length>0"
+            >
                 <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                    <div class="cell"
-                         v-for="(item, key) in this.orderList"
-                         :key="key"
-                         @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                    <van-list
+                            v-model="loading"
+                            :finished="finished"
+                            @load="onLoad"
+                            :finished-text="loadingText"
                     >
-                        <div class="cell-inner flex-content flex-content-spaceBetween">
-                            <div class="flex-content flex-content-top">
-                                <i class="icon-payType mr10"
-                                   :class="item.payType === 'wx' ? 'icon-payType_wx' :
+                        <div class="cell"
+                             v-for="(item, key) in this.orderList"
+                             :key="key"
+                             @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                        >
+                            <div class="cell-inner flex-content flex-content-spaceBetween"
+                                 style="min-height: 102px;"
+                            >
+                                <div class="flex-content flex-content-top">
+                                    <i class="icon-payType mr10"
+                                       :class="item.payType === 'wx' ? 'icon-payType_wx' :
                                item.payType === 'alipay' ? 'icon-payType_alipay' :
                                 item.payType === 'wm' ? 'icon-payType_wm' :'icon-payType_wm'"
-                                ></i>
-                                <div>
-                                    <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                    <div class="font-s-d mt10 text-ellipsis" v-if="item.payType">
-                                        {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType===
-                                        'wm'?
-                                        '微脉':''}}订单号:<span
-                                            v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
-                                    </div>
-                                    <div class="font-s-d text-ellipsis"
-                                         :class="!item.payType || (item.payType!== 'alipay' && item.payType!== 'wx') ? 'mt10' : ''"
-                                    >
-                                        支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
-                                    </div>
-                                    <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
+                                    ></i>
+                                    <div>
+                                        <div class="font-n-d">{{item.tradeOrderName}}</div>
+                                        <div class="font-s-d mt10 text-ellipsis" v-if="item.payType">
+                                            {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':
+                                            item.payType===
+                                            'wm'?
+                                            '微脉':''}}订单号:<span
+                                                v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
+                                        </div>
+                                        <div class="font-s-d text-ellipsis"
+                                             :class="!item.payType || (item.payType!== 'alipay' && item.payType!== 'wx') ? 'mt10' : ''"
+                                        >
+                                            支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
+                                        </div>
+                                        <div class="time" v-if="item.tradeTime">
+                                            {{item.tradeTime|$_filters_parseTime_hour}}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="cell-right">
-                                <div class="font-l-d">
+                                <div class="cell-right">
+                                    <div class="font-l-d"
+                                         style="position: absolute; top: 16px; right: 0;">
                                     <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
                                      ((item.tradeAmount+'').indexOf('-') <= -1)">
                                         {{item.tradeType|$_filters_moneyMark}}
                                     </span>
-                                    {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                        {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                    </div>
+                                    <div class="font-s-b mt4 align-r"
+                                         style="position: absolute; bottom: 16px; right: 0;"
+                                    >{{item.status}}
+                                    </div>
                                 </div>
-                                <div class="font-s-b mt4 align-r">{{item.status}}</div>
                             </div>
                         </div>
-                    </div>
+                    </van-list>
                 </van-pull-refresh>
             </div>
 
@@ -154,7 +170,9 @@
         GoodsActionBigBtn,
         GoodsActionMiniBtn,
         DatetimePicker,
-        Popup
+        Popup,
+        PullRefresh,
+        List
     } from 'vant';
     import storeData from './store/index';
     import ajax from '@/api/business';
@@ -175,6 +193,8 @@
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
             DatetimePicker: DatetimePicker,
             Popup: Popup,
+            [PullRefresh.name]: PullRefresh,
+            [List.name]: List,
         },
 
         data() {
@@ -205,7 +225,12 @@
                 maxDate: '',
                 orderStatusText: '全部',
                 orderStatusActive: false,
-                isLoading: false
+
+                total: 0,
+                isLoading: false, //控制下拉刷新的加载动画
+                loading: false, //控制上拉加载的加载动画
+                finished: false,//控制在页面往下移动到底部时是否调用接口获取数据
+                loadingText: '加载中…',
             });
         },
         created() {
@@ -236,35 +261,116 @@
             this.getOrderSumAmount();
         },
         methods: {
+            //下拉刷新
             onRefresh() {
+                let self = this;
                 setTimeout(() => {
-                    this.queryOrder.page++;
-                    this.getOrderList();
-                    this.$toast('刷新成功');
-                    this.isLoading = false;
+                    self.total = 0;
+                    self.queryOrder.page = 0;
+                    self.init(); //加载数据
                 }, 500);
             },
-            getOrderList() {
-                ajax.getTrade(this.queryOrder).then(response => {
-                    if (!response.success === true) {
-                        this.orderList = [];
-                        return;
-                    } else {
-                        let lists = [];
-                        response.data.items.forEach(it => {
-                            let item = {
-                                ...it,
-                                payType: payFundStatus(it.payType),
-                                status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
-                                    it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : ''
-                            };
-                            lists.push(item);
-                        });
-                        this.orderList = lists;
+            init() {
+                let self = this;
+
+                self.queryOrder.page = 1;
+                self.total = 0;
+
+                Promise.all([self.getOrderList(self)]).then(
+                    (results) => {
+                        if (results[0]) {
+                            if (results[0].length < 20) {
+                                self.loadingText = '没有更多数据';
+                            }
+                            self.isLoading = false; //关闭下拉刷新效果
+                        }
                     }
-                }).catch(() => {
-                    this.orderList = [];
+                ).catch((e) => {
                 });
+            },
+            onLoad() {
+                let self = this;
+                setTimeout(() => {
+                    this.queryOrder.page++;
+
+                    Promise.all([self.getOrderList(self)]).then(
+                        (results) => {
+                            if (results[0]) {
+                                this.isLoading = false; //关闭下拉刷新效果
+                                if (this.queryOrder.page >= this.total) {
+                                    this.finished = true;
+                                }
+                            }
+                        }
+                    ).catch((e) => {
+                    });
+                }, 500);
+            },
+
+            getOrderList(self) {
+                if (self) {
+                    return new Promise((resolve, reject) => {
+                        ajax.getTrade(self.queryOrder).then(response => {
+
+                            if (!response.success === true) {
+                                self.orderList = [];
+                                self.total = 0;
+                                return reject({});
+                            } else {
+                                let lists = [];
+                                response.data.items.forEach(it => {
+                                    let item = {
+                                        ...it,
+                                        payType: payFundStatus(it.payType),
+                                        status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                            it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : ''
+                                    };
+                                    lists.push(item);
+                                });
+                                self.orderList = lists;
+                                self.total = response.data.totalCount;
+                                return resolve(
+                                    lists
+                                );
+                            }
+                        }).catch(() => {
+                            self.orderList = [];
+                            self.total = 0;
+                            return reject({});
+                        });
+                    });
+                } else {
+                    return new Promise((resolve, reject) => {
+                        ajax.getTrade(this.queryOrder).then(response => {
+
+                            if (!response.success === true) {
+                                this.orderList = [];
+                                this.total = 0;
+                                return reject({});
+                            } else {
+                                let lists = [];
+                                response.data.items.forEach(it => {
+                                    let item = {
+                                        ...it,
+                                        payType: payFundStatus(it.payType),
+                                        status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                            it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : ''
+                                    };
+                                    lists.push(item);
+                                });
+                                this.orderList = lists;
+                                this.total = response.data.totalCount;
+                                return resolve(
+                                    lists
+                                );
+                            }
+                        }).catch(() => {
+                            this.orderList = [];
+                            this.total = 0;
+                            return reject({});
+                        });
+                    });
+                }
             },
             getOrderSumAmount() {
                 ajax.getTradeSumAmount({

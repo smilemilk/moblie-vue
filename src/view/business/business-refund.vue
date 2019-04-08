@@ -209,6 +209,9 @@
                     if (!response.success === true) {
                         refundStatus ='0';
                         msg='退款请求失败';
+
+                        this.$toast(response.msg || msg);
+                        return;
                     } else {
                         if (response.data.refundOrderStatus === '3' ||
                             response.data.refundOrderStatus === 3) {

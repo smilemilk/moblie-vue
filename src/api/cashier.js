@@ -5,30 +5,30 @@ import util from '@/libs/util';
 
 export function createOrder (params) {
     return request({
-        url: util.ajaxFront + 'XiMai/createOrder',
+        url: util.ajaxFront + 'POS/createOrder',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }
 
 export function queryOrder (params) {
     return request({
-        url: util.ajaxFront + 'XiMai/queryPayOrder',
+        url: util.ajaxFront + 'POS/queryPayOrder',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }
 
 export function cancelOrder (params) {
     return request({
-        url: util.ajaxFront + 'XiMai/cancelOrder',
+        url: util.ajaxFront + 'POS/cancelOrder',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }

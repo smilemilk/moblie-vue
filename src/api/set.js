@@ -8,10 +8,10 @@ export function modPassword (params) {
         url: util.ajaxFront + 'user/loginpwd/reset',
         method: 'post',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         }),
         data:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }

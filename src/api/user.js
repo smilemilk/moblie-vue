@@ -8,7 +8,7 @@ export function userDetail (params) {
         url: util.ajaxFront + 'authority/merchantuser/getuser',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }
@@ -18,7 +18,7 @@ export function merchantId (params) {
         url: util.ajaxFront + 'authority/merchantuser/queryUserByMerchantId',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }
@@ -28,7 +28,7 @@ export function merchantUser (params) {
         url: util.ajaxFront + 'merchantuser',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }

@@ -29,6 +29,8 @@
 </template>
 
 <script>
+    import ajax from '@/api/business';
+
     export default {
         name: 'businessRefundResult',
         data() {
@@ -39,34 +41,90 @@
                     '1': '退款成功'
                 },
                 refundOrderNo: '',
-                msg: ''
+                msg: '',
+                // refundInterval: undefined,
+                queryCount: 0
             }
         },
         created() {
             this.refundOrderNo = this.$route.query.refundOrderNo;
+            console.log(this.refundOrderNo)
             this.resultStatus = this.$route.query.resultStatus || '';
-            if(this.resultStatus==='0') {
+            if (this.resultStatus === '0') {
                 this.msg = this.$route.query.msg || '';
             }
+            this.refundInterval();
         },
         watch: {},
         methods: {
-            completeAction(resultStatus) {
-                // if (resultStatus === '0') {
-                    setTimeout(() => {
-                        this.$router.push({
-                            name: 'businessDetail',
-                            query: {
-                                tradeOrderNo: this.$route.query.refundOrderNo,
-                                tradeType: '0',
-                                resultStatus: resultStatus,
-                                resultForm: '1'
+            getRefundDetail(_count, self) {
+
+                // WaitRefund("1", "待退款"),
+                // RefundPass("2", "退款成功"),
+                // RefundFail("3", "退款失败"),
+                // RefundPartPass("4", "退款部分成功")
+
+                ajax.getRefund({refundOrderNo: self.refundOrderNo}).then(response => {
+                    if (!response.success === true) {
+                        self.businessInfo = {};
+                        return;
+                    } else {
+
+                        if (response.data.payOrderStatus === '2' ||
+                            response.data.payOrderStatus === '3' ||
+                            response.data.payOrderStatus === '4') {
+                            _count = 0;
+                            self.queryCount = 0;
+
+                            if (response.data.payOrderStatus === '2' ||
+                                response.data.payOrderStatus === '4') {
+                                self.resultStatus = '1';
                             }
-                        });
-                    }, 800);
-                // } else {
-                //
-                // }
+
+                            if (response.data.payOrderStatus === '3' ) {
+                                self.resultStatus = '0';
+                                self.msg = response.msg || '';
+                            }
+                            clearInterval(self.refundInterval);
+                        }
+
+                        if (response.data.payOrderStatus === '1') {
+                        }
+
+                        if (self.resultStatus === '0') {
+                            self.primaryNo = response.data.payOrderNo;
+                        }
+                    }
+                }).catch(() => {
+                    self.businessInfo = {};
+                });
+            },
+            refundInterval() {
+                let self = this;
+                let _count = self.queryCount;
+                self.refundInterval = window.setInterval(() => {
+                    _count++;
+
+                    if (_count > 20) {
+                        _count = 0;
+                        window.clearInterval(self.refundInterval);
+                        return;
+                    }
+                    this.getRefundDetail(_count, self);
+                }, 1000);
+            },
+            completeAction(resultStatus) {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'businessDetail',
+                        query: {
+                            tradeOrderNo: this.$route.query.refundOrderNo,
+                            tradeType: '0',
+                            resultStatus: resultStatus,
+                            resultForm: '1'
+                        }
+                    });
+                }, 800);
             },
         }
     };

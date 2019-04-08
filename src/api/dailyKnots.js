@@ -5,10 +5,10 @@ import util from '@/libs/util';
 
 export function queryDailyList (params) {
     return request({
-        url: util.ajaxFront + 'XiMai/queryDailySettlement',
+        url: util.ajaxFront + 'POS/queryDailySettlement',
         method: 'get',
         params:  Object.assign({},params,{
-            'XiMai': true
+            'POS': true
         })
     });
 }

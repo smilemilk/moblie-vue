@@ -44,7 +44,9 @@
                          :key="key"
                          @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
                     >
-                        <div class="cell-inner flex-content flex-content-spaceBetween">
+                        <div class="cell-inner flex-content flex-content-spaceBetween"
+                             style="min-height: 102px;"
+                        >
                             <div class="flex-content flex-content-top">
                                 <i class="icon-payType mr10"
                                    :class="item.payType === 'wx' ? 'icon-payType_wx' :
@@ -68,8 +70,17 @@
                             </div>
 
                             <div class="cell-right">
-                                <div class="font-l-d">{{item.tradeType|$_filters_moneyMark}}{{item.tradeAmount|$_filters_moneyFormat_fen}}</div>
-                                <div class="font-s-b mt4 align-r">{{item.tradeType}}</div>
+                                <div class="font-l-d"
+                                     style="position: absolute; top: 16px; right: 0;">
+                                    <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
+                                     ((item.tradeAmount+'').indexOf('-') <= -1)">
+                                        {{item.tradeType|$_filters_moneyMark}}
+                                    </span>
+                                    {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                </div>
+                                <div class="font-s-b mt4 align-r"
+                                     style="position: absolute; bottom: 16px; right: 0;"
+                                >{{item.status}}</div>
                             </div>
                         </div>
                     </div>
@@ -127,7 +138,7 @@
     import storeData from './store/business-search';
     import ajax from '@/api/business';
     import moment from 'moment';
-    import {payFundStatus} from '@/filters/status';
+    import {payFundStatus, orderStatus, refundStatus} from '@/filters/status';
 
     export default {
         components: {
@@ -196,22 +207,22 @@
                         } else {
                             let list = [];
                             response.data.items.forEach(it => {
+                                console.log('/'+this.keySearch+'/g')
+                                console.log( '<span class="danger">'+this.keySearch+'</span>')
+                                console.log(it.tradeOrderNo.replace('/'+this.keySearch+'/g', '<span class="danger">'+this.keySearch+'</span>'))
+
                                 let item = {
+                                    ...it,
                                     payType: payFundStatus(it.payType),
-                                    timeFormat: it.tradeTime ? moment(it.tradeTime).format("YYYYMMDD") : '',
-                                    refundStatus: it.refundStatus,
-                                    tradeAmount: it.tradeAmount,
-                                    tradeOrderName: it.tradeOrderName,
-                                    tradeOrderNo: it.tradeOrderNo.replace(/'+this.keySearch+'/g, '<span class="danger">'+this.keySearch+'</span>'),
-                                    tradeOrderStatus: it.tradeOrderStatus,
-                                    tradeThirdNo: it.tradeThirdNo.replace(/'+this.keySearch+'/g, '<span class="danger">'+this.keySearch+'</span>'),
-                                    tradeTime: it.tradeTime,
-                                    tradeType: it.tradeType
+                                    status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                        it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
+                                    tradeOrderNoStr: it.tradeOrderNo.replace(/testx/g, '<span class="danger">'+this.keySearch+'</span>'),
+                                    tradeThirdNoStr: it.tradeThirdNo.replace('/'+this.keySearch+'/g', '<span class="danger">'+this.keySearch+'</span>'),
                                 };
+
                                 list.push(item);
                             });
                             this.orderList = list;
-                            console.log(this.orderList)
                         }
                     }).catch(() => {
                         this.orderList = [];
@@ -239,6 +250,19 @@
                     Toast("至少5位的查询条件");
                 }
             },
+            orderDetailAction(no, tradeType) {
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'businessDetail',
+                        query: {
+                            tradeOrderNo: no,
+                            tradeType: tradeType,
+                            // date: moment(this.dateSearch).format("YYYYMMDD"),
+                            // orderStatusStr: this.orderSelected
+                        }
+                    });
+                }, 800);
+            },
             dateChangeAction() {
                 this.dateTimePickerStatus = true;
             },
@@ -251,7 +275,6 @@
             dateTimeConfirmAction(values) {
                 this.dateSearch = values;
                 this.dateTimePickerStatus = false;
-
 
                 if (this.keySearch.trim().length > 4) {
 
