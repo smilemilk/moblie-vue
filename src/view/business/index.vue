@@ -259,7 +259,7 @@
                 endDate:
                 moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
-            this.getOrderList();
+            this.init();
             this.getOrderSumAmount();
         },
         methods: {
@@ -282,7 +282,7 @@
                     (results) => {
                         if (results[0]) {
                             if (results[0].length < 20) {
-                                self.loadingText = '没有更多数据';
+                                self.loadingText = '';
                             }
                             self.isLoading = false; //关闭下拉刷新效果
                         }
@@ -352,7 +352,9 @@
                             if (!response.success === true) {
                                 this.orderList = [];
                                 this.total = 0;
-                                return reject({});
+                                return resolve(
+                                    this.orderList
+                                );
                             } else {
                                 let lists = [];
                                 response.data.items.forEach(it => {
@@ -430,7 +432,7 @@
                     page: 1
                 };
                 this.orderStatusShow = false;
-                this.getOrderList();
+                this.init();
             },
             orderStatusToggleHandle() {
                 this.orderStatusShow = !this.orderStatusShow;
@@ -479,7 +481,7 @@
                     endDate:
                     moment(this.dateSearch).format("YYYYMMDD") + "235959"
                 };
-                this.getOrderList();
+                this.init();
                 if (this.queryOrder.orderStatus.length == 0) {
                     this.getOrderSumAmount();
                 }

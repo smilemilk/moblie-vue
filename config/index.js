@@ -9,7 +9,7 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/ximai': {
-                target: 'http://i34sbb.natappfree.cc',
+                target: 'http://ian3ku.natappfree.cc',
                 // target: 'http://test2.weimaipay.com/',
                 // target: 'http://test2.weimaipay.com:7070/',
                 // target: 'https://test.weimaipay.com/', // https
