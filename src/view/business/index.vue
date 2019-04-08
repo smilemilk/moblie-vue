@@ -236,7 +236,7 @@
                 loading: false, //控制上拉加载的加载动画
                 finished: false,//控制在页面往下移动到底部时是否调用接口获取数据
                 loadingText: '加载中…',
-                offset: 100
+                offset: 20
             });
         },
         created() {
@@ -295,19 +295,42 @@
                 });
             },
             onLoad() {
+                alert('我又来了')
+                console.log('我又来了')
+                console.log(this.offset)
                 let self = this;
                 setTimeout(() => {
-                    self.queryOrder.page=self.queryOrder.page+20;
+                    self.queryOrder.page = self.queryOrder.page + 20;
                     Promise.all([self.getOrderList(self)]).then(
                         (results) => {
                             if (results[0]) {
+                                console.log(results[0])
                                 alert(self.queryOrder.page)
                                 alert(self.total)
-                                self.isLoading = false; //关闭下拉刷新效果
-                                if (self.queryOrder.page >= self.total) {
+
+                                console.log(self.queryOrder.page)
+                                console.log(typeof(self.queryOrder.page))
+                                console.log(self.total)
+                                console.log(typeof(self.total))
+
+                                alert('laile---')
+                                if (self.queryOrder.page > self.total ||
+                                    self.queryOrder.page == self.total) {
                                     self.finished = true;
+                                    self.loading = false; //关闭下拉刷新效果
+
+                                    alert('最底下')
                                     self.loadingText = '没有更多数据';
+                                    return;
                                 }
+
+                                alert('laizheer-------------')
+
+                                alert.log('应该来到的---')
+                                console.log('应该来到的---')
+                                self.finished = false;
+                                self.loadingText = '下拉展示更多';
+                                self.loading = false;
                             }
                         }
                     ).catch((e) => {
@@ -327,7 +350,8 @@
                             } else {
                                 let lists = [];
                                 response.data.items.forEach(it => {
-                                    if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                    if ((it.tradeType === '1' || it.tradeType === 1)
+                                        && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8') {
                                         it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
                                     }
 
@@ -339,7 +363,7 @@
                                     };
                                     lists.push(item);
                                 });
-                                self.orderList = lists;
+                                self.orderList = self.orderList.concat(lists);
                                 self.total = response.data.totalCount;
                                 return resolve(
                                     lists

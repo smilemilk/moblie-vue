@@ -204,7 +204,7 @@
                     message: '退款请求中...'
                 });
                 ajax.refund({
-                    payOrderNo: this.queryOrder.tradeOrderNo,
+                    payOrderNo: this.queryOrder.payOrderNo,
                     refundAmount: res.amount*100,
                     refundId: (Math.floor(Math.random()*10000000000000000+1))+'',
                     remark: '3'

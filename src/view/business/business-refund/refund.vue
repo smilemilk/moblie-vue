@@ -303,6 +303,7 @@
                 border-left: none;
                 &.cursor {
                     border-left: 1px solid @main-theme-color;
+                    border-radius: 0;
                 }
                 &:before {
                     position: absolute;
