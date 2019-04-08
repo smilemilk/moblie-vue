@@ -7,7 +7,7 @@
                 :z-index="999"
                 @click-left="navBackClick"
         />
-        <div class="dailyKnots-wrapper container-wrapper white">
+        <div class="dailyKnots-wrapper container-wrapper white" style="overflow-y: auto;">
             <div class="panel-item_search panel-item flex-content flex-content-align flex-content-spaceBetween pr0">
                 <div class="flex-content flex-content-align panel-item_searchInput">
                     <i class="icon-search"></i>

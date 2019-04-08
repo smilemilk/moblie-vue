@@ -7,8 +7,8 @@ var server = '';
 
 if (argument[0] === 'build') { // 测试
 
-    server = 'https://test.weimaipay.com/';
-    // server = 'http://test2.weimaipay.com/';  // 微脉 地址通过替换由后端执行
+    // server = 'https://test.weimaipay.com/';
+    server = 'http://test2.weimaipay.com/';  // 微脉 地址通过替换由后端执行
 // }
 // else if (argument[0] === 'yfb') { // 预发布
 //   server = 'http://www.weimaipay.com:8070/'

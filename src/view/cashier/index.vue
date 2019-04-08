@@ -119,9 +119,9 @@
             });
         },
         created() {
-           if (this.keyboardShow == true && this.amount.length == 0) {
-               this.cursorStatus = true;
-           }
+            if (this.keyboardShow == true && this.amount.length == 0) {
+                this.cursorStatus = true;
+            }
         },
         watch: {
             'amount': function (val, old) {
@@ -132,7 +132,7 @@
                         this.cursorStatus = true;
                     }
                     this.loginRule[0] = 1;
-                    if (val*1 > 0) {
+                    if (val * 1 > 0) {
                         this.btnStatus = true;
                     } else {
                         this.btnStatus = false;
@@ -143,10 +143,10 @@
                         this.loginStatus = false;
                     }
 
-                    if (Math.floor(val*1) > 100000) {
+                    if (Math.floor(val * 1) > 100000) {
                         this.btnStatus = false;
                         Toast('可输入的最大金额为100,000');
-                        this.amount=old;
+                        this.amount = old;
                         return;
                     }
                 } else {
@@ -242,6 +242,7 @@
                     Toast('收款创建失败');
                     return;
                 });
+
             },
             remarkToggleHandle() {
                 this.remarkShow = true;
@@ -344,7 +345,7 @@
                 position: relative;
                 border-left: none;
                 &.cursor {
-                 border-left: 1px solid @main-theme-color;
+                    border-left: 1px solid @main-theme-color;
                 }
                 &:before {
                     position: absolute;

@@ -7,7 +7,7 @@
                 :z-index="999"
                 @click-left="navBackClick"
         />
-        <div class="dailyKnots-wrapper container-wrapper white">
+        <div class="dailyKnots-wrapper container-wrapper white" style="overflow: auto">
             <div class="panel-item flex-content flex-content-align flex-content-spaceBetween">
                 <div class="panel-item-select"
                      @click="orderStatusToggleHandle()"
@@ -64,12 +64,15 @@
             <div class="set-form cell-group"
                  v-if="this.orderList && this.orderList.length>0"
             >
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+                <van-pull-refresh
+                        v-model="isLoading"
+                        @refresh="onRefresh">
                     <van-list
                             v-model="loading"
                             :finished="finished"
                             @load="onLoad"
                             :finished-text="loadingText"
+                            :offset="offset"
                     >
                         <div class="cell"
                              v-for="(item, key) in this.orderList"
@@ -233,6 +236,7 @@
                 loading: false, //控制上拉加载的加载动画
                 finished: false,//控制在页面往下移动到底部时是否调用接口获取数据
                 loadingText: '加载中…',
+                offset: 100
             });
         },
         created() {
@@ -293,14 +297,16 @@
             onLoad() {
                 let self = this;
                 setTimeout(() => {
-                    this.queryOrder.page++;
-
+                    self.queryOrder.page=self.queryOrder.page+20;
                     Promise.all([self.getOrderList(self)]).then(
                         (results) => {
                             if (results[0]) {
-                                this.isLoading = false; //关闭下拉刷新效果
-                                if (this.queryOrder.page >= this.total) {
-                                    this.finished = true;
+                                alert(self.queryOrder.page)
+                                alert(self.total)
+                                self.isLoading = false; //关闭下拉刷新效果
+                                if (self.queryOrder.page >= self.total) {
+                                    self.finished = true;
+                                    self.loadingText = '没有更多数据';
                                 }
                             }
                         }
