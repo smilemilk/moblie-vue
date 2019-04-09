@@ -330,7 +330,7 @@
                                 let lists = [];
                                 response.data.items.forEach(it => {
                                     if ((it.tradeType === '1' || it.tradeType === 1)
-                                        && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8') {
+                                        && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8' && it.refundStatus !== '0') {
                                         it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
                                     }
 
@@ -367,7 +367,7 @@
                             } else {
                                 let lists = [];
                                 response.data.items.forEach(it => {
-                                    if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                    if ((it.tradeType === '1' || it.tradeType === 1) && (it.refundStatus.length > 0 && it.refundStatus !== '0')) {
                                         it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
                                     }
 

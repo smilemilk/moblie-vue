@@ -59,8 +59,8 @@
                                 <div class="flex-content flex-content-top">
                                     <i class="icon-payType mr10"
                                        :class="item.payType === 'wx' ? 'icon-payType_wx' :
-                               item.payType === 'alipay' ? 'icon-payType_alipay' :
-                                item.payType === 'wm' ? 'icon-payType_wm' :''"
+                        item.payType === 'alipay' ? 'icon-payType_alipay' :
+                        item.payType === 'wm' ? 'icon-payType_wm' :''"
                                     ></i>
                                     <div>
                                         <div class="font-n-d">{{item.tradeOrderName}}</div>
@@ -71,13 +71,13 @@
                                             '微脉':''}}订单号:
                                             <span
                                                     v-if="item.tradeThirdNo">
-                                                    {{item.tradeThirdNoStr}}
-                                            </span>
+                        {{item.tradeThirdNoStr}}
+                        </span>
                                         </div>
                                         <div class="font-s-d text-ellipsis mb6">
                                             支付流水号:<span v-if="item.tradeOrderNo"
                                                         v-html="item.tradeOrderNoStr">
-                                        </span>
+                        </span>
                                         </div>
                                         <div class="time" v-if="item.tradeTime">
                                             {{item.tradeTime|$_filters_parseTime_hour}}
@@ -88,10 +88,10 @@
                                 <div class="cell-right">
                                     <div class="font-l-d"
                                          style="position: absolute; top: 16px; right: 0;">
-                                    <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
-                                     ((item.tradeAmount+'').indexOf('-') <= -1)">
-                                        {{item.tradeType|$_filters_moneyMark}}
-                                    </span>
+                        <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
+                        ((item.tradeAmount+'').indexOf('-') <= -1)">
+                        {{item.tradeType|$_filters_moneyMark}}
+                        </span>
                                         {{item.tradeAmount|$_filters_moneyFormat_fen}}
                                     </div>
                                     <div class="font-s-b mt4 align-r"
@@ -102,6 +102,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </van-list>
                 </van-pull-refresh>
             </div>
@@ -287,7 +288,7 @@
                                     let lists = [];
                                     response.data.items.forEach(it => {
                                         if ((it.tradeType === '1' || it.tradeType === 1)
-                                            && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8') {
+                                            && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8' && it.refundStatus !== '0') {
                                             it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
                                         }
 
@@ -299,18 +300,23 @@
                                             status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
                                                 it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
                                             date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
-                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>'),
-                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>')
+                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>'),
+                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>')
                                         };
                                         lists.push(item);
                                     });
 
+                                    let listFormat = {};
                                     for (let i in lists) {
-                                        lists[0]
-                                        if (lists[i] !== lists[i+1]) {
-
+                                        let item = lists[i];
+                                        if (listFormat[item['date']]) {
+                                            listFormat[item['date']].push(item);
+                                        } else {
+                                            listFormat[item['date']] = [item];
                                         }
                                     }
+
+                                    console.log(listFormat)
 
                                     self.orderList = self.orderList.concat(lists);
                                     console.log(self.orderList)
@@ -339,7 +345,7 @@
                                 } else {
                                     let lists = [];
                                     response.data.items.forEach(it => {
-                                        if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                        if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0 && it.refundStatus !== '0') {
                                             it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
                                         }
 
@@ -351,11 +357,21 @@
                                             status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
                                                 it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
                                             date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
-                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>'),
-                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>')
+                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>'),
+                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>')
                                         };
                                         lists.push(item);
                                     });
+
+                                    let listFormat = {};
+                                    for (let i in lists) {
+                                        let item = lists[i];
+                                        if (listFormat[item['date']]) {
+                                            listFormat[item['date']].push(item);
+                                        } else {
+                                            listFormat[item['date']] = [item];
+                                        }
+                                    }
 
                                     this.orderList = this.orderList.concat(lists);
                                     this.total = response.data.totalCount;
@@ -377,16 +393,6 @@
             },
             orderRecordAction() {
                 if (this.keySearch.trim().length > 4) {
-                    // var toast = Toast.loading({
-                    //     duration: 0,       // 持续展示 toast
-                    //     forbidClick: true, // 禁用背景点击
-                    //     loadingType: 'spinner',
-                    //     message: '加载中...'
-                    // });
-                    //
-                    // setTimeout(function(){
-                    //     toast = '';
-                    // }, 4000)
                     this.init();
                 } else {
                     Toast("至少5位的查询条件");
