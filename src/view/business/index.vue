@@ -52,7 +52,8 @@
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
                 <div class=""
-                     v-if="this.orderList && this.orderList.length>0 && this.queryOrder.orderStatus.length == 0">
+                     v-if="this.orderList && this.orderList.length>0 &&
+                      this.queryOrder.orderStatus.length == 0">
                     <div class="font-xs-l">实收&nbsp;<span v-if="this.orderSumAmount.total">￥{{orderSumAmount.total|$_filters_moneyFormat_fen}}</span>
                         <span class="ml20">收入&nbsp;<span v-if="this.orderSumAmount.in">￥{{orderSumAmount.in|$_filters_moneyFormat_fen}}</span></span>
                     </div>
@@ -263,8 +264,8 @@
                 endDate:
                 moment(this.dateSearch).format("YYYYMMDD") + "235959"
             };
-            this.init();
             this.getOrderSumAmount();
+            this.init();
         },
         methods: {
             //下拉刷新
@@ -440,6 +441,10 @@
                     page: 1
                 };
                 this.orderStatusShow = false;
+
+                this.orderList = [];
+                this.total = 0;
+
                 this.init();
             },
             orderStatusToggleHandle() {
@@ -489,7 +494,9 @@
                     endDate:
                     moment(this.dateSearch).format("YYYYMMDD") + "235959"
                 };
+
                 this.init();
+
                 if (this.queryOrder.orderStatus.length == 0) {
                     this.getOrderSumAmount();
                 }

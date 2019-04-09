@@ -12,7 +12,7 @@ module.exports = {
                 // target: 'http://ian3ku.natappfree.cc',
                 // target: 'http://test2.weimaipay.com/',
                 // target: 'http://test2.weimaipay.com:7070/',
-                target: 'https://test.weimaipay.com/', // https
+                target: 'http://kkuizz.natappfree.cc', // https
                 // target: 'http://172.16.20.111:8070/',  //甘松香ip
                 changeOrigin: true,
                 pathRewrite: {
