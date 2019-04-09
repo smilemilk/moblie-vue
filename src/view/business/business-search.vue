@@ -224,15 +224,19 @@
 
                 self.queryOrder.page = 1;
                 self.total = 0;
+                self.orderList = [];
 
                 Promise.all([self.getOrderList(self)]).then(
                     (results) => {
                         if (results[0]) {
                             if (results[0].length < 20) {
                                 self.loadingText = '';
+                                self.loading = false; //关闭下拉刷新效果
                             }
                             self.isLoading = false; //关闭下拉刷新效果
                         }
+                        // 加载状态结束 手动结束上次的加载
+                        this.loading = false;
                     }
                 ).catch((e) => {
                 });
