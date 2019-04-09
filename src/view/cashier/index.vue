@@ -200,11 +200,46 @@
                         mask: true,
                         message: '请等待...'
                     });
-                    this.createOrderFetch(fetchLoading);
+                    this.createOrderValidate(fetchLoading);
                 } else {
                     this.loginStatus = false;
                     this.loginRuleTextStatus = true;
                 }
+            },
+
+            createOrderValidate(fetchLoading) {
+                this.$store.dispatch('userInfo', this).then(() => {
+                    if (this.$store.state.userFetching === true) {
+                        const data = this.$store.state.userInfo;
+
+                        if (data !== null && data !== '' && data !== {} && data.data !== {}) {
+                            if (data.data && data.data.timeout) {
+
+                                Dialog.confirm({
+                                    message: '登录信息已失效，请重新登录?',
+                                    showCancelButton: false
+                                }).then(() => {
+                                    // 超时
+                                    if (localStorage.getItem('userName_current')) {
+                                        localStorage.setItem('userName_current', '');
+                                    }
+                                    if (localStorage.getItem('departName_current')) {
+                                        localStorage.setItem('departName_current', '');
+                                    }
+
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }).catch(() => {
+                                });
+                            } else {
+                                this.createOrderFetch(fetchLoading);
+                            }
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                });
             },
             createOrderFetch(fetchLoading) {
                 ajax.createOrder({
