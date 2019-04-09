@@ -11,7 +11,7 @@
             >
                 <i class="icon"></i>
 
-                <div v-if="isChecking">等待结果...</div>
+                <div v-if="isChecking">退款处理中，请不要离开该页面...</div>
                 <div class="prompt-label" v-else>{{promptLabel[resultStatus]}}</div>
 
                 <div class="prompt-tip" v-if="resultStatus==='0'">{{msg}}</div>

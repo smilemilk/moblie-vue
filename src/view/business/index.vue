@@ -298,10 +298,10 @@
             onLoad() {
                 let self = this;
                 self.queryOrder.page = self.queryOrder.page + 1;
-                Promise.all([self.getOrderList()]).then(
+                Promise.all([self.getOrderList(self)]).then(
                     (results) => {
                         if (results[0]) {
-                            if (this.queryOrder.page*20 > self.total) {
+                            if (self.queryOrder.page*20 > self.total) {
                                 self.loading = false; //关闭下拉刷新效果
                                 self.finished = true;
 
