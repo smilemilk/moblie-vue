@@ -103,8 +103,8 @@
                                         >
                                             支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
                                         </div>
-                                        <div class="time" v-if="item.tradeTime">
-                                            {{item.tradeTime|$_filters_parseTime_hour}}
+                                        <div class="time" v-if="item.createTime">
+                                            {{item.createTime|$_filters_parseTime_hour}}
                                         </div>
                                     </div>
                                 </div>

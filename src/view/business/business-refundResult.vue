@@ -11,7 +11,7 @@
             >
                 <i class="icon"></i>
 
-                <div v-if="isChecking">退款处理中，请不要离开该页面...</div>
+                <div v-if="isChecking">退款处理中，请稍等<span class="dotting"></span></div>
                 <div class="prompt-label" v-else>{{promptLabel[resultStatus]}}</div>
 
                 <div class="prompt-tip" v-if="resultStatus==='0'">{{msg}}</div>
@@ -186,6 +186,21 @@
                     color: @text-color-light;
                     line-height: 1;
                 }
+            }
+            .dotting {
+                display: inline-block;
+                min-width: 2px;
+                min-height: 2px;
+                box-shadow: 2px 0 @text-color, 8px 0 @text-color, 14px 0 @text-color;
+                animation: dot 2s infinite step-start both;
+            }
+            .dotting::before { content: ''; } /* for IE9+ 覆盖 IE8 */
+            :root .dotting { margin-right: 10px; } /* for IE9+,FF,CH,OP,SF 占据空间*/
+
+            @keyframes dot {
+                25% { box-shadow: none; }                                  /* 0个点 */
+                50% { box-shadow: 2px 0 @text-color; }                    /* 1个点 */
+                75% { box-shadow: 2px 0 @text-color, 8px 0 @text-color;  /* 2个点 */ }
             }
         }
     }

@@ -26,12 +26,13 @@
                 <div class="date-select-box"
                      @click="dateChangeAction()"
                 >
-                    <span>{{this.dateSearch|$_filters_parseMonth}}</span>
+                    <span>{{dateSearch|$_filters_parseMonth}}</span>
                     <i class="icon-triangle-dark ml5"></i>
                 </div>
             </div>
 
-            <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
+            <div class="set-form cell-group"
+                 v-if="orderList && orderList.length>0">
                 <van-pull-refresh
                         v-model="isLoading"
                         @refresh="onRefresh">
@@ -42,62 +43,71 @@
                             :finished-text="loadingText"
                             :offset="offset"
                     >
-                        <!--<div v-if="this.orderList && this.orderList.length>0"-->
-                             <!--class="date-item-wrapper"-->
-                        <!--&gt;-->
-                            <!--<samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp>-->
-                        <!--</div>-->
-
-                        <div class="cell"
-                             v-for="(item, key) in this.orderList"
-                             :key="key"
-                             @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                        <div
+                                v-if="orderList && orderList.length>0"
+                                v-for="(item, key) in orderList"
+                                :key="key"
                         >
-                            <div class="cell-inner flex-content flex-content-spaceBetween"
-                                 style="min-height: 102px;"
+                            <div
+                                 class="date-item-wrapper"
                             >
-                                <div class="flex-content flex-content-top">
-                                    <i class="icon-payType mr10"
-                                       :class="item.payType === 'wx' ? 'icon-payType_wx' :
-                        item.payType === 'alipay' ? 'icon-payType_alipay' :
-                        item.payType === 'wm' ? 'icon-payType_wm' :''"
-                                    ></i>
-                                    <div>
-                                        <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                        <div class="font-s-d mt10 text-ellipsis">
-                                            {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':
-                                            item.payType===
-                                            'wm'?
-                                            '微脉':''}}订单号:
-                                            <span
-                                                    v-if="item.tradeThirdNo">
-                        {{item.tradeThirdNoStr}}
-                        </span>
-                                        </div>
-                                        <div class="font-s-d text-ellipsis mb6">
-                                            支付流水号:<span v-if="item.tradeOrderNo"
-                                                        v-html="item.tradeOrderNoStr">
-                        </span>
-                                        </div>
-                                        <div class="time" v-if="item.tradeTime">
-                                            {{item.tradeTime|$_filters_parseTime_hour}}
-                                        </div>
-                                    </div>
-                                </div>
+                                <samp class="date-item" v-if="item.date">
+                                    {{item.date|$_filters_parseDate}}</samp>
+                                <samp class="date-item" v-else></samp>
+                            </div>
 
-                                <div class="cell-right">
-                                    <div class="font-l-d"
-                                         style="position: absolute; top: 16px; right: 0;">
-                        <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
-                        ((item.tradeAmount+'').indexOf('-') <= -1)">
-                        {{item.tradeType|$_filters_moneyMark}}
+                            <div class="cell"
+                                 v-if="item.lists && item.lists.length > 0"
+                                 v-for="(list, key) in item.lists"
+                                 :key="key"
+                                 @click="orderDetailAction(list.tradeOrderNo || '', list.tradeType || '')"
+                            >
+                                <div class="cell-inner flex-content flex-content-spaceBetween"
+                                     style="min-height: 102px;"
+                                >
+                                    <div class="flex-content flex-content-top">
+                                        <i class="icon-payType mr10"
+                                           :class="list.payType === 'wx' ? 'icon-payType_wx' :
+                        list.payType === 'alipay' ? 'icon-payType_alipay' :
+                        list.payType === 'wm' ? 'icon-payType_wm' :''"
+                                        ></i>
+                                        <div>
+                                            <div class="font-n-d">{{list.tradeOrderName}}</div>
+                                            <div class="font-s-d mt10 text-ellipsis">
+                                                {{list.payType=== 'alipay'? '支付宝': list.payType=== 'wx'? '微信':
+                                                list.payType===
+                                                'wm'?
+                                                '微脉':''}}订单号:
+                                                <span
+                                                        v-if="list.tradeThirdNo">
+                        {{list.tradeThirdNoStr}}
                         </span>
-                                        {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                            </div>
+                                            <div class="font-s-d text-ellipsis mb6">
+                                                支付流水号:<span v-if="list.tradeOrderNo"
+                                                            v-html="list.tradeOrderNoStr">
+                        </span>
+                                            </div>
+                                            <div class="time" v-if="list.createTime">
+                                                {{list.createTime|$_filters_parseTime_hour}}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="font-s-b mt4 align-r"
-                                         style="position: absolute; bottom: 16px; right: 0;"
-                                         :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
-                                    >{{item.status}}
+
+                                    <div class="cell-right">
+                                        <div class="font-l-d"
+                                             style="position: absolute; top: 16px; right: 0;">
+                        <span v-if="((list.tradeAmount+'').indexOf('+')) <= -1 &&
+                        ((list.tradeAmount+'').indexOf('-') <= -1)">
+                        {{list.tradeType|$_filters_moneyMark}}
+                        </span>
+                                            {{list.tradeAmount|$_filters_moneyFormat_fen}}
+                                        </div>
+                                        <div class="font-s-b mt4 align-r"
+                                             style="position: absolute; bottom: 16px; right: 0;"
+                                             :class="list.status === '订单关闭' ? 'gray' : list.status === '待支付' ? 'orange' : ''"
+                                        >{{list.status}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -203,7 +213,9 @@
                 loading: false, //控制上拉加载的加载动画
                 finished: false,//控制在页面往下移动到底部时是否调用接口获取数据
                 loadingText: '加载中…',
-                offset: 20
+                offset: 20,
+
+                orderListPrimary: []
             });
         },
         created() {
@@ -226,6 +238,7 @@
                 self.queryOrder.page = 1;
                 self.total = 0;
                 self.orderList = [];
+                self.orderListPrimary = [];
 
                 Promise.all([self.getOrderList(self)]).then(
                     (results) => {
@@ -282,6 +295,7 @@
 
                                 if (!response.success === true) {
                                     self.orderList = [];
+                                    self.orderListPrimary = [];
                                     self.total = 0;
                                     return reject({});
                                 } else {
@@ -299,16 +313,18 @@
                                             payType: payFundStatus(it.payType),
                                             status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
                                                 it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
-                                            date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
+                                            date: parseTime(it.createTime, '{y}-{m}-{d}'),
                                             tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>'),
                                             tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>')
                                         };
                                         lists.push(item);
                                     });
 
+                                    self.orderListPrimary = self.orderListPrimary.concat(lists);
+                                    const arrayPrimary = self.orderListPrimary.concat(lists);
                                     let listFormat = {};
-                                    for (let i in lists) {
-                                        let item = lists[i];
+                                    for (let i in arrayPrimary) {
+                                        let item = arrayPrimary[i];
                                         if (listFormat[item['date']]) {
                                             listFormat[item['date']].push(item);
                                         } else {
@@ -316,18 +332,27 @@
                                         }
                                     }
 
-                                    console.log(listFormat)
+                                    let arrayFormat = [];
 
-                                    self.orderList = self.orderList.concat(lists);
-                                    console.log(self.orderList)
+                                    if (listFormat) {
+                                        for (let i in listFormat) {
+                                            let item = {};
+                                            item['date'] = i;
+                                            item['lists'] = listFormat[i];
+                                            arrayFormat.push(item);
+                                        }
+                                    }
+
+                                    self.orderList = arrayFormat;
 
                                     self.total = response.data.totalCount;
                                     return resolve(
-                                        lists
+                                        self.orderList
                                     );
                                 }
                             }).catch(() => {
                                 self.orderList = [];
+                                self.orderListPrimary = [];
                                 self.total = 0;
                                 return reject({});
                             });
@@ -356,16 +381,18 @@
                                             payType: payFundStatus(it.payType),
                                             status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
                                                 it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
-                                            date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
+                                            date: parseTime(it.createTime, '{y}-{m}-{d}'),
                                             tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>'),
                                             tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>')
                                         };
                                         lists.push(item);
                                     });
 
+                                    this.orderListPrimary = this.orderListPrimary.concat(lists);
+                                    const arrayPrimary = this.orderListPrimary.concat(lists);
                                     let listFormat = {};
-                                    for (let i in lists) {
-                                        let item = lists[i];
+                                    for (let i in arrayPrimary) {
+                                        let item = arrayPrimary[i];
                                         if (listFormat[item['date']]) {
                                             listFormat[item['date']].push(item);
                                         } else {
@@ -373,14 +400,30 @@
                                         }
                                     }
 
-                                    this.orderList = this.orderList.concat(lists);
+                                    let arrayFormat = [];
+
+                                    if (listFormat) {
+                                        for (let i in listFormat) {
+                                            let item = {};
+                                            item['date'] = i;
+                                            item['lists'] = listFormat[i];
+                                            arrayFormat.push(item);
+                                        }
+                                    }
+
+                                    console.log(listFormat)
+                                    console.log(arrayFormat)
+
+                                    this.orderList = arrayFormat;
+
                                     this.total = response.data.totalCount;
                                     return resolve(
-                                        lists
+                                        this.orderList
                                     );
                                 }
                             }).catch(() => {
                                 this.orderList = [];
+                                this.orderListPrimary = [];
                                 this.total = 0;
                                 return reject({});
                             });

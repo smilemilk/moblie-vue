@@ -9,10 +9,10 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/ximai': {
-                // target: 'http://ian3ku.natappfree.cc',
+                target: 'http://192.168.1.6:8070/',
                 // target: 'http://test2.weimaipay.com/',
                 // target: 'http://test2.weimaipay.com:7070/',
-                target: 'http://pycj73.natappfree.cc', // https
+                // target: 'https://test.weimaipay.com/', // https
                 // target: 'http://172.16.20.111:8070/',  //甘松香ip
                 changeOrigin: true,
                 pathRewrite: {
