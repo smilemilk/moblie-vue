@@ -25,8 +25,9 @@
                          "
                     :class="[
                     resultStatus==='0' ? 'mt10' : 'mt35',
-                    isChecking==true ? 'disabled' : ''
+                    isChecking==true ? 'btn-disabled' : ''
                     ]"
+                    :disabled="isChecking"
                     @click="completeAction(resultStatus)"
             >完成
             </button>

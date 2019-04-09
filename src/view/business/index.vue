@@ -97,7 +97,7 @@
                                             '微脉':''}}订单号:<span
                                                 v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
                                         </div>
-                                        <div class="font-s-d text-ellipsis"
+                                        <div class="font-s-d text-ellipsis mb6"
                                              :class="!item.payType || (item.payType!== 'alipay' && item.payType!== 'wx') ? 'mt10' : ''"
                                         >
                                             支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
@@ -295,47 +295,25 @@
                 });
             },
             onLoad() {
-                alert('我又来了')
-                console.log('我又来了')
-                console.log(this.offset)
                 let self = this;
-                setTimeout(() => {
-                    self.queryOrder.page = self.queryOrder.page + 20;
-                    Promise.all([self.getOrderList(self)]).then(
-                        (results) => {
-                            if (results[0]) {
-                                console.log(results[0])
-                                alert(self.queryOrder.page)
-                                alert(self.total)
+                self.queryOrder.page = self.queryOrder.page + 1;
+                Promise.all([self.getOrderList()]).then(
+                    (results) => {
+                        if (results[0]) {
+                            if (this.queryOrder.page*20 > self.total) {
+                                self.loading = false; //关闭下拉刷新效果
+                                self.finished = true;
 
-                                console.log(self.queryOrder.page)
-                                console.log(typeof(self.queryOrder.page))
-                                console.log(self.total)
-                                console.log(typeof(self.total))
-
-                                alert('laile---')
-                                if (self.queryOrder.page > self.total ||
-                                    self.queryOrder.page == self.total) {
-                                    self.finished = true;
-                                    self.loading = false; //关闭下拉刷新效果
-
-                                    alert('最底下')
-                                    self.loadingText = '没有更多数据';
-                                    return;
-                                }
-
-                                alert('laizheer-------------')
-
-                                alert.log('应该来到的---')
-                                console.log('应该来到的---')
-                                self.finished = false;
-                                self.loadingText = '下拉展示更多';
-                                self.loading = false;
+                                this.loadingText = '没有更多数据';
+                                return;
                             }
                         }
-                    ).catch((e) => {
-                    });
-                }, 500);
+                        // 加载状态结束 手动结束上次的加载
+                        this.loading = false;
+                    }
+                ).catch((e) => {
+                });
+                this.loadingText = '下拉展示更多';
             },
 
             getOrderList(self) {
@@ -400,7 +378,7 @@
                                     };
                                     lists.push(item);
                                 });
-                                this.orderList = lists;
+                                this.orderList = this.orderList.concat(lists);
                                 this.total = response.data.totalCount;
                                 return resolve(
                                     lists
@@ -534,7 +512,6 @@
         color: @text-color-light;
         font-size: @font-smaller;
         line-height: 1.5;
-        margin-top: 6px;
     }
 
     .icon-search {

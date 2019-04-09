@@ -31,60 +31,78 @@
                 </div>
             </div>
 
-            <div v-if="this.orderList && this.orderList.length>0"
-                 class="date-item-wrapper"
-            >
-                <samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp>
-            </div>
-
             <div class="set-form cell-group" v-if="this.orderList && this.orderList.length>0">
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                    <div class="cell"
-                         v-for="(item, key) in this.orderList"
-                         :key="key"
-                         @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
+                <van-pull-refresh
+                        v-model="isLoading"
+                        @refresh="onRefresh">
+                    <van-list
+                            v-model="loading"
+                            :finished="finished"
+                            @load="onLoad"
+                            :finished-text="loadingText"
+                            :offset="offset"
                     >
-                        <div class="cell-inner flex-content flex-content-spaceBetween"
-                             style="min-height: 102px;"
+                        <!--<div v-if="this.orderList && this.orderList.length>0"-->
+                             <!--class="date-item-wrapper"-->
+                        <!--&gt;-->
+                            <!--<samp class="date-item">{{this.dateSearch|$_filters_parseDate}}</samp>-->
+                        <!--</div>-->
+
+                        <div class="cell"
+                             v-for="(item, key) in this.orderList"
+                             :key="key"
+                             @click="orderDetailAction(item.tradeOrderNo || '', item.tradeType || '')"
                         >
-                            <div class="flex-content flex-content-top">
-                                <i class="icon-payType mr10"
-                                   :class="item.payType === 'wx' ? 'icon-payType_wx' :
+                            <div class="cell-inner flex-content flex-content-spaceBetween"
+                                 style="min-height: 102px;"
+                            >
+                                <div class="flex-content flex-content-top">
+                                    <i class="icon-payType mr10"
+                                       :class="item.payType === 'wx' ? 'icon-payType_wx' :
                                item.payType === 'alipay' ? 'icon-payType_alipay' :
                                 item.payType === 'wm' ? 'icon-payType_wm' :''"
-                                ></i>
-                                <div>
-                                    <div class="font-n-d">{{item.tradeOrderName}}</div>
-                                    <div class="font-s-d mt10 text-ellipsis">
-                                        {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信': item.payType===
-                                        'wm'?
-                                        '微脉':''}}订单号:<span
-                                            v-if="item.tradeThirdNo">{{item.tradeThirdNo}}</span>
-                                    </div>
-                                    <div class="font-s-d text-ellipsis">
-                                        支付流水号:<span v-if="item.tradeOrderNo">{{item.tradeOrderNo}}</span>
-                                    </div>
-                                    <div class="time" v-if="item.tradeTime">{{item.tradeTime|$_filters_parseTime_hour}}
+                                    ></i>
+                                    <div>
+                                        <div class="font-n-d">{{item.tradeOrderName}}</div>
+                                        <div class="font-s-d mt10 text-ellipsis">
+                                            {{item.payType=== 'alipay'? '支付宝': item.payType=== 'wx'? '微信':
+                                            item.payType===
+                                            'wm'?
+                                            '微脉':''}}订单号:
+                                            <span
+                                                    v-if="item.tradeThirdNo">
+                                                    {{item.tradeThirdNoStr}}
+                                            </span>
+                                        </div>
+                                        <div class="font-s-d text-ellipsis mb6">
+                                            支付流水号:<span v-if="item.tradeOrderNo"
+                                                        v-html="item.tradeOrderNoStr">
+                                        </span>
+                                        </div>
+                                        <div class="time" v-if="item.tradeTime">
+                                            {{item.tradeTime|$_filters_parseTime_hour}}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="cell-right">
-                                <div class="font-l-d"
-                                     style="position: absolute; top: 16px; right: 0;">
+                                <div class="cell-right">
+                                    <div class="font-l-d"
+                                         style="position: absolute; top: 16px; right: 0;">
                                     <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
                                      ((item.tradeAmount+'').indexOf('-') <= -1)">
                                         {{item.tradeType|$_filters_moneyMark}}
                                     </span>
-                                    {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                        {{item.tradeAmount|$_filters_moneyFormat_fen}}
+                                    </div>
+                                    <div class="font-s-b mt4 align-r"
+                                         style="position: absolute; bottom: 16px; right: 0;"
+                                         :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
+                                    >{{item.status}}
+                                    </div>
                                 </div>
-                                <div class="font-s-b mt4 align-r"
-                                     style="position: absolute; bottom: 16px; right: 0;"
-                                     :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
-                                >{{item.status}}</div>
                             </div>
                         </div>
-                    </div>
+                    </van-list>
                 </van-pull-refresh>
             </div>
 
@@ -135,10 +153,13 @@
         GoodsActionMiniBtn,
         DatetimePicker,
         Popup,
+        PullRefresh,
+        List
     } from 'vant';
     import storeData from './store/business-search';
     import ajax from '@/api/business';
     import moment from 'moment';
+    import {parseTime} from '@/filters/index';
     import {payFundStatus} from '@/filters/status';
     import {orderStatus, refundStatus} from './filters';
 
@@ -156,6 +177,8 @@
             [GoodsActionMiniBtn.name]: GoodsActionMiniBtn,
             DatetimePicker: DatetimePicker,
             Popup: Popup,
+            [PullRefresh.name]: PullRefresh,
+            [List.name]: List,
         },
 
         data() {
@@ -173,24 +196,69 @@
                     limit: 20,
                     page: 1
                 },
-                isLoading: false
+
+                total: 0,
+                isLoading: false, //控制下拉刷新的加载动画
+                loading: false, //控制上拉加载的加载动画
+                finished: false,//控制在页面往下移动到底部时是否调用接口获取数据
+                loadingText: '加载中…',
+                offset: 20
             });
         },
         created() {
-            this.dateSearch = new Date(moment(new Date()).format("YYYYMMDD").slice(0,4), moment(new Date()).format("YYYYMMDD").slice(4,6)*1-1);
+            this.dateSearch = new Date(moment(new Date()).format("YYYYMMDD").slice(0, 4), moment(new Date()).format("YYYYMMDD").slice(4, 6) * 1 - 1);
             this.minDate = new Date(2019, 0);
             this.maxDate = new Date();
         },
         methods: {
             onRefresh() {
+                let self = this;
                 setTimeout(() => {
-                    this.queryOrder.page++;
-                    this.getOrderList();
-                    this.$toast('刷新成功');
-                    this.isLoading = false;
+                    self.total = 0;
+                    self.queryOrder.page = 0;
+                    self.init(); //加载数据
                 }, 500);
             },
-            getOrderList() {
+            init() {
+                let self = this;
+
+                self.queryOrder.page = 1;
+                self.total = 0;
+
+                Promise.all([self.getOrderList(self)]).then(
+                    (results) => {
+                        if (results[0]) {
+                            if (results[0].length < 20) {
+                                self.loadingText = '';
+                            }
+                            self.isLoading = false; //关闭下拉刷新效果
+                        }
+                    }
+                ).catch((e) => {
+                });
+            },
+            onLoad() {
+                let self = this;
+                self.queryOrder.page = self.queryOrder.page + 1;
+                Promise.all([self.getOrderList()]).then(
+                    (results) => {
+                        if (results[0]) {
+                            if (this.queryOrder.page * 20 > self.total) {
+                                self.loading = false; //关闭下拉刷新效果
+                                self.finished = true;
+
+                                this.loadingText = '没有更多数据';
+                                return;
+                            }
+                        }
+                        // 加载状态结束 手动结束上次的加载
+                        this.loading = false;
+                    }
+                ).catch((e) => {
+                });
+                this.loadingText = '下拉展示更多';
+            },
+            getOrderList(self) {
                 this.queryOrder = {
                     ...this.queryOrder,
                     page: 1,
@@ -198,37 +266,106 @@
                     startDate:
                     moment(this.dateSearch).format("YYYYMM") + '01000000',
                     endDate:
-                    moment(this.dateSearch).format("YYYYMM") + new Date(moment(this.dateSearch).format("YYYYMM").slice(0,4), moment(this.dateSearch).format("YYYYMM").slice(4,6), 0).getDate()+ "235959"
+                    moment(this.dateSearch).format("YYYYMM") + new Date(moment(this.dateSearch).format("YYYYMM").slice(0, 4), moment(this.dateSearch).format("YYYYMM").slice(4, 6), 0).getDate() + "235959"
                 };
 
                 if (this.queryOrder.tradeOrderNo.length > 4) {
-                    ajax.getTrade(this.queryOrder).then(response => {
-                        if (!response.success === true) {
-                            this.orderList = [];
-                            return;
-                        } else {
-                            let list = [];
-                            response.data.items.forEach(it => {
-                                console.log('/'+this.keySearch+'/g')
-                                console.log( '<span class="danger">'+this.keySearch+'</span>')
-                                console.log(it.tradeOrderNo.replace('/'+this.keySearch+'/g', '<span class="danger">'+this.keySearch+'</span>'))
 
-                                let item = {
-                                    ...it,
-                                    payType: payFundStatus(it.payType),
-                                    status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
-                                        it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
-                                    tradeOrderNoStr: it.tradeOrderNo.replace(/testx/g, '<span class="danger">'+this.keySearch+'</span>'),
-                                    tradeThirdNoStr: it.tradeThirdNo.replace('/'+this.keySearch+'/g', '<span class="danger">'+this.keySearch+'</span>'),
-                                };
+                    if (self) {
+                        return new Promise((resolve, reject) => {
+                            ajax.getTrade(self.queryOrder).then(response => {
 
-                                list.push(item);
+                                if (!response.success === true) {
+                                    self.orderList = [];
+                                    self.total = 0;
+                                    return reject({});
+                                } else {
+                                    let lists = [];
+                                    response.data.items.forEach(it => {
+                                        if ((it.tradeType === '1' || it.tradeType === 1)
+                                            && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8') {
+                                            it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
+                                        }
+
+                                        let reg = new RegExp(this.keySearch, 'g');
+
+                                        let item = {
+                                            ...it,
+                                            payType: payFundStatus(it.payType),
+                                            status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                                it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
+                                            date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
+                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>'),
+                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>')
+                                        };
+                                        lists.push(item);
+                                    });
+
+                                    for (let i in lists) {
+                                        lists[0]
+                                        if (lists[i] !== lists[i+1]) {
+
+                                        }
+                                    }
+
+                                    self.orderList = self.orderList.concat(lists);
+                                    console.log(self.orderList)
+
+                                    self.total = response.data.totalCount;
+                                    return resolve(
+                                        lists
+                                    );
+                                }
+                            }).catch(() => {
+                                self.orderList = [];
+                                self.total = 0;
+                                return reject({});
                             });
-                            this.orderList = list;
-                        }
-                    }).catch(() => {
-                        this.orderList = [];
-                    });
+                        });
+                    } else {
+                        return new Promise((resolve, reject) => {
+                            ajax.getTrade(this.queryOrder).then(response => {
+
+                                if (!response.success === true) {
+                                    this.orderList = [];
+                                    this.total = 0;
+                                    return resolve(
+                                        this.orderList
+                                    );
+                                } else {
+                                    let lists = [];
+                                    response.data.items.forEach(it => {
+                                        if ((it.tradeType === '1' || it.tradeType === 1) && it.refundStatus.length > 0) {
+                                            it.tradeOrderStatus = '-1'; // 有退款的处理 支付单
+                                        }
+
+                                        let reg = new RegExp(this.keySearch, 'g');
+
+                                        let item = {
+                                            ...it,
+                                            payType: payFundStatus(it.payType),
+                                            status: it.tradeType === '1' || it.tradeType === 1 ? orderStatus(it.tradeOrderStatus) :
+                                                it.tradeType === '0' || it.tradeType === 0 ? refundStatus(it.refundStatus) : '',
+                                            date: parseTime(it.tradeTime, '{y}-{m}-{d}'),
+                                            tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>'),
+                                            tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">'+this.keySearch+'</span>')
+                                        };
+                                        lists.push(item);
+                                    });
+
+                                    this.orderList = this.orderList.concat(lists);
+                                    this.total = response.data.totalCount;
+                                    return resolve(
+                                        lists
+                                    );
+                                }
+                            }).catch(() => {
+                                this.orderList = [];
+                                this.total = 0;
+                                return reject({});
+                            });
+                        });
+                    }
                 }
             },
             orderStatusAction() {
@@ -246,8 +383,7 @@
                     // setTimeout(function(){
                     //     toast = '';
                     // }, 4000)
-                    this.getOrderList();
-
+                    this.init();
                 } else {
                     Toast("至少5位的查询条件");
                 }
@@ -287,7 +423,7 @@
                         startDate:
                         moment(this.dateSearch).format("YYYYMM") + '01000000',
                         endDate:
-                        moment(this.dateSearch).format("YYYYMM") + new Date(moment(this.dateSearch).format("YYYYMM").slice(0,4), moment(this.dateSearch).format("YYYYMM").slice(4,6), 0).getDate()+ "235959"
+                        moment(this.dateSearch).format("YYYYMM") + new Date(moment(this.dateSearch).format("YYYYMM").slice(0, 4), moment(this.dateSearch).format("YYYYMM").slice(4, 6), 0).getDate() + "235959"
                     };
                     this.getOrderList();
                 }
@@ -310,7 +446,6 @@
         color: @text-color-light;
         font-size: @font-smaller;
         line-height: 1.5;
-        margin-top: 6px;
     }
 
     .order-none-container {

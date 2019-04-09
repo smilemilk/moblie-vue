@@ -104,8 +104,9 @@
                          btn-ghost
                          mb16
                          "
-                        :class="isRefundStatus ? '' : 'disabled'"
+                        :class="isRefundStatus ? '' : 'btn-disabled'"
                         v-if="refundShow"
+                        :disabled="!isRefundStatus"
                         @click="refundAction()">退款
                 </button>
                 <button
