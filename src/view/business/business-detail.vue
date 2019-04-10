@@ -67,6 +67,18 @@
                                 {{businessInfo.tradeOrderNo || '-'}}</span>
                         </div>
                     </div>
+                    <div class="detail-cell media" v-if="queryOrderType === 'refund'">
+                        <label class="detail-cell-label">退款流水号</label>
+                        <div class="detail-cell-right">
+                            <span class="detail-cell-span" v-if="businessInfo.refundOrderNo &&
+                                  businessInfo.refundOrderNo.length > 30">
+                                <span class="detail-cell-span-text"
+                                >{{businessInfo.refundOrderNo}}</span>
+                            </span>
+                            <span class="detail-cell-span" v-else>
+                                {{businessInfo.refundOrderNo || '-'}}</span>
+                        </div>
+                    </div>
                     <div class="detail-cell">
                         <label class="detail-cell-label">操作人</label>
                         <div class="detail-cell-right">
@@ -246,7 +258,7 @@
                             tradeOrderNo: response.data.payOrderNo || '',
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
-                            remark: response.data.paySubmitRemark || '',
+                            remark: response.data.merchantRemark || '',
                             tradeStatusText: orderStatus(response.data.payOrderStatus),
                         };
 
@@ -340,10 +352,16 @@
                             tradeOrderNo: response.data.payOrderNo || '',
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
-                            remark: response.data.paySubmitRemark || '',
+                            remark: response.data.merchantRemark || '',
                             tradeStatusText: refundPrimaryStatus(response.data.payOrderStatus),
                             payType: payFundStatus(response.data.payType),
+                            refundOrderNo: response.data.refundOrderNo || ''
                         };
+
+
+                        if (!response.data.refundOrderNo) {
+                            this.businessInfo.refundOrderNo = this.queryOrder.orderNo;
+                        }
 
                         if (this.resultStatus) {
                             this.businessInfo.tradeStatusText = refundDetailStatus(response.data.payOrderStatus);
@@ -399,7 +417,21 @@
                 this.navBackClick();
             },
             primaryOrderAction() {
+                this.queryOrderType = '';
                 this.resultStatus = undefined;
+                this.businessInfo =  {
+                    ...this.businessInfo,
+                    tradeStatusText: '', // 展示状态
+                        tradeOrderName: '',
+                        tradeAmount: '',
+                        tradeType: '',
+                        discountAmount: '',
+                        tradeOrderNo: '',
+                        operatorName: '',
+                        createTime: '',
+                        remark: '',
+                        tradeThirdNo: ''
+                };
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessDetail',
