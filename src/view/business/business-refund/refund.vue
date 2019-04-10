@@ -201,7 +201,8 @@
                     // });
                     // this.createOrderFetch(fetchLoading);
                     this.$emit('submit', {
-                        amount: this.amount
+                        amount: this.amount,
+                        remark: this.remark
                     });
                 } else {
                     this.refundStatus = false;

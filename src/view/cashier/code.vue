@@ -132,7 +132,7 @@
             },
             countDown() {
                 let self= this;
-                self.countDownCount = 180;
+                self.countDownCount = 300;
                 self.countDownInterval = window.setInterval(() => {
                     self.countDownCount--;
                     if (self.countDownCount > 0 || self.countDownCount === -2) {

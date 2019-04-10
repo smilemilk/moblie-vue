@@ -189,16 +189,22 @@
                 });
             },
             refundSubmit() {
-                Dialog.confirm({
-                    title: '确认对该笔交易进行退款?',
-                    message: ''
-                }).then(() => {
-                    this.$refs.refund.$emit('getValue'); // 触发退款组件事件
-                }).catch(() => {
-                });
+                if ((this.$refs.refund.amount*100 < 1) || this.$refs.refund.amount == '.') {
+                    Toast('退款金额大于0');
+                    return;
+                } else {
+                    Dialog.confirm({
+                        title: '确认对该笔交易进行退款?',
+                        message: ''
+                    }).then(() => {
+                        this.$refs.refund.$emit('getValue'); // 触发退款组件事件
+                    }).catch(() => {
+                    });
+                }
             },
 
             submitFetch(res) {
+
                 let fetchLoading = Toast.loading({
                     mask: true,
                     message: '退款请求中...'
@@ -207,7 +213,7 @@
                     payOrderNo: this.queryOrder.payOrderNo,
                     refundAmount: res.amount*100,
                     refundId: (Math.floor(Math.random()*10000000000000000+1))+'',
-                    remark: '3'
+                    remark: res.remark
                 }).then(response => {
                     fetchLoading.clear();
                     let refundStatus;

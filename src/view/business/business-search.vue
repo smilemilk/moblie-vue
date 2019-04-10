@@ -50,10 +50,10 @@
                         >
                             <div
                                  class="date-item-wrapper"
+                                 v-if="item.date"
                             >
-                                <samp class="date-item" v-if="item.date">
+                                <samp class="date-item">
                                     {{item.date|$_filters_parseDate}}</samp>
-                                <samp class="date-item" v-else></samp>
                             </div>
 
                             <div class="cell"
@@ -69,7 +69,7 @@
                                         <i class="icon-payType mr10"
                                            :class="list.payType === 'wx' ? 'icon-payType_wx' :
                         list.payType === 'alipay' ? 'icon-payType_alipay' :
-                        list.payType === 'wm' ? 'icon-payType_wm' :''"
+                        list.payType === 'wm' ? 'icon-payType_wm' :'icon-payType_wm'"
                                         ></i>
                                         <div>
                                             <div class="font-n-d">{{list.tradeOrderName}}</div>
@@ -79,8 +79,9 @@
                                                 'wm'?
                                                 '微脉':''}}订单号:
                                                 <span
-                                                        v-if="list.tradeThirdNo">
-                        {{list.tradeThirdNoStr}}
+                                                        v-if="list.tradeThirdNo"
+                                                        v-html="list.tradeThirdNoStr"
+                                                >
                         </span>
                                             </div>
                                             <div class="font-s-d text-ellipsis mb6">
@@ -98,7 +99,7 @@
                                         <div class="font-l-d"
                                              style="position: absolute; top: 16px; right: 0;">
                         <span v-if="((list.tradeAmount+'').indexOf('+')) <= -1 &&
-                        ((list.tradeAmount+'').indexOf('-') <= -1)">
+                        ((list.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付')">
                         {{list.tradeType|$_filters_moneyMark}}
                         </span>
                                             {{list.tradeAmount|$_filters_moneyFormat_fen}}
@@ -258,7 +259,7 @@
             onLoad() {
                 let self = this;
                 self.queryOrder.page = self.queryOrder.page + 1;
-                Promise.all([self.getOrderList()]).then(
+                Promise.all([self.getOrderList(self)]).then(
                     (results) => {
                         if (results[0]) {
                             if (this.queryOrder.page * 20 > self.total) {
@@ -279,7 +280,6 @@
             getOrderList(self) {
                 this.queryOrder = {
                     ...this.queryOrder,
-                    page: 1,
                     tradeOrderNo: this.keySearch,
                     startDate:
                     moment(this.dateSearch).format("YYYYMM") + '01000000',
@@ -295,11 +295,21 @@
 
                                 if (!response.success === true) {
                                     self.orderList = [];
+
                                     self.orderListPrimary = [];
                                     self.total = 0;
                                     return reject({});
                                 } else {
                                     let lists = [];
+
+                                    if (!response.data.items) {
+                                        self.loading = false; //关闭下拉刷新效果
+                                        self.finished = true;
+
+                                        this.loadingText = '没有更多数据';
+                                        return;
+                                    }
+
                                     response.data.items.forEach(it => {
                                         if ((it.tradeType === '1' || it.tradeType === 1)
                                             && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8' && it.refundStatus !== '0') {
@@ -321,7 +331,7 @@
                                     });
 
                                     self.orderListPrimary = self.orderListPrimary.concat(lists);
-                                    const arrayPrimary = self.orderListPrimary.concat(lists);
+                                    const arrayPrimary = self.orderListPrimary;
                                     let listFormat = {};
                                     for (let i in arrayPrimary) {
                                         let item = arrayPrimary[i];
@@ -354,7 +364,9 @@
                                 self.orderList = [];
                                 self.orderListPrimary = [];
                                 self.total = 0;
-                                return reject({});
+                                return resolve(
+                                    this.orderList
+                                );
                             });
                         });
                     } else {
@@ -363,6 +375,7 @@
 
                                 if (!response.success === true) {
                                     this.orderList = [];
+                                    this.orderListPrimary = [];
                                     this.total = 0;
                                     return resolve(
                                         this.orderList
@@ -388,8 +401,16 @@
                                         lists.push(item);
                                     });
 
+                                    if (this.queryOrder.page == 1) {
+                                        this.orderListPrimary = [];
+                                        this.orderList = [];
+                                    }
+
+                                    console.log(this.orderListPrimary)
+                                    console.log(lists)
+
                                     this.orderListPrimary = this.orderListPrimary.concat(lists);
-                                    const arrayPrimary = this.orderListPrimary.concat(lists);
+                                    const arrayPrimary = this.orderListPrimary;
                                     let listFormat = {};
                                     for (let i in arrayPrimary) {
                                         let item = arrayPrimary[i];
@@ -425,7 +446,9 @@
                                 this.orderList = [];
                                 this.orderListPrimary = [];
                                 this.total = 0;
-                                return reject({});
+                                return resolve(
+                                    this.orderList
+                                );
                             });
                         });
                     }

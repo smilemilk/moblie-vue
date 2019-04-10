@@ -113,7 +113,7 @@
                                     <div class="font-l-d"
                                          style="position: absolute; top: 16px; right: 0;">
                                     <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
-                                     ((item.tradeAmount+'').indexOf('-') <= -1)">
+                                     ((item.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付')">
                                         {{item.tradeType|$_filters_moneyMark}}
                                     </span>
                                         {{item.tradeAmount|$_filters_moneyFormat_fen}}
@@ -281,6 +281,7 @@
                 let self = this;
 
                 self.queryOrder.page = 1;
+                self.orderList = [];
                 self.total = 0;
 
                 Promise.all([self.getOrderList(self)]).then(
@@ -328,6 +329,14 @@
                                 return reject({});
                             } else {
                                 let lists = [];
+
+                                if (!response.data.items) {
+                                    self.loading = false; //关闭下拉刷新效果
+                                    self.finished = true;
+
+                                    this.loadingText = '没有更多数据';
+                                    return;
+                                }
                                 response.data.items.forEach(it => {
                                     if ((it.tradeType === '1' || it.tradeType === 1)
                                         && it.refundStatus.length > 0 && it.tradeOrderStatus !== '8' && it.refundStatus !== '0') {
@@ -342,6 +351,7 @@
                                     };
                                     lists.push(item);
                                 });
+
                                 self.orderList = self.orderList.concat(lists);
                                 self.total = response.data.totalCount;
                                 return resolve(
@@ -366,6 +376,7 @@
                                 );
                             } else {
                                 let lists = [];
+
                                 response.data.items.forEach(it => {
                                     if ((it.tradeType === '1' || it.tradeType === 1) && (it.refundStatus.length > 0 && it.refundStatus !== '0')) {
                                         it.tradeOrderStatus = '-1'; // 有退款的处理 支付单

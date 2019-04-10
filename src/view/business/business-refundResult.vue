@@ -55,10 +55,10 @@
         },
         created() {
             this.refundOrderNo = this.$route.query.refundOrderNo;
-            this.resultStatus = this.$route.query.resultStatus || '';
-            if (this.resultStatus === '0') {
-                this.msg = this.$route.query.msg || '';
-            }
+            // this.resultStatus = this.$route.query.resultStatus || '';
+            // if (this.resultStatus === '0') {
+            //     this.msg = this.$route.query.msg || '';
+            // }
             this.refundInterval();
         },
         watch: {},
@@ -120,15 +120,16 @@
                     this.getRefundDetail(_count, self);
                 }, 1000);
             },
-            completeAction(resultStatus) {
+            completeAction(result) {
+
                 setTimeout(() => {
                     this.$router.push({
                         name: 'businessDetail',
                         query: {
                             tradeOrderNo: this.$route.query.refundOrderNo,
                             tradeType: '0',
-                            resultStatus: resultStatus,
-                            resultForm: '1'
+                            // resultStatus: result,
+                            // resultForm: '1'
                         }
                     });
                 }, 800);
