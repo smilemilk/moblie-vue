@@ -36,6 +36,31 @@ export function refundStatus(value) {
     return item;
 }
 
+export function orderDetailStatus(value, refund) {
+    let item = '';
+    if (arguments.length === 0) {
+        return null;
+    }
+    if (value === undefined || value === null) {
+        return '';
+    }
+    if (value === '0' || value === 0) {
+        item = '待支付';
+    } else if (value === '8' || value === 8) {
+        item = '订单关闭';
+    } else if (value === '2' || value === 2) {
+
+        if (refund !== '0' && refund !== 0) {
+            item = '有退款';
+        } else {
+            item = '交易成功';
+        }
+    } else {
+        item = '';
+    }
+    return item;
+}
+
 export function refundPrimaryStatus(value) {
     let item = '';
     if (arguments.length === 0) {
@@ -47,11 +72,11 @@ export function refundPrimaryStatus(value) {
     if (value === '0' || value === 0) {
         item = '待退款';
     } else if (value === '1' || value === 1) {
-        item = '有退款';
+        item = '交易成功';
     } else if (value === '2' || value === 2) {
-        item = '有退款';
+        item = '交易成功';
     } else if (value === '3' || value === 4) {
-        item = '有退款';
+        item = '交易成功';
     } else {
         item = '';
     }

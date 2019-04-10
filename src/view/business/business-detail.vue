@@ -174,7 +174,7 @@
     import ajax from '@/api/business';
     import moment from 'moment';
     import {payFundStatus} from '@/filters/status';
-    import {refundDetailStatus, refundPrimaryStatus, orderStatus} from './filters';
+    import {refundDetailStatus, refundPrimaryStatus, orderDetailStatus} from './filters';
 
     export default {
         components: {
@@ -259,7 +259,7 @@
                             operatorName: response.data.operName || '',
                             createTime: response.data.createTime || '',
                             remark: response.data.merchantRemark || '',
-                            tradeStatusText: orderStatus(response.data.payOrderStatus),
+                            tradeStatusText: orderDetailStatus(response.data.payOrderStatus, response.data.refundStatus),
                         };
 
                         if (response.data.items) {
