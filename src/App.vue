@@ -16,6 +16,13 @@
         created() {
             this.userStatus();
         },
+        mounted() {
+            window.onpopstate = () => {
+                if (!this.$store.state.allowBack) {
+                    history.go(1);
+                }
+            }
+        },
         methods: {
             userStatus() {
 

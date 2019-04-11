@@ -4,6 +4,7 @@ const app = {
     state: {
         userFetching: false, // getUser 接口查询状态
         userInfo: {}, // getUser 接口返回的数据
+        allowBack: undefined
     },
     mutations: {
 

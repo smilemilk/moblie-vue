@@ -206,6 +206,11 @@
                 });
                 this.departListColumns = arr;
             }
+            // if (window.history && window.history.pushState) {
+            //     window.onpopstate = function () {
+            //         window.history.forward(1);
+            //     }
+            // }
         },
         watch: {
             'depart': function (val, old) {

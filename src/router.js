@@ -47,7 +47,8 @@ const routes = [
         name: 'login',
         component: () => import('./view/login/index'),
         meta: {
-            title: '登录'
+            title: '登录',
+            allowBack: false
         }
     },
     {
@@ -166,10 +167,22 @@ const router = new Router({routes});
 
 router.beforeEach((to, from, next) => {
     const title = to.meta && to.meta.title;
+    let allowBack = true;
+
     if (title) {
         document.title = title;
     }
+
     next();
+
+    if (to.meta.allowBack !== undefined) {
+        allowBack = to.meta.allowBack;
+    }
+
+    if (!allowBack) {
+        history.pushState(null, null, location.href);
+    }
+
 });
 
 export {
