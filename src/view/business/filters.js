@@ -8,6 +8,8 @@ export function orderStatus(value) {
     }
     if (value === '0' || value === 0) {
         item = '待支付';
+    } else if (value === '3' || value === 3) {
+        item = '交易失败';
     } else if (value === '8' || value === 8) {
         item = '订单关闭';
     } else if (value === '-1') {
@@ -30,6 +32,8 @@ export function refundStatus(value) {
         item = '';
     } else if (value === '2' || value === 2) {
         item = '';
+    } else if (value === '3' || value === 3) {
+        item = '交易失败';
     } else {
         item = '';
     }
@@ -46,6 +50,8 @@ export function orderDetailStatus(value, refund) {
     }
     if (value === '0' || value === 0) {
         item = '待支付';
+    } else if (value === '3' || value === 3) {
+        item = '交易失败';
     } else if (value === '8' || value === 8) {
         item = '订单关闭';
     } else if (value === '2' || value === 2) {
@@ -75,8 +81,8 @@ export function refundPrimaryStatus(value) {
         item = '交易成功';
     } else if (value === '2' || value === 2) {
         item = '交易成功';
-    } else if (value === '3' || value === 4) {
-        item = '交易成功';
+    } else if (value === '3' || value === 3) {
+        item = '交易失败';
     } else {
         item = '';
     }
@@ -97,8 +103,8 @@ export function refundDetailStatus(value) {
         item = '交易成功';
     } else if (value === '2' || value === 2) {
         item = '交易成功';
-    } else if (value === '3' || value === 4) {
-        item = '交易成功';
+    } else if (value === '3' || value === 3) {
+        item = '交易失败';
     } else {
         item = '';
     }

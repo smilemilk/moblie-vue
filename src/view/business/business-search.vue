@@ -99,14 +99,14 @@
                                         <div class="font-l-d"
                                              style="position: absolute; top: 16px; right: 0;">
                         <span v-if="((list.tradeAmount+'').indexOf('+')) <= -1 &&
-                        ((list.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付')">
+                        ((list.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付' && list.status !== '交易失败')">
                         {{list.tradeType|$_filters_moneyMark}}
                         </span>
                                             {{list.tradeAmount|$_filters_moneyFormat_fen}}
                                         </div>
                                         <div class="font-s-b mt4 align-r"
                                              style="position: absolute; bottom: 16px; right: 0;"
-                                             :class="list.status === '订单关闭' ? 'gray' : list.status === '待支付' ? 'orange' : ''"
+                                             :class="(list.status === '订单关闭' || list.status === '交易失败') ? 'gray' : list.status === '待支付' ? 'orange' : ''"
                                         >{{list.status}}
                                         </div>
                                     </div>
@@ -317,7 +317,8 @@
                                         }
 
                                         let reg = new RegExp(this.keySearch, 'g');
-
+                                        console.log(it.tradeOrderStatus)
+                                        console.log(orderStatus(it.tradeOrderStatus))
                                         let item = {
                                             ...it,
                                             payType: payFundStatus(it.payType),
@@ -327,6 +328,7 @@
                                             tradeThirdNoStr: it.tradeThirdNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>'),
                                             tradeOrderNoStr: it.tradeOrderNo.replace(reg, '<span class="orange">' + this.keySearch + '</span>')
                                         };
+                                        console.log(lists)
                                         lists.push(item);
                                     });
 
@@ -389,6 +391,8 @@
 
                                         let reg = new RegExp(this.keySearch, 'g');
 
+
+                                        console.log(it.tradeOrderStatus)
                                         let item = {
                                             ...it,
                                             payType: payFundStatus(it.payType),

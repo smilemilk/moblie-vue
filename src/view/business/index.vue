@@ -113,14 +113,14 @@
                                     <div class="font-l-d"
                                          style="position: absolute; top: 16px; right: 0;">
                                     <span v-if="((item.tradeAmount+'').indexOf('+')) <= -1 &&
-                                     ((item.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付')">
+                                     ((item.tradeAmount+'').indexOf('-') <= -1 && item.status !== '订单关闭' && item.status !== '待支付' && list.status !== '交易失败')">
                                         {{item.tradeType|$_filters_moneyMark}}
                                     </span>
                                         {{item.tradeAmount|$_filters_moneyFormat_fen}}
                                     </div>
                                     <div class="font-s-b mt4 align-r"
                                          style="position: absolute; bottom: 16px; right: 0;"
-                                         :class="item.status === '订单关闭' ? 'gray' : item.status === '待支付' ? 'orange' : ''"
+                                         :class="(list.status === '订单关闭' || list.status === '交易失败') ? 'gray' : item.status === '待支付' ? 'orange' : ''"
                                     >{{item.status}}
                                     </div>
                                 </div>

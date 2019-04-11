@@ -459,7 +459,10 @@
                 // this.$toast('取消');
                 this.departPickerShow = false;
             }
-        }
+        },
+        // beforeDestroy: {
+        //
+        // }
     };
 </script>
 

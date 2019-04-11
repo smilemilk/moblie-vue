@@ -225,12 +225,21 @@
             this.queryOrderType = this.$route.query.tradeType === '1' ? 'pay' :
                 this.$route.query.tradeType === '0' ? 'refund' : '';
 
-            this.getOrderDetail();
+            if (this.queryOrder.orderNo && this.queryOrderType) {
+                this.getOrderDetail();
+            }
 
             // this.resultForm = this.$route.query.resultForm || false;
             // if (this.$route.query.resultForm) {
                 this.resultStatus = this.$route.query.resultStatus;
             // }
+        },
+        watch: {
+            '$route'() {
+                if (this.$route.path.indexOf('businessDetail') > -1 && this.$route.query.back) {
+                    this.getPayDetail();
+                }
+            }
         },
         methods: {
             getOrderDetail() {
@@ -391,7 +400,9 @@
                     return;
                 }
                 setTimeout(() => {
-                    this.$router.push({
+
+                    let self = this;
+                    self.$router.push({
                         name: 'businessRefund',
                         query: {
                             tradeOrderNo: this.$route.query.tradeOrderNo,
@@ -438,8 +449,10 @@
                         query: {
                             tradeOrderNo: this.primaryNo,
                             tradeType: '1',
+                            back: 'back'
                         }
                     });
+                    this.queryOrder.orderNo = this.primaryNo;
                 }, 800);
             },
             navBackClick() {
