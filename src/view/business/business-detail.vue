@@ -128,9 +128,9 @@
                          btn-ghost
                          mb16
                          "
-                        :class="isRefundStatus && operLimitStatus ? '' : 'btn-disabled'"
+                        :class="(isRefundStatus && operLimitStatus && !overdrawStatus) ? '' : 'btn-disabled'"
                         v-if="refundShow"
-                        :disabled="!isRefundStatus && operLimitStatus"
+                        :disabled="!((isRefundStatus && operLimitStatus && !overdrawStatus))"
                         @click="refundAction()">退款
                 </button>
                 <!--<button-->
@@ -330,10 +330,20 @@
 
                             if (thirtydaystime < currentTime) {
                                 this.overdrawStatus = true;
+                                // this.operLimitStatus = true;
+                                // this.isRefundStatus =false;
                             } else {
                                 this.overdrawStatus = false;
                             }
+
+                            console.log(thirtydaystime)
+                            console.log(currentTime)
+                            console.log(thirtydaystime < currentTime)
                         }
+
+                        console.log(this.overdrawStatus)
+                        console.log(this.operLimitStatus)
+                        console.log(this.isRefundStatus)
 
                         // 撤销操作的逻辑
                         // if (response.data.payOrderStatus === '0' ||

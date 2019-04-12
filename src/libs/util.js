@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "development") {
 } else if (process.env.NODE_ENV === "production") {
     util.ajaxFront = "https://test.weimaipay.com/";
     // util.ajaxFront = "http://test2.weimaipay.com/";
+    // util.ajaxFront　= 'http://pre.weimaipay.com:7070/';
 }
 
 util.ajax = axios.create({
